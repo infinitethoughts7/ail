@@ -51,18 +51,18 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen p-8">
-      <h1 className="mb-8 text-3xl font-bold">Sponsor Dashboard</h1>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8">
+      <h1 className="mb-4 text-2xl font-bold sm:mb-6 sm:text-3xl">Sponsor Dashboard</h1>
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {cards.map((card) => (
           <Card key={card.title}>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardHeader className="p-4 pb-2 sm:p-6 sm:pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">
                 {card.title}
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{card.value}</p>
+            <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+              <p className="text-2xl font-bold sm:text-3xl">{card.value}</p>
             </CardContent>
           </Card>
         ))}
