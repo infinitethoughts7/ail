@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -31,7 +31,11 @@ export default function DashboardPage() {
           headers: { Authorization: `Bearer ${session.accessToken}` },
         })
         .then((res) => setSummary(res.data))
-        .catch(() => {});
+        .catch((err) => {
+          if (err.response?.status === 401) {
+            signOut({ callbackUrl: "/login" });
+          }
+        });
     }
   }, [session]);
 
