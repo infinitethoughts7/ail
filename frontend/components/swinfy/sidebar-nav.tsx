@@ -86,22 +86,35 @@ export function SwinySidebarNav() {
   const { data: summary } = useAdminSummary();
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b px-4 py-3">
+    <Sidebar
+      className="border-r-0"
+      style={{
+        ["--sidebar" as string]: "#3D3530",
+        ["--sidebar-foreground" as string]: "#E8E4DF",
+        ["--sidebar-accent" as string]: "#4E4843",
+        ["--sidebar-accent-foreground" as string]: "#FFFFFF",
+        ["--sidebar-border" as string]: "rgba(255,255,255,0.08)",
+        ["--sidebar-primary" as string]: "#C9A84C",
+        ["--sidebar-primary-foreground" as string]: "#3D3530",
+      }}
+    >
+      <SidebarHeader className="border-b border-white/[0.08] px-4 py-3">
         <Link href="/swinfy/dashboard" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#C9A84C] text-[#3D3530]">
             <ShieldCheck className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-sm font-semibold">Swinfy Admin</p>
-            <p className="text-[11px] text-muted-foreground">Control Panel</p>
+            <p className="text-sm font-semibold text-white">Swinfy Admin</p>
+            <p className="text-[11px] text-[#A89F96]">Control Panel</p>
           </div>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] text-[#A89F96]" style={{ letterSpacing: "0.12em" }}>
+            Main
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV_ITEMS.map((item) => {
@@ -113,9 +126,17 @@ export function SwinySidebarNav() {
 
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={isActive}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      className={`mb-0.5 rounded-xl px-3 py-2.5 transition-all ${
+                        isActive
+                          ? "bg-[#C9A84C]/15 text-[#E8D48B] font-medium"
+                          : "text-[#A89F96] hover:bg-white/[0.06] hover:text-white"
+                      }`}
+                    >
                       <Link href={item.href}>
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className={`h-4 w-4 ${isActive ? "text-[#C9A84C]" : ""}`} />
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -132,16 +153,26 @@ export function SwinySidebarNav() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] text-[#A89F96]" style={{ letterSpacing: "0.12em" }}>
+            Tools
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {SECONDARY_ITEMS.map((item) => {
                 const isActive = pathname.startsWith(item.href);
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={isActive}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      className={`mb-0.5 rounded-xl px-3 py-2.5 transition-all ${
+                        isActive
+                          ? "bg-[#C9A84C]/15 text-[#E8D48B] font-medium"
+                          : "text-[#A89F96] hover:bg-white/[0.06] hover:text-white"
+                      }`}
+                    >
                       <Link href={item.href}>
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className={`h-4 w-4 ${isActive ? "text-[#C9A84C]" : ""}`} />
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -153,11 +184,12 @@ export function SwinySidebarNav() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-2">
+      <SidebarFooter className="border-t border-white/[0.08] p-2">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => signOut({ callbackUrl: "/login" })}
+              className="rounded-xl text-[#A89F96] hover:bg-white/[0.06] hover:text-white"
             >
               <LogOut className="h-4 w-4" />
               <span>Sign out</span>

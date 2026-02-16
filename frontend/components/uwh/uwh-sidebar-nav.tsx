@@ -22,65 +22,54 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useUWHSummary } from "@/hooks/use-uwh-data";
-import { timeAgo } from "@/lib/utils";
 
 const NAV_ITEMS = [
   {
     label: "Program Dashboard",
     href: "/uwh/dashboard",
     icon: LayoutDashboard,
-    description: "Overview & KPIs",
   },
   {
     label: "District Progress",
     href: "/uwh/districts",
     icon: MapPin,
-    description: "School-wise tracking",
   },
   {
     label: "Curriculum Journey",
     href: "/uwh/curriculum",
     icon: BookOpen,
-    description: "4-day learning path",
   },
   {
     label: "Impact & Outcomes",
     href: "/uwh/impact",
     icon: TrendingUp,
-    description: "Metrics & growth",
   },
   {
     label: "Photo Gallery",
     href: "/uwh/gallery",
     icon: Camera,
-    description: "Program in action",
   },
   {
     label: "Student Innovations",
     href: "/uwh/innovations",
     icon: Lightbulb,
-    description: "Project showcase",
   },
   {
     label: "Financial Overview",
     href: "/uwh/financials",
     icon: DollarSign,
-    description: "Budget & allocation",
   },
   {
     label: "Activity Timeline",
     href: "/uwh/activity",
     icon: Activity,
-    description: "Latest updates",
   },
 ];
 
@@ -89,28 +78,45 @@ export function UWHSidebarNav() {
   const { data: summary } = useUWHSummary();
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b px-4 py-3">
+    <Sidebar
+      className="border-r-0"
+      style={{
+        ["--sidebar" as string]: "#3D3530",
+        ["--sidebar-foreground" as string]: "#E8E4DF",
+        ["--sidebar-accent" as string]: "#4E4843",
+        ["--sidebar-accent-foreground" as string]: "#FFFFFF",
+        ["--sidebar-border" as string]: "rgba(255,255,255,0.08)",
+        ["--sidebar-primary" as string]: "#C9A84C",
+        ["--sidebar-primary-foreground" as string]: "#3D3530",
+      }}
+    >
+      {/* Header — Brand */}
+      <SidebarHeader className="border-b border-white/[0.08] px-5 py-5">
         <Link href="/uwh/dashboard" className="flex items-center gap-3">
           <Image
             src="/UWH_Logo.png"
             alt="UWH"
-            width={36}
-            height={36}
-            className="rounded-lg"
+            width={40}
+            height={40}
+            className="rounded-xl"
           />
           <div>
-            <p className="text-sm font-bold">AI Literacy Program</p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="uwh-heading text-base font-semibold text-white">
+              AI Literacy Program
+            </p>
+            <p className="uwh-label text-[10px] text-[#94A3B8]" style={{ letterSpacing: "0.12em" }}>
               Sponsor Dashboard
             </p>
           </div>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
+      {/* Navigation */}
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <p className="uwh-label mb-3 px-2 text-[10px] text-[#94A3B8]" style={{ letterSpacing: "0.12em" }}>
+            Navigation
+          </p>
           <SidebarGroupContent>
             <SidebarMenu>
               {NAV_ITEMS.map((item) => {
@@ -121,10 +127,25 @@ export function UWHSidebarNav() {
 
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <Link href={item.href}>
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.label}</span>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive}
+                      className={`
+                        mb-0.5 rounded-xl px-3 py-2.5 transition-all duration-200
+                        ${isActive
+                          ? "bg-[#C9A84C]/15 text-[#E8D48B] font-medium shadow-[inset_0_0_0_1px_rgba(201,168,76,0.2)]"
+                          : "text-[#94A3B8] hover:bg-white/[0.06] hover:text-white"
+                        }
+                      `}
+                    >
+                      <Link href={item.href} className="flex items-center gap-3">
+                        <item.icon
+                          className={`h-[18px] w-[18px] ${isActive ? "text-[#C9A84C]" : ""}`}
+                        />
+                        <span className="text-[13px]">{item.label}</span>
+                        {isActive && (
+                          <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#C9A84C]" />
+                        )}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -135,63 +156,68 @@ export function UWHSidebarNav() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-3">
+      {/* Footer */}
+      <SidebarFooter className="border-t border-white/[0.08] p-4">
         {/* Quick Stats */}
         {summary?.kpis && (
-          <div className="mb-3 rounded-lg bg-muted/50 p-3">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="mb-4 rounded-xl bg-white/[0.04] p-4" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+            <p className="uwh-label mb-3 text-[10px] text-[#C9A84C]" style={{ letterSpacing: "0.12em" }}>
               Quick Stats
             </p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <p className="text-lg font-bold">
+                <p className="uwh-mono text-xl font-bold text-white">
                   {summary.kpis.total_schools}
                 </p>
-                <p className="text-[10px] text-muted-foreground">Schools</p>
+                <p className="text-[10px] text-[#94A3B8]">Schools</p>
               </div>
               <div>
-                <p className="text-lg font-bold">
+                <p className="uwh-mono text-xl font-bold text-white">
                   {summary.kpis.total_students_trained}
                 </p>
-                <p className="text-[10px] text-muted-foreground">Students</p>
+                <p className="text-[10px] text-[#94A3B8]">Students</p>
               </div>
               <div>
-                <p className="text-lg font-bold">
+                <p className="uwh-mono text-xl font-bold text-[#10B981]">
                   {summary.kpis.schools_completed}
                 </p>
-                <p className="text-[10px] text-muted-foreground">Completed</p>
+                <p className="text-[10px] text-[#94A3B8]">Completed</p>
               </div>
               <div>
-                <p className="text-lg font-bold">
+                <p className="uwh-mono text-xl font-bold text-white">
                   {summary.kpis.total_districts}
                 </p>
-                <p className="text-[10px] text-muted-foreground">Districts</p>
+                <p className="text-[10px] text-[#94A3B8]">Districts</p>
               </div>
             </div>
           </div>
         )}
 
-        <Separator className="mb-2" />
+        <Separator className="mb-3 bg-white/[0.06]" />
 
-        {/* Last updated */}
-        <p className="mb-2 text-center text-[10px] text-muted-foreground">
+        {/* Auto-refresh note */}
+        <p className="mb-3 text-center text-[10px] text-[#94A3B8]">
           Auto-refreshes every 30s
         </p>
 
         {/* Download Report */}
-        <Button variant="outline" size="sm" className="mb-2 w-full" onClick={() => window.print()}>
-          <Download className="mr-1.5 h-3.5 w-3.5" />
+        <button
+          onClick={() => window.print()}
+          className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-[#C9A84C]/30 bg-[#C9A84C]/10 px-3 py-2 text-[12px] font-medium text-[#C9A84C] transition-all hover:bg-[#C9A84C]/20 hover:border-[#C9A84C]/50"
+        >
+          <Download className="h-3.5 w-3.5" />
           Download Report
-        </Button>
+        </button>
 
         {/* Sign out */}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => signOut({ callbackUrl: "/login" })}
+              className="rounded-xl text-[#94A3B8] hover:bg-white/[0.06] hover:text-white"
             >
               <LogOut className="h-4 w-4" />
-              <span>Sign out</span>
+              <span className="text-[13px]">Sign out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
