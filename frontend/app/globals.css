@@ -51,6 +51,34 @@
   --color-day-2: var(--day-2);
   --color-day-3: var(--day-3);
   --color-day-4: var(--day-4);
+
+  /* Luxury UWH brand colors */
+  --color-uwh-navy: #0F1A2E;
+  --color-uwh-navy-light: #1A2942;
+  --color-uwh-navy-muted: #2A3F5F;
+  --color-uwh-gold: #C9A84C;
+  --color-uwh-gold-light: #E8D48B;
+  --color-uwh-bg: #F8F6F1;
+  --color-uwh-surface: #FFFFFF;
+  --color-uwh-surface-warm: #FDFBF7;
+  --color-uwh-surface-hover: #F3F0E8;
+  --color-uwh-text-primary: #0F1A2E;
+  --color-uwh-text-secondary: #4A5568;
+  --color-uwh-text-muted: #718096;
+  --color-uwh-text-on-dark: #E2E8F0;
+  --color-uwh-text-on-dark-muted: #94A3B8;
+  --color-uwh-border-subtle: #E8E4DA;
+  --color-uwh-border-card: #EDE9E0;
+  --color-status-success: #059669;
+  --color-status-warning: #D97706;
+  --color-status-danger: #DC2626;
+  --color-status-info: #2563EB;
+  --color-status-live: #10B981;
+
+  /* Luxury font families */
+  --font-playfair: var(--font-playfair);
+  --font-dm-sans: var(--font-dm-sans);
+  --font-jetbrains: var(--font-jetbrains);
 }
 
 :root {
@@ -88,10 +116,39 @@
   --sidebar-ring: oklch(0.708 0 0);
   --swinfy: oklch(0.55 0.22 265);
   --uwh: oklch(0.55 0.18 160);
-  --day-1: oklch(0.58 0.2 255);
-  --day-2: oklch(0.6 0.18 160);
-  --day-3: oklch(0.55 0.22 300);
-  --day-4: oklch(0.7 0.18 80);
+  --day-1: #4338CA;
+  --day-2: #047857;
+  --day-3: #B45309;
+  --day-4: #B91C1C;
+
+  /* UWH Luxury palette */
+  --uwh-navy: #0F1A2E;
+  --uwh-navy-light: #1A2942;
+  --uwh-navy-muted: #2A3F5F;
+  --uwh-gold: #C9A84C;
+  --uwh-gold-light: #E8D48B;
+  --uwh-gold-muted: rgba(201, 168, 76, 0.1);
+  --uwh-bg: #F8F6F1;
+  --uwh-surface: #FFFFFF;
+  --uwh-surface-warm: #FDFBF7;
+  --uwh-surface-hover: #F3F0E8;
+  --uwh-text-primary: #0F1A2E;
+  --uwh-text-secondary: #4A5568;
+  --uwh-text-muted: #718096;
+  --uwh-text-on-dark: #E2E8F0;
+  --uwh-text-on-dark-muted: #94A3B8;
+  --uwh-border-subtle: #E8E4DA;
+  --uwh-border-card: #EDE9E0;
+  --shadow-card: 0 1px 3px rgba(15, 26, 46, 0.04), 0 1px 2px rgba(15, 26, 46, 0.02);
+  --shadow-card-hover: 0 10px 25px rgba(15, 26, 46, 0.06), 0 4px 10px rgba(15, 26, 46, 0.03);
+  --shadow-elevated: 0 20px 40px rgba(15, 26, 46, 0.08);
+  --shadow-gold: 0 4px 14px rgba(201, 168, 76, 0.15);
+
+  /* Refined day backgrounds */
+  --day-1-bg: #EEF2FF;
+  --day-2-bg: #ECFDF5;
+  --day-3-bg: #FFFBEB;
+  --day-4-bg: #FEF2F2;
 }
 
 .dark {
@@ -137,6 +194,42 @@
   }
 }
 
+/* ── UWH Luxury Animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.uwh-animate-in > * {
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+}
+.uwh-animate-in > *:nth-child(1) { animation-delay: 0.05s; }
+.uwh-animate-in > *:nth-child(2) { animation-delay: 0.1s; }
+.uwh-animate-in > *:nth-child(3) { animation-delay: 0.15s; }
+.uwh-animate-in > *:nth-child(4) { animation-delay: 0.2s; }
+.uwh-animate-in > *:nth-child(5) { animation-delay: 0.25s; }
+.uwh-animate-in > *:nth-child(6) { animation-delay: 0.3s; }
+.uwh-animate-in > *:nth-child(7) { animation-delay: 0.35s; }
+.uwh-animate-in > *:nth-child(8) { animation-delay: 0.4s; }
+
+@keyframes numberGlow {
+  0% { text-shadow: 0 0 0 transparent; }
+  50% { text-shadow: 0 0 20px rgba(201, 168, 76, 0.15); }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+
+@keyframes slideInFromTop {
+  from { opacity: 0; transform: translateY(-10px); max-height: 0; }
+  to { opacity: 1; transform: translateY(0); max-height: 200px; }
+}
+
+@keyframes goldShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── UWH Utility Classes ── */
 @layer utilities {
   .glass {
     background: rgba(15, 23, 42, 0.92);
@@ -153,5 +246,73 @@
     box-shadow:
       0 16px 48px rgba(0, 0, 0, 0.5),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .uwh-activity-new {
+    animation: slideInFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(201, 168, 76, 0.04);
+  }
+
+  .uwh-number-glow {
+    animation: numberGlow 2s ease-in-out;
+  }
+
+  /* UWH luxury card */
+  .uwh-card {
+    background: var(--uwh-surface);
+    border: 1px solid var(--uwh-border-card);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .uwh-card:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  /* UWH serif heading */
+  .uwh-heading {
+    font-family: var(--font-playfair), serif;
+    color: var(--uwh-text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  /* UWH body text */
+  .uwh-body {
+    font-family: var(--font-dm-sans), sans-serif;
+    color: var(--uwh-text-secondary);
+  }
+
+  /* UWH mono numbers */
+  .uwh-mono {
+    font-family: var(--font-jetbrains), monospace;
+  }
+
+  /* UWH label (small caps tracking) */
+  .uwh-label {
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--uwh-text-muted);
+  }
+
+  /* Gold accent line */
+  .uwh-gold-line {
+    position: relative;
+  }
+  .uwh-gold-line::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--uwh-gold);
+    transition: width 0.3s ease;
+  }
+  .uwh-gold-line:hover::after {
+    width: 100%;
   }
 }
