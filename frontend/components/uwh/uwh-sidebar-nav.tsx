@@ -96,18 +96,10 @@ export function UWHSidebarNav() {
           <Image
             src="/UWH_Logo.png"
             alt="UWH"
-            width={40}
-            height={40}
-            className="rounded-xl"
+            width={200}
+            height={50}
+            className="w-full brightness-0 invert"
           />
-          <div>
-            <p className="uwh-heading text-base font-semibold text-white">
-              AI Literacy Program
-            </p>
-            <p className="uwh-label text-[10px] text-[#94A3B8]" style={{ letterSpacing: "0.12em" }}>
-              Sponsor Dashboard
-            </p>
-          </div>
         </Link>
       </SidebarHeader>
 
