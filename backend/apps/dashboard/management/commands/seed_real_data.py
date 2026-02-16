@@ -103,65 +103,65 @@ CURRICULUM = [
 # ──────────────────────────────────────────────
 DISTRICTS = [
     "Hyderabad",
-    "Rangareddy",
-    "Medchal-Malkajgiri",
-    "Sangareddy",
-    "Nalgonda",
+    "Ranga Reddy",
+    "Medchal",
     "Karimnagar",
-    "Warangal",
+    "Mahbubnagar",
+    "Peddapally",
+    "Narayanpet",
 ]
 
 # ──────────────────────────────────────────────
-# 40 Schools — mapped to districts
+# 40 Schools — mapped to districts (from TGMREIS Circular)
 # ──────────────────────────────────────────────
 SCHOOLS = [
-    # Hyderabad (10)
-    {"name": "TMREIS Girls School, Nampally", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Chaderghat", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Mallepally", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Bahadurpura", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Shaikpet", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Karwan", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Misrigunj", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Talabkatta", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Dabeerpura", "district": "Hyderabad"},
-    {"name": "TMREIS Girls School, Golconda", "district": "Hyderabad"},
-    # Rangareddy (8)
-    {"name": "TMREIS Girls School, Shamshabad", "district": "Rangareddy"},
-    {"name": "TMREIS Girls School, Rajendranagar", "district": "Rangareddy"},
-    {"name": "TMREIS Girls School, Chevella", "district": "Rangareddy"},
-    {"name": "TMREIS Girls School, Ibrahimpatnam", "district": "Rangareddy"},
-    {"name": "TMREIS Girls School, Maheshwaram", "district": "Rangareddy"},
-    {"name": "TMREIS Girls School, Tandur", "district": "Rangareddy"},
-    {"name": "TMREIS Girls School, Shadnagar", "district": "Rangareddy"},
-    {"name": "TMREIS Girls School, Farooqnagar", "district": "Rangareddy"},
-    # Medchal-Malkajgiri (6)
-    {"name": "TMREIS Girls School, Medchal", "district": "Medchal-Malkajgiri"},
-    {"name": "TMREIS Girls School, Alwal", "district": "Medchal-Malkajgiri"},
-    {"name": "TMREIS Girls School, Kompally", "district": "Medchal-Malkajgiri"},
-    {"name": "TMREIS Girls School, Uppal", "district": "Medchal-Malkajgiri"},
-    {"name": "TMREIS Girls School, Malkajgiri", "district": "Medchal-Malkajgiri"},
-    {"name": "TMREIS Girls School, Boduppal", "district": "Medchal-Malkajgiri"},
-    # Sangareddy (5)
-    {"name": "TMREIS Girls School, Sangareddy", "district": "Sangareddy"},
-    {"name": "TMREIS Girls School, Zaheerabad", "district": "Sangareddy"},
-    {"name": "TMREIS Girls School, Narayankhed", "district": "Sangareddy"},
-    {"name": "TMREIS Girls School, Patancheru", "district": "Sangareddy"},
-    {"name": "TMREIS Girls School, Sadashivpet", "district": "Sangareddy"},
-    # Nalgonda (4)
-    {"name": "TMREIS Girls School, Nalgonda", "district": "Nalgonda"},
-    {"name": "TMREIS Girls School, Miryalaguda", "district": "Nalgonda"},
-    {"name": "TMREIS Girls School, Suryapet", "district": "Nalgonda"},
-    {"name": "TMREIS Girls School, Devarakonda", "district": "Nalgonda"},
+    # Hyderabad (19)
+    {"name": "TMREIS Bahadurpura G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Bahadurpura G-2", "district": "Hyderabad"},
+    {"name": "TMREIS Barkas G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Chandrayangutta G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Charminar G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Charminar G-2", "district": "Hyderabad"},
+    {"name": "TMREIS Saidabad G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Yakutpura G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Yakutpura G-2", "district": "Hyderabad"},
+    {"name": "TMREIS Asifnagar G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Asifnagar G-2", "district": "Hyderabad"},
+    {"name": "TMREIS Goshamahal G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Golconda G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Golconda G-2", "district": "Hyderabad"},
+    {"name": "TMREIS Jubilee Hills G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Khairtabad G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Musheerabad G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Sanathnagar G-1", "district": "Hyderabad"},
+    {"name": "TMREIS Secunderabad G-1", "district": "Hyderabad"},
+    # Ranga Reddy (5)
+    {"name": "TMREIS Rajendranagar G-1", "district": "Ranga Reddy"},
+    {"name": "TMREIS Hayathnagar Girls-1", "district": "Ranga Reddy"},
+    {"name": "TMREIS Ibrahimpatnam G-1", "district": "Ranga Reddy"},
+    {"name": "TMREIS Farooqnagar Girls-1", "district": "Ranga Reddy"},
+    {"name": "TMREIS Moinabad Girls-1", "district": "Ranga Reddy"},
+    # Medchal (5)
+    {"name": "TMREIS Balanagar Girls-1", "district": "Medchal"},
+    {"name": "TMREIS Qutbullapur Girls-1", "district": "Medchal"},
+    {"name": "TMREIS Medchal Girls-1", "district": "Medchal"},
+    {"name": "TMREIS Uppal Girls-1", "district": "Medchal"},
+    {"name": "TMREIS Malkajgiri Girls-1", "district": "Medchal"},
     # Karimnagar (4)
-    {"name": "TMREIS Girls School, Karimnagar", "district": "Karimnagar"},
-    {"name": "TMREIS Girls School, Jagtial", "district": "Karimnagar"},
-    {"name": "TMREIS Girls School, Peddapalli", "district": "Karimnagar"},
-    {"name": "TMREIS Girls School, Sircilla", "district": "Karimnagar"},
-    # Warangal (3)
-    {"name": "TMREIS Girls School, Warangal", "district": "Warangal"},
-    {"name": "TMREIS Girls School, Hanamkonda", "district": "Warangal"},
-    {"name": "TMREIS Girls School, Jangaon", "district": "Warangal"},
+    {"name": "TMREIS Karimnagar G-1", "district": "Karimnagar"},
+    {"name": "TMREIS Karimnagar G-2", "district": "Karimnagar"},
+    {"name": "TMREIS Choppadandi G-1", "district": "Karimnagar"},
+    {"name": "TMREIS Jammikunta G-1", "district": "Karimnagar"},
+    # Mahbubnagar (4)
+    {"name": "TMREIS Mahbubnagar G-1", "district": "Mahbubnagar"},
+    {"name": "TMREIS Mahbubnagar G-2", "district": "Mahbubnagar"},
+    {"name": "TMREIS Mahbubnagar G-3", "district": "Mahbubnagar"},
+    {"name": "TMREIS Jadcherla G-1", "district": "Mahbubnagar"},
+    # Peddapally (2)
+    {"name": "TMREIS Peddapalli G-1", "district": "Peddapally"},
+    {"name": "TMREIS Manthani G-1", "district": "Peddapally"},
+    # Narayanpet (1)
+    {"name": "TMREIS Makthal G-1", "district": "Narayanpet"},
 ]
 
 # ──────────────────────────────────────────────

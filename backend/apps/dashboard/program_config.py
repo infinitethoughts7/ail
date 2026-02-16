@@ -24,12 +24,12 @@ TOTAL_TARGET_STUDENTS = TOTAL_SCHOOLS * TARGET_STUDENTS_PER_SCHOOL  # 2,280
 # Districts
 DISTRICTS = [
     "Hyderabad",
-    "Rangareddy",
-    "Medchal-Malkajgiri",
-    "Sangareddy",
-    "Nalgonda",
+    "Ranga Reddy",
+    "Medchal",
     "Karimnagar",
-    "Warangal",
+    "Mahbubnagar",
+    "Peddapally",
+    "Narayanpet",
 ]
 
 # Day schedule mapping

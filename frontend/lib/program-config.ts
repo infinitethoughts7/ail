@@ -44,12 +44,12 @@ export const PROGRAM_SCHEDULE = [
 
 export const DISTRICTS = [
   "Hyderabad",
-  "Rangareddy",
-  "Medchal-Malkajgiri",
-  "Sangareddy",
-  "Nalgonda",
+  "Ranga Reddy",
+  "Medchal",
   "Karimnagar",
-  "Warangal",
+  "Mahbubnagar",
+  "Peddapally",
+  "Narayanpet",
 ] as const;
 
 export type District = (typeof DISTRICTS)[number];
