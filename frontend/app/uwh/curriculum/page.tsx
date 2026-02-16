@@ -2,13 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
 import { CURRICULUM_DAYS, getDayTheme } from "@/lib/constants";
 import type { Curriculum } from "@/lib/types";
-import { BookOpen, Target, Zap } from "lucide-react";
+import { Target, Zap } from "lucide-react";
 
 export default function CurriculumPage() {
   const { data: curriculum, isLoading } = useQuery<Curriculum[]>({
@@ -18,34 +16,38 @@ export default function CurriculumPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-4">
+      <div className="p-6 sm:p-8 space-y-6">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-48 rounded-xl" />
+          <Skeleton key={i} className="h-48 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      <div>
-        <h1 className="text-xl font-bold sm:text-2xl">Curriculum Journey</h1>
-        <p className="text-sm text-muted-foreground">
-          What exactly are students learning across the 4-day program?
+    <div className="p-5 sm:p-8 uwh-animate-in">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
+          Curriculum Journey
+        </h1>
+        <p className="mt-1 text-sm text-[#718096]">
+          The complete 4-day AI Literacy learning path
         </p>
       </div>
 
       {/* Visual Timeline */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
+      <div className="mb-8 flex items-center gap-3 overflow-x-auto pb-2">
         {CURRICULUM_DAYS.map((day, i) => (
           <div key={day.day} className="flex items-center">
             <div
-              className={`flex h-12 w-12 items-center justify-center rounded-full ${day.color} text-lg font-bold text-white`}
+              className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-white shadow-lg"
+              style={{ background: day.hex, boxShadow: `0 4px 14px ${day.hex}30` }}
             >
               {day.day}
             </div>
             {i < CURRICULUM_DAYS.length - 1 && (
-              <div className="h-0.5 w-8 bg-border" />
+              <div className="h-[2px] w-10" style={{ background: "var(--uwh-border-subtle)" }} />
             )}
           </div>
         ))}
@@ -60,48 +62,56 @@ export default function CurriculumPage() {
           const theme = getDayTheme(dayConfig.day);
 
           return (
-            <Card
+            <div
               key={dayConfig.day}
-              className={`border-2 ${theme.borderColor}`}
+              className="uwh-card overflow-hidden"
+              style={{ border: `2px solid ${theme.hex}15` }}
             >
-              <CardHeader className={`${theme.bgLight}`}>
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-lg ${theme.color} font-bold text-white`}
-                  >
-                    {dayConfig.day}
-                  </div>
-                  <div>
-                    <CardTitle className="text-base">
-                      {dayData?.title || dayConfig.label}
-                    </CardTitle>
-                    {dayData?.description && (
-                      <p className="text-sm text-muted-foreground">
-                        {dayData.description}
-                      </p>
-                    )}
-                  </div>
+              {/* Day header */}
+              <div
+                className="flex items-center gap-4 px-6 py-5"
+                style={{ background: theme.bgHex }}
+              >
+                <div
+                  className="flex h-12 w-12 items-center justify-center rounded-xl font-bold text-white"
+                  style={{ background: theme.hex, boxShadow: `0 4px 12px ${theme.hex}25` }}
+                >
+                  {dayConfig.day}
                 </div>
-              </CardHeader>
+                <div>
+                  <h2 className="uwh-heading text-lg font-semibold">
+                    {dayData?.title || dayConfig.label}
+                  </h2>
+                  {dayData?.description && (
+                    <p className="mt-0.5 text-sm text-[#718096]">
+                      {dayData.description}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-              {dayData && (
-                <CardContent className="pt-4">
+              {/* Day content */}
+              {dayData ? (
+                <div className="px-6 py-5">
                   <div className="grid gap-6 sm:grid-cols-2">
                     {/* Learning Objectives */}
                     {dayData.learning_objectives.length > 0 && (
                       <div>
-                        <div className="mb-2 flex items-center gap-1.5 text-sm font-semibold">
-                          <Target className="h-4 w-4 text-muted-foreground" />
-                          Learning Objectives
+                        <div className="mb-3 flex items-center gap-2">
+                          <Target className="h-4 w-4" style={{ color: theme.hex }} />
+                          <span className="uwh-label" style={{ color: theme.hex }}>
+                            Learning Objectives
+                          </span>
                         </div>
-                        <ul className="space-y-1.5">
+                        <ul className="space-y-2">
                           {dayData.learning_objectives.map((obj, i) => (
                             <li
                               key={i}
-                              className="flex items-start gap-2 text-sm text-muted-foreground"
+                              className="flex items-start gap-2.5 text-sm text-[#4A5568]"
                             >
                               <span
-                                className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${theme.color}`}
+                                className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                                style={{ background: theme.hex }}
                               />
                               {obj}
                             </li>
@@ -113,16 +123,22 @@ export default function CurriculumPage() {
                     {/* Activities */}
                     {dayData.activities.length > 0 && (
                       <div>
-                        <div className="mb-2 flex items-center gap-1.5 text-sm font-semibold">
-                          <Zap className="h-4 w-4 text-muted-foreground" />
-                          Activities
+                        <div className="mb-3 flex items-center gap-2">
+                          <Zap className="h-4 w-4" style={{ color: theme.hex }} />
+                          <span className="uwh-label" style={{ color: theme.hex }}>
+                            Activities
+                          </span>
                         </div>
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-2">
                           {dayData.activities.map((act, i) => (
                             <Badge
                               key={i}
-                              variant="outline"
-                              className={`${theme.bgLight} ${theme.textColor}`}
+                              className="rounded-lg border px-3 py-1.5 text-xs font-medium"
+                              style={{
+                                background: theme.bgHex,
+                                color: theme.hex,
+                                borderColor: `${theme.hex}20`,
+                              }}
                             >
                               {act}
                             </Badge>
@@ -131,17 +147,15 @@ export default function CurriculumPage() {
                       </div>
                     )}
                   </div>
-                </CardContent>
-              )}
-
-              {!dayData && (
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
+                </div>
+              ) : (
+                <div className="px-6 py-8 text-center">
+                  <p className="text-sm text-[#718096]">
                     Curriculum details not yet available.
                   </p>
-                </CardContent>
+                </div>
               )}
-            </Card>
+            </div>
           );
         })}
       </div>

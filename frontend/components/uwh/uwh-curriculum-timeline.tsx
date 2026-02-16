@@ -1,32 +1,44 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { CURRICULUM_DAYS } from "@/lib/constants";
 
 export function UWHCurriculumTimeline() {
   return (
-    <Card>
-      <CardContent className="px-4 py-4 sm:px-6">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+    <div
+      className="uwh-card overflow-hidden"
+      style={{ border: "1px solid var(--uwh-border-card)" }}
+    >
+      <div className="px-5 py-5 sm:px-6">
+        <div className="flex items-center gap-3 overflow-x-auto pb-1">
           {CURRICULUM_DAYS.map((day, i) => (
             <div key={day.day} className="flex items-center">
               <div
-                className={`flex flex-col items-center rounded-xl border-2 px-4 py-3 transition-all ${day.borderColor} ${day.bgLight} min-w-[120px]`}
+                className="flex min-w-[130px] flex-col items-center rounded-2xl border px-5 py-4 transition-all hover:-translate-y-0.5"
+                style={{
+                  background: day.bgHex,
+                  borderColor: `${day.hex}20`,
+                }}
               >
-                <span className={`text-lg font-bold ${day.textColor}`}>
+                <span
+                  className="uwh-heading text-lg font-bold"
+                  style={{ color: day.hex }}
+                >
                   {day.shortLabel}
                 </span>
-                <span className="mt-0.5 text-center text-[10px] text-muted-foreground">
+                <span className="mt-1 text-center text-[11px] text-[#718096]">
                   {day.label.split(": ")[1]}
                 </span>
               </div>
               {i < CURRICULUM_DAYS.length - 1 && (
-                <div className="mx-1 h-0.5 w-6 bg-border" />
+                <div
+                  className="mx-2 h-[2px] w-8"
+                  style={{ background: "var(--uwh-border-subtle)" }}
+                />
               )}
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUWHProjects } from "@/hooks/use-uwh-data";
@@ -11,9 +10,9 @@ export default function InnovationsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-4">
+      <div className="p-6 sm:p-8 space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-40 rounded-xl" />
+          <Skeleton key={i} className="h-40 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
         ))}
       </div>
     );
@@ -23,49 +22,57 @@ export default function InnovationsPage() {
   const approved = projects?.filter((p) => p.approval_status === "approved") || [];
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      <div>
-        <h1 className="text-xl font-bold sm:text-2xl">Student Innovations</h1>
-        <p className="text-sm text-muted-foreground">
-          What are students creating? See the real impact.
+    <div className="p-5 sm:p-8 uwh-animate-in">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
+          Student Innovations
+        </h1>
+        <p className="mt-1 text-sm text-[#718096]">
+          Showcasing real creativity and impact from the AI Literacy Program
         </p>
       </div>
 
       {/* Featured Projects */}
       {featured.length > 0 && (
-        <div>
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold">
-            <Star className="h-4 w-4 text-amber-500" /> Featured Projects
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-10">
+          <div className="mb-4 flex items-center gap-2">
+            <Star className="h-4 w-4 text-[#C9A84C]" />
+            <span className="uwh-label text-[#C9A84C]">Featured Projects</span>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((proj) => (
-              <Card
+              <div
                 key={proj.id}
-                className="border-2 border-amber-200 bg-amber-50/50"
+                className="uwh-card group overflow-hidden"
+                style={{
+                  border: "2px solid rgba(201, 168, 76, 0.2)",
+                  background: "linear-gradient(to bottom, rgba(201, 168, 76, 0.03), white)",
+                }}
               >
-                <CardContent className="p-4">
-                  <Badge className="mb-2 bg-amber-500 text-white">
+                <div className="p-5">
+                  <Badge className="mb-3 rounded-lg bg-[#C9A84C] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow-sm">
                     <Star className="mr-1 h-3 w-3" /> Featured
                   </Badge>
                   {proj.image_url && (
                     <img
                       src={proj.image_url}
                       alt={proj.title}
-                      className="mb-3 h-40 w-full rounded-lg object-cover"
+                      className="mb-4 h-44 w-full rounded-xl object-cover"
                     />
                   )}
-                  <h3 className="text-base font-semibold">{proj.title}</h3>
-                  <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <h3 className="uwh-heading text-base font-semibold">{proj.title}</h3>
+                  <div className="mt-2 flex items-center gap-1.5 text-xs text-[#718096]">
                     <User className="h-3 w-3" />
-                    {proj.student_name}
-                    {proj.student_grade && ` · Grade ${proj.student_grade}`}
-                    {proj.student_age && ` · Age ${proj.student_age}`}
+                    <span>{proj.student_name}</span>
+                    {proj.student_grade && <span>· Grade {proj.student_grade}</span>}
+                    {proj.student_age && <span>· Age {proj.student_age}</span>}
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-3 text-sm leading-relaxed text-[#4A5568]">
                     {proj.display_description}
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -74,42 +81,47 @@ export default function InnovationsPage() {
       {/* All Projects */}
       {approved.length > 0 && (
         <div>
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold">
-            <Lightbulb className="h-4 w-4" /> All Projects ({approved.length})
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mb-4 flex items-center gap-2">
+            <Lightbulb className="h-4 w-4 text-[#718096]" />
+            <span className="uwh-label">All Projects</span>
+            <span className="uwh-mono text-xs text-[#718096]">({approved.length})</span>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {approved.map((proj) => (
-              <Card key={proj.id}>
-                <CardContent className="p-4">
+              <div
+                key={proj.id}
+                className="uwh-card group overflow-hidden"
+                style={{ border: "1px solid var(--uwh-border-card)" }}
+              >
+                <div className="p-5">
                   {proj.image_url && (
                     <img
                       src={proj.image_url}
                       alt={proj.title}
-                      className="mb-3 h-36 w-full rounded-lg object-cover"
+                      className="mb-4 h-40 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                     />
                   )}
-                  <h3 className="text-sm font-semibold">{proj.title}</h3>
-                  <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <h3 className="uwh-heading text-sm font-semibold">{proj.title}</h3>
+                  <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#718096]">
                     <User className="h-3 w-3" />
-                    {proj.student_name}
-                    {proj.student_grade && ` · Grade ${proj.student_grade}`}
+                    <span>{proj.student_name}</span>
+                    {proj.student_grade && <span>· Grade {proj.student_grade}</span>}
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  <p className="mt-3 text-sm leading-relaxed text-[#4A5568]">
                     {proj.display_description}
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       )}
 
       {featured.length === 0 && approved.length === 0 && (
-        <Card>
-          <CardContent className="py-16 text-center text-sm text-muted-foreground">
-            No student projects available yet.
-          </CardContent>
-        </Card>
+        <div className="uwh-card py-20 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
+          <Lightbulb className="mx-auto mb-3 h-12 w-12 text-[#EDE9E0]" />
+          <p className="text-sm font-medium text-[#718096]">No student projects available yet.</p>
+        </div>
       )}
     </div>
   );

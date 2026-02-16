@@ -1,7 +1,6 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useUWHSummary, useUWHDistrictProgress, useUWHActivityFeed } from "@/hooks/use-uwh-data";
 import { UWHCurriculumTimeline } from "@/components/uwh/uwh-curriculum-timeline";
@@ -15,6 +14,7 @@ import {
   Users,
   BookOpen,
   MapPin,
+  ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,21 +25,22 @@ export default function UWHDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-4">
-        <Skeleton className="h-12 rounded-xl" />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="p-6 sm:p-8 space-y-6">
+        <Skeleton className="h-10 w-64 rounded-xl" style={{ background: "var(--uwh-border-subtle)" }} />
+        <Skeleton className="h-20 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-xl" />
+            <Skeleton key={i} className="h-28 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
           ))}
         </div>
       </div>
     );
   }
 
-  const bannerColors: Record<string, string> = {
-    green: "bg-emerald-500/10 border-emerald-500/30 text-emerald-700",
-    yellow: "bg-yellow-500/10 border-yellow-500/30 text-yellow-700",
-    red: "bg-red-500/10 border-red-500/30 text-red-700",
+  const bannerStyles: Record<string, { bg: string; border: string; text: string; dot: string }> = {
+    green: { bg: "bg-[#059669]/5", border: "border-[#059669]/20", text: "text-[#059669]", dot: "bg-[#10B981]" },
+    yellow: { bg: "bg-[#D97706]/5", border: "border-[#D97706]/20", text: "text-[#D97706]", dot: "bg-[#D97706]" },
+    red: { bg: "bg-[#DC2626]/5", border: "border-[#DC2626]/20", text: "text-[#DC2626]", dot: "bg-[#DC2626]" },
   };
 
   const kpiItems = summary?.kpis
@@ -54,68 +55,82 @@ export default function UWHDashboardPage() {
     : [];
 
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      <div>
-        <h1 className="text-xl font-bold sm:text-2xl">Program Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          How is the program going right now?
+    <div className="p-5 sm:p-8 uwh-animate-in">
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
+          Program Dashboard
+        </h1>
+        <p className="mt-1 text-sm text-[#718096]">
+          Real-time overview of the AI Literacy Program
         </p>
       </div>
 
       {/* Status Banner */}
-      {summary?.status_banner && (
-        <div
-          className={`rounded-xl border px-4 py-3 text-sm font-medium ${
-            bannerColors[summary.status_banner.color] || bannerColors.green
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span>{summary.status_banner.message}</span>
-            <Badge variant="outline" className="text-[10px]">
+      {summary?.status_banner && (() => {
+        const style = bannerStyles[summary.status_banner.color] || bannerStyles.green;
+        return (
+          <div
+            className={`mb-6 flex items-center gap-3 rounded-2xl border px-5 py-4 ${style.bg} ${style.border}`}
+          >
+            <span className={`h-2.5 w-2.5 animate-pulse rounded-full ${style.dot}`} />
+            <span className={`text-sm font-medium ${style.text}`}>
+              {summary.status_banner.message}
+            </span>
+            <Badge
+              className={`ml-auto border ${style.border} ${style.bg} ${style.text} text-[10px] font-semibold uppercase tracking-wider`}
+            >
               {summary.status_banner.status}
             </Badge>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
-      {/* Current Day Banner */}
-      <UWHCurriculumTimeline />
+      {/* Curriculum Timeline */}
+      <div className="mb-6">
+        <UWHCurriculumTimeline />
+      </div>
 
       {/* KPI Strip */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {kpiItems.map((kpi) => (
-          <Card key={kpi.label}>
-            <CardContent className="px-3 py-3 sm:px-4 sm:py-4">
-              <div className="flex items-center justify-between">
-                <p className="text-[11px] font-medium text-muted-foreground sm:text-xs">
-                  {kpi.label}
-                </p>
-                <kpi.icon className="h-4 w-4 text-muted-foreground" />
-              </div>
-              <p className="mt-1 text-2xl font-bold">{kpi.value}</p>
-            </CardContent>
-          </Card>
+          <div
+            key={kpi.label}
+            className="uwh-card group px-4 py-5 sm:px-5"
+            style={{ border: "1px solid var(--uwh-border-card)" }}
+          >
+            <div className="flex items-center justify-between">
+              <p className="uwh-label">{kpi.label}</p>
+              <kpi.icon className="h-4 w-4 text-[#718096]" />
+            </div>
+            <p className="uwh-mono uwh-number-glow mt-2 text-3xl font-bold text-[#0F1A2E]">
+              {kpi.value}
+            </p>
+          </div>
         ))}
       </div>
 
       {/* Quick overview grid */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* District Progress (compact) */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-semibold">
+        {/* District Progress */}
+        <div
+          className="uwh-card overflow-hidden"
+          style={{ border: "1px solid var(--uwh-border-card)" }}
+        >
+          <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: "var(--uwh-border-card)" }}>
+            <h2 className="uwh-heading text-base font-semibold">
               District Progress
-            </CardTitle>
+            </h2>
             <Link
               href="/uwh/districts"
-              className="text-xs text-primary hover:underline"
+              className="uwh-gold-line flex items-center gap-1 text-xs font-medium text-[#C9A84C] transition-colors hover:text-[#B89840]"
             >
-              View all
+              View all <ArrowRight className="h-3 w-3" />
             </Link>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="p-5">
             {districts && districts.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {districts.slice(0, 5).map((d) => {
                   const pct =
                     d.total_schools > 0
@@ -123,64 +138,68 @@ export default function UWHDashboardPage() {
                       : 0;
                   return (
                     <div key={d.id}>
-                      <div className="mb-1 flex justify-between text-sm">
-                        <span className="font-medium">{d.name}</span>
-                        <span className="text-xs text-muted-foreground">
+                      <div className="mb-1.5 flex justify-between">
+                        <span className="text-sm font-medium text-[#0F1A2E]">{d.name}</span>
+                        <span className="uwh-mono text-xs text-[#718096]">
                           {d.completed}/{d.total_schools}
                         </span>
                       </div>
-                      <Progress value={pct} className="h-2" />
+                      <Progress value={pct} className="h-2 rounded-full" />
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">No data yet.</p>
+              <p className="py-8 text-center text-sm text-[#718096]">No district data yet.</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        {/* Recent Activity (compact) */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-semibold">
+        {/* Recent Activity */}
+        <div
+          className="uwh-card overflow-hidden"
+          style={{ border: "1px solid var(--uwh-border-card)" }}
+        >
+          <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: "var(--uwh-border-card)" }}>
+            <h2 className="uwh-heading text-base font-semibold">
               Recent Activity
-            </CardTitle>
+            </h2>
             <Link
               href="/uwh/activity"
-              className="text-xs text-primary hover:underline"
+              className="uwh-gold-line flex items-center gap-1 text-xs font-medium text-[#C9A84C] transition-colors hover:text-[#B89840]"
             >
-              View all
+              View all <ArrowRight className="h-3 w-3" />
             </Link>
-          </CardHeader>
-          <CardContent>
+          </div>
+          <div className="p-5">
             {activities && activities.length > 0 ? (
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {activities.slice(0, 8).map((a) => (
                   <div
                     key={a.id}
-                    className="border-b pb-2 last:border-0 last:pb-0"
+                    className="border-b pb-3 last:border-0 last:pb-0"
+                    style={{ borderColor: "var(--uwh-border-subtle)" }}
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm font-medium leading-tight">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm font-medium leading-tight text-[#0F1A2E]">
                         {a.title}
                       </p>
-                      <Badge variant="outline" className="shrink-0 text-[10px]">
+                      <Badge className="shrink-0 rounded-md border border-[#EDE9E0] bg-[#FDFBF7] px-2 py-0.5 text-[10px] font-medium text-[#718096]">
                         {ACTIVITY_TYPE_LABELS[a.activity_type] ||
                           a.activity_type.replace(/_/g, " ")}
                       </Badge>
                     </div>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    <p className="uwh-mono mt-1 text-[11px] text-[#718096]">
                       {timeAgo(a.timestamp)}
                     </p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">No activity yet.</p>
+              <p className="py-8 text-center text-sm text-[#718096]">No activity yet.</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
