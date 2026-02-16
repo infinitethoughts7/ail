@@ -99,7 +99,9 @@ def summary(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def district_list(request):
-    districts = District.objects.annotate(school_count=Count("schools"))
+    districts = District.objects.annotate(
+        school_count=Count("schools"),
+    ).order_by("-school_count", "name")
     return Response(DistrictSerializer(districts, many=True).data)
 
 
@@ -631,7 +633,7 @@ def uwh_district_progress(request):
         total_schools=Count("schools"),
         completed=Count("schools", filter=Q(schools__status="completed")),
         in_progress=Count("schools", filter=Q(schools__status="in_progress")),
-    )
+    ).order_by("-total_schools", "name")
     return Response([
         {
             "id": str(d.id),
