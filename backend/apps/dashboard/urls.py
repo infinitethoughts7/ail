@@ -10,10 +10,16 @@ urlpatterns = [
     path("curriculum/", views.curriculum_list),
 
     # Trainer
+    path("trainer/profile/", views.trainer_profile),
     path("trainer/submissions/", views.trainer_submissions),
     path("trainer/submit/", views.trainer_submit),
     path("trainer/submissions/<uuid:pk>/", views.trainer_submission_detail),
     path("trainer/submissions/<uuid:submission_pk>/projects/", views.trainer_add_project),
+    path("trainer/students/", views.trainer_students),
+    path("trainer/students/add/", views.trainer_add_student),
+    path("trainer/students/<uuid:pk>/", views.trainer_update_student),
+    path("trainer/students/<uuid:pk>/delete/", views.trainer_delete_student),
+    path("trainer/projects/", views.trainer_projects),
 
     # Swinfy — Verification Queue
     path("swinfy/submissions/", views.swinfy_submissions),

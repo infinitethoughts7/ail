@@ -11,6 +11,9 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.SPONSOR)
+    profile_photo = models.ImageField(
+        upload_to="profile_photos/", blank=True, null=True
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

@@ -15,6 +15,7 @@ from .models import (
     ProjectHighlight,
     ActivityLog,
     UWHControl,
+    Student,
 )
 from .permissions import IsAdmin, IsTrainer, IsSponsor
 from .serializers import (
@@ -29,6 +30,9 @@ from .serializers import (
     ProjectHighlightSerializer,
     ActivityLogSerializer,
     UWHControlSerializer,
+    StudentSerializer,
+    StudentCreateSerializer,
+    TrainerProfileSerializer,
 )
 
 
@@ -75,12 +79,16 @@ def summary(request):
 
     elif role == "trainer":
         subs = Submission.objects.filter(trainer=request.user)
+        trainer_schools = School.objects.filter(assigned_trainer=request.user)
         return Response({
-            "assigned_schools": School.objects.filter(
-                assigned_trainer=request.user).count(),
+            "assigned_schools": trainer_schools.count(),
             "submissions_count": subs.count(),
             "verified_count": subs.filter(status="verified").count(),
             "flagged_count": subs.filter(status="flagged").count(),
+            "student_count": Student.objects.filter(
+                school__in=trainer_schools).count(),
+            "project_count": ProjectHighlight.objects.filter(
+                submission__trainer=request.user).count(),
         })
 
     return Response({
@@ -118,9 +126,6 @@ def school_list(request):
     trainer = request.query_params.get("trainer")
     if trainer:
         qs = qs.filter(assigned_trainer_id=trainer)
-    # Trainers only see their own schools
-    if request.user.role == "trainer":
-        qs = qs.filter(assigned_trainer=request.user)
     return Response(SchoolListSerializer(qs, many=True).data)
 
 
@@ -226,6 +231,110 @@ def trainer_add_project(request, submission_pk):
     serializer.is_valid(raise_exception=True)
     serializer.save(submission=sub)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# ─────────────────────────────────────────
+#  TRAINER: Profile
+# ─────────────────────────────────────────
+
+
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated, IsTrainer])
+@parser_classes([MultiPartParser, FormParser])
+def trainer_profile(request):
+    if request.method == "GET":
+        serializer = TrainerProfileSerializer(
+            request.user, context={"request": request}
+        )
+        return Response(serializer.data)
+
+    # PATCH — update profile
+    serializer = TrainerProfileSerializer(
+        request.user, data=request.data, partial=True, context={"request": request}
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
+
+
+# ─────────────────────────────────────────
+#  TRAINER: Students
+# ─────────────────────────────────────────
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_students(request):
+    school = School.objects.filter(assigned_trainer=request.user).first()
+    if not school:
+        return Response([])
+    students = Student.objects.filter(school=school)
+    return Response(StudentSerializer(students, many=True).data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_add_student(request):
+    school = School.objects.filter(assigned_trainer=request.user).first()
+    if not school:
+        return Response(
+            {"detail": "No school assigned to this trainer"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    serializer = StudentCreateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save(school=school, added_by=request.user)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_update_student(request, pk):
+    try:
+        student = Student.objects.get(
+            pk=pk, school__assigned_trainer=request.user
+        )
+    except Student.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = StudentCreateSerializer(
+        student, data=request.data, partial=True
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(StudentSerializer(student).data)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_delete_student(request, pk):
+    try:
+        student = Student.objects.get(
+            pk=pk, school__assigned_trainer=request.user
+        )
+    except Student.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    student.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# ─────────────────────────────────────────
+#  TRAINER: Projects
+# ─────────────────────────────────────────
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_projects(request):
+    projects = ProjectHighlight.objects.filter(
+        submission__trainer=request.user
+    ).select_related("submission__school")
+    return Response(
+        ProjectHighlightSerializer(
+            projects, many=True, context={"request": request}
+        ).data
+    )
 
 
 # ─────────────────────────────────────────

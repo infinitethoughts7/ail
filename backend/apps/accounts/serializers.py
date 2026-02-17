@@ -16,6 +16,17 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_photo_url = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ["id", "email", "username", "role"]
+        fields = ["id", "email", "username", "role", "profile_photo", "profile_photo_url"]
+        read_only_fields = ["id", "email", "role"]
+
+    def get_profile_photo_url(self, obj):
+        if obj.profile_photo:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(obj.profile_photo.url)
+            return obj.profile_photo.url
+        return None

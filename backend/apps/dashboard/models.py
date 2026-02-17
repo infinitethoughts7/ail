@@ -30,6 +30,7 @@ class School(models.Model):
     address = models.TextField(blank=True)
     principal_name = models.CharField(max_length=255, blank=True)
     principal_phone = models.CharField(max_length=20, blank=True)
+    principal_email = models.EmailField(blank=True)
     total_students = models.IntegerField(default=0)
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.NOT_STARTED
@@ -51,6 +52,32 @@ class School(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.district.name})"
+
+
+class Student(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    age = models.IntegerField(blank=True, null=True)
+    grade = models.CharField(max_length=20, blank=True)
+    school = models.ForeignKey(
+        "School", on_delete=models.CASCADE, related_name="students"
+    )
+    added_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="added_students",
+    )
+    parent_name = models.CharField(max_length=255, blank=True)
+    parent_phone = models.CharField(max_length=20, blank=True)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return f"{self.name} ({self.school.name})"
 
 
 class Curriculum(models.Model):
@@ -98,6 +125,15 @@ class Submission(models.Model):
     challenges = models.TextField(blank=True)
     attendance_file = models.FileField(
         upload_to="attendance/", blank=True, null=True
+    )
+
+    # --- Expenses ---
+    expense_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
+    expense_notes = models.TextField(blank=True)
+    expense_receipt = models.FileField(
+        upload_to="expense_receipts/", blank=True, null=True
     )
 
     # --- Status & Review ---

@@ -17,7 +17,7 @@ import {
 import { useSchools, useCurriculum, useSubmitSession } from "@/hooks/use-trainer-data";
 import { CURRICULUM_DAYS } from "@/lib/constants";
 import { toast } from "sonner";
-import { Camera, X, Upload, Loader2, Clock, MapPin, Users } from "lucide-react";
+import { Camera, X, Upload, Loader2, Clock, MapPin, Users, IndianRupee, Receipt } from "lucide-react";
 
 const MAX_PHOTOS = 5;
 const MIN_PHOTOS = 3;
@@ -25,6 +25,7 @@ const MIN_PHOTOS = 3;
 export function SubmissionForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const receiptInputRef = useRef<HTMLInputElement>(null);
 
   const { data: schools } = useSchools();
   const { data: curriculum } = useCurriculum();
@@ -39,6 +40,10 @@ export function SubmissionForm() {
   const [challenges, setChallenges] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [expenseAmount, setExpenseAmount] = useState("");
+  const [expenseNotes, setExpenseNotes] = useState("");
+  const [expenseReceipt, setExpenseReceipt] = useState<File | null>(null);
+  const [receiptName, setReceiptName] = useState("");
 
   const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -102,6 +107,10 @@ export function SubmissionForm() {
     formData.append("challenges", challenges);
 
     photos.forEach((photo) => formData.append("photos", photo));
+
+    if (expenseAmount) formData.append("expense_amount", expenseAmount);
+    if (expenseNotes) formData.append("expense_notes", expenseNotes);
+    if (expenseReceipt) formData.append("expense_receipt", expenseReceipt);
 
     submit.mutate(formData, {
       onSuccess: () => {
@@ -328,6 +337,86 @@ export function SubmissionForm() {
               onChange={(e) => setChallenges(e.target.value)}
               placeholder="Any issues faced..."
               rows={2}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Step 5: Expenses (optional) */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-semibold">
+            Expenses <span className="font-normal text-muted-foreground">(optional)</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div>
+            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
+              <IndianRupee className="h-3.5 w-3.5 text-muted-foreground" />
+              Amount
+            </Label>
+            <Input
+              type="number"
+              value={expenseAmount}
+              onChange={(e) => setExpenseAmount(e.target.value)}
+              placeholder="e.g. 500"
+              min={0}
+              step="0.01"
+              className="h-11"
+            />
+          </div>
+          <div>
+            <Label className="mb-1.5 block text-sm">Expense Notes</Label>
+            <Textarea
+              value={expenseNotes}
+              onChange={(e) => setExpenseNotes(e.target.value)}
+              placeholder="Travel, food, materials..."
+              rows={2}
+            />
+          </div>
+          <div>
+            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
+              <Receipt className="h-3.5 w-3.5 text-muted-foreground" />
+              Receipt
+            </Label>
+            {expenseReceipt ? (
+              <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
+                <Receipt className="h-4 w-4 text-muted-foreground" />
+                <span className="flex-1 truncate text-sm">{receiptName}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExpenseReceipt(null);
+                    setReceiptName("");
+                    if (receiptInputRef.current) receiptInputRef.current.value = "";
+                  }}
+                  className="rounded-full p-1 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => receiptInputRef.current?.click()}
+                className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground transition-colors hover:border-muted-foreground/40 active:bg-muted/50"
+              >
+                <Upload className="h-4 w-4" />
+                Upload Receipt
+              </button>
+            )}
+            <input
+              ref={receiptInputRef}
+              type="file"
+              accept="image/*,.pdf"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setExpenseReceipt(file);
+                  setReceiptName(file.name);
+                }
+              }}
+              className="hidden"
             />
           </div>
         </CardContent>

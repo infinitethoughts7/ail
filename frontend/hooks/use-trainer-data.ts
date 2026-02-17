@@ -7,6 +7,8 @@ import type {
   School,
   Curriculum,
   ProjectHighlight,
+  TrainerProfile,
+  Student,
 } from "@/lib/types";
 
 export function useTrainerSummary() {
@@ -74,5 +76,89 @@ export function useAddProject() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["trainer"] });
     },
+  });
+}
+
+// --- Profile ---
+
+export function useTrainerProfile() {
+  return useQuery<TrainerProfile>({
+    queryKey: ["trainer", "profile"],
+    queryFn: () =>
+      api.get("/api/dashboard/trainer/profile/").then((r) => r.data),
+  });
+}
+
+export function useUpdateTrainerProfile() {
+  const qc = useQueryClient();
+  return useMutation<TrainerProfile, Error, FormData>({
+    mutationFn: (formData) =>
+      api
+        .patch("/api/dashboard/trainer/profile/", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "profile"] });
+    },
+  });
+}
+
+// --- Students ---
+
+export function useTrainerStudents() {
+  return useQuery<Student[]>({
+    queryKey: ["trainer", "students"],
+    queryFn: () =>
+      api.get("/api/dashboard/trainer/students/").then((r) => r.data),
+  });
+}
+
+export function useAddStudent() {
+  const qc = useQueryClient();
+  return useMutation<Student, Error, Record<string, string>>({
+    mutationFn: (data) =>
+      api
+        .post("/api/dashboard/trainer/students/add/", data)
+        .then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "students"] });
+      qc.invalidateQueries({ queryKey: ["trainer", "summary"] });
+    },
+  });
+}
+
+export function useUpdateStudent() {
+  const qc = useQueryClient();
+  return useMutation<Student, Error, { id: string; data: Record<string, string> }>({
+    mutationFn: ({ id, data }) =>
+      api
+        .patch(`/api/dashboard/trainer/students/${id}/`, data)
+        .then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "students"] });
+    },
+  });
+}
+
+export function useDeleteStudent() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) =>
+      api.delete(`/api/dashboard/trainer/students/${id}/delete/`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "students"] });
+      qc.invalidateQueries({ queryKey: ["trainer", "summary"] });
+    },
+  });
+}
+
+// --- Projects ---
+
+export function useTrainerProjects() {
+  return useQuery<ProjectHighlight[]>({
+    queryKey: ["trainer", "projects"],
+    queryFn: () =>
+      api.get("/api/dashboard/trainer/projects/").then((r) => r.data),
   });
 }

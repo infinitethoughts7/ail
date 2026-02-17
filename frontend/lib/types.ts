@@ -139,6 +139,38 @@ export interface UWHControl {
   updated_at: string;
 }
 
+// --- Student ---
+export interface Student {
+  id: string;
+  name: string;
+  age: number | null;
+  grade: string;
+  school: string;
+  school_name: string;
+  parent_name: string;
+  parent_phone: string;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// --- Trainer Profile ---
+export interface TrainerProfile {
+  id: string;
+  email: string;
+  username: string;
+  profile_photo: string | null;
+  profile_photo_url: string | null;
+  assigned_school: {
+    id: string;
+    name: string;
+    district_name: string;
+    status: string;
+    total_students: number;
+    total_days: number;
+  } | null;
+}
+
 // --- Summary responses (role-branched) ---
 export interface AdminSummary {
   total_schools: number;
@@ -155,6 +187,8 @@ export interface TrainerSummary {
   submissions_count: number;
   verified_count: number;
   flagged_count: number;
+  student_count: number;
+  project_count: number;
 }
 
 export interface SponsorSummary {

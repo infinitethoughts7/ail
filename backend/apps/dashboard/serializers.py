@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from .models import (
     District,
     School,
@@ -8,7 +9,10 @@ from .models import (
     ProjectHighlight,
     ActivityLog,
     UWHControl,
+    Student,
 )
+
+User = get_user_model()
 
 
 class DistrictSerializer(serializers.ModelSerializer):
@@ -147,7 +151,8 @@ class SubmissionCreateSerializer(serializers.ModelSerializer):
         fields = [
             "school", "day_number", "curriculum", "student_count",
             "reached_at", "topics_covered", "trainer_notes", "challenges",
-            "attendance_file",
+            "attendance_file", "expense_amount", "expense_notes",
+            "expense_receipt",
         ]
 
 
@@ -169,3 +174,57 @@ class UWHControlSerializer(serializers.ModelSerializer):
             "status", "status_message", "status_color",
             "financial_summary", "updated_at",
         ]
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    school_name = serializers.CharField(source="school.name", read_only=True)
+
+    class Meta:
+        model = Student
+        fields = [
+            "id", "name", "age", "grade", "school", "school_name",
+            "parent_name", "parent_phone", "notes", "created_at", "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class StudentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = [
+            "name", "age", "grade", "parent_name", "parent_phone", "notes",
+        ]
+
+
+class TrainerProfileSerializer(serializers.ModelSerializer):
+    profile_photo_url = serializers.SerializerMethodField()
+    assigned_school = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "id", "email", "username", "profile_photo",
+            "profile_photo_url", "assigned_school",
+        ]
+        read_only_fields = ["id", "email"]
+
+    def get_profile_photo_url(self, obj):
+        if obj.profile_photo:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(obj.profile_photo.url)
+            return obj.profile_photo.url
+        return None
+
+    def get_assigned_school(self, obj):
+        school = School.objects.filter(assigned_trainer=obj).first()
+        if school:
+            return {
+                "id": str(school.id),
+                "name": school.name,
+                "district_name": school.district.name,
+                "status": school.status,
+                "total_students": school.total_students,
+                "total_days": school.total_days,
+            }
+        return None
