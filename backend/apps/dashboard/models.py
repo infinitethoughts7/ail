@@ -91,6 +91,7 @@ class Submission(models.Model):
     curriculum = models.ForeignKey(
         Curriculum, on_delete=models.SET_NULL, null=True, blank=True
     )
+    reached_at = models.TimeField(blank=True, null=True)
     student_count = models.IntegerField(default=0)
     topics_covered = models.JSONField(default=list, blank=True)
     trainer_notes = models.TextField(blank=True)

@@ -146,7 +146,7 @@ class SubmissionCreateSerializer(serializers.ModelSerializer):
         model = Submission
         fields = [
             "school", "day_number", "curriculum", "student_count",
-            "topics_covered", "trainer_notes", "challenges",
+            "reached_at", "topics_covered", "trainer_notes", "challenges",
             "attendance_file",
         ]
 

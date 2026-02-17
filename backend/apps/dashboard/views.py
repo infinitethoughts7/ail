@@ -171,18 +171,18 @@ def trainer_submit(request):
         submitted_at=timezone.now(),
     )
 
-    # Handle photo uploads
+    # Handle photo uploads (min 3, max 5)
     photos = request.FILES.getlist("photos")
     if len(photos) < 3:
         sub.delete()
         return Response(
-            {"error": "Minimum 3 photos required"},
+            {"detail": "Minimum 3 photos required"},
             status=status.HTTP_400_BAD_REQUEST,
         )
-    if len(photos) > 12:
+    if len(photos) > 5:
         sub.delete()
         return Response(
-            {"error": "Maximum 12 photos allowed"},
+            {"detail": "Maximum 5 photos allowed"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 

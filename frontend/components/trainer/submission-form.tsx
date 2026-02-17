@@ -14,11 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { useSchools, useCurriculum, useSubmitSession } from "@/hooks/use-trainer-data";
-import { getDayTheme, CURRICULUM_DAYS } from "@/lib/constants";
+import { CURRICULUM_DAYS } from "@/lib/constants";
 import { toast } from "sonner";
-import { Camera, X, Upload, Loader2 } from "lucide-react";
+import { Camera, X, Upload, Loader2, Clock, MapPin, Users } from "lucide-react";
+
+const MAX_PHOTOS = 5;
+const MIN_PHOTOS = 3;
 
 export function SubmissionForm() {
   const router = useRouter();
@@ -30,6 +32,7 @@ export function SubmissionForm() {
 
   const [schoolId, setSchoolId] = useState("");
   const [dayNumber, setDayNumber] = useState("");
+  const [reachedAt, setReachedAt] = useState("");
   const [studentCount, setStudentCount] = useState("");
   const [topicsCovered, setTopicsCovered] = useState("");
   const [trainerNotes, setTrainerNotes] = useState("");
@@ -39,18 +42,24 @@ export function SubmissionForm() {
 
   const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (photos.length + files.length > 12) {
-      toast.error("Maximum 12 photos allowed");
+    const remaining = MAX_PHOTOS - photos.length;
+
+    if (remaining <= 0) {
+      toast.error(`Maximum ${MAX_PHOTOS} photos allowed`);
       return;
     }
 
-    const newPhotos = [...photos, ...files];
-    setPhotos(newPhotos);
+    const toAdd = files.slice(0, remaining);
+    if (files.length > remaining) {
+      toast.info(`Only ${remaining} more photo${remaining === 1 ? "" : "s"} allowed, added first ${toAdd.length}`);
+    }
 
-    const newPreviews = files.map((f) => URL.createObjectURL(f));
-    setPhotoPreviews((prev) => [...prev, ...newPreviews]);
+    setPhotos((prev) => [...prev, ...toAdd]);
+    setPhotoPreviews((prev) => [
+      ...prev,
+      ...toAdd.map((f) => URL.createObjectURL(f)),
+    ]);
 
-    // Reset input
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -60,20 +69,23 @@ export function SubmissionForm() {
     setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const canSubmit =
+    schoolId && dayNumber && reachedAt && studentCount && photos.length >= MIN_PHOTOS && !submit.isPending;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (photos.length < 3) {
-      toast.error("Please upload at least 3 photos");
+    if (photos.length < MIN_PHOTOS) {
+      toast.error(`Please upload at least ${MIN_PHOTOS} photos`);
       return;
     }
 
     const formData = new FormData();
     formData.append("school", schoolId);
     formData.append("day_number", dayNumber);
+    formData.append("reached_at", reachedAt);
     formData.append("student_count", studentCount);
 
-    // Match curriculum if available
     const matchedCurriculum = curriculum?.find(
       (c) => c.day_number === parseInt(dayNumber)
     );
@@ -81,19 +93,15 @@ export function SubmissionForm() {
       formData.append("curriculum", matchedCurriculum.id);
     }
 
-    // Topics as JSON array
     const topics = topicsCovered
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean);
     formData.append("topics_covered", JSON.stringify(topics));
-
     formData.append("trainer_notes", trainerNotes);
     formData.append("challenges", challenges);
 
-    photos.forEach((photo) => {
-      formData.append("photos", photo);
-    });
+    photos.forEach((photo) => formData.append("photos", photo));
 
     submit.mutate(formData, {
       onSuccess: () => {
@@ -109,111 +117,133 @@ export function SubmissionForm() {
     });
   };
 
-  const selectedDayTheme = dayNumber ? getDayTheme(parseInt(dayNumber)) : null;
+  const selectedDay = dayNumber
+    ? CURRICULUM_DAYS.find((d) => d.day === parseInt(dayNumber))
+    : null;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Day Selector */}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Step 1: Select Day */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-semibold">Curriculum Day</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-semibold">Select Day</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {CURRICULUM_DAYS.map((day) => (
-              <button
-                key={day.day}
-                type="button"
-                onClick={() => setDayNumber(day.day.toString())}
-                className={`rounded-xl border-2 p-3 text-center transition-all ${
-                  dayNumber === day.day.toString()
-                    ? `${day.borderColor} ${day.bgLight} ring-2 ring-offset-1`
-                    : "border-border hover:border-muted-foreground/30"
-                }`}
-              >
-                <span className={`text-lg font-bold ${day.textColor}`}>
-                  {day.shortLabel}
-                </span>
-                <p className="mt-0.5 text-[10px] text-muted-foreground">
-                  {day.label.split(": ")[1]}
-                </p>
-              </button>
-            ))}
+          <div className="grid grid-cols-4 gap-2">
+            {CURRICULUM_DAYS.map((day) => {
+              const isSelected = dayNumber === day.day.toString();
+              return (
+                <button
+                  key={day.day}
+                  type="button"
+                  onClick={() => setDayNumber(day.day.toString())}
+                  className={`rounded-xl border-2 px-2 py-3 text-center transition-all ${
+                    isSelected
+                      ? `border-[${day.hex}] bg-[${day.bgHex}]`
+                      : "border-border hover:border-muted-foreground/30"
+                  }`}
+                  style={
+                    isSelected
+                      ? { borderColor: day.hex, backgroundColor: day.bgHex }
+                      : undefined
+                  }
+                >
+                  <span
+                    className="text-base font-bold"
+                    style={isSelected ? { color: day.hex } : undefined}
+                  >
+                    Day {day.day}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+          {selectedDay && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {selectedDay.label}
+            </p>
+          )}
         </CardContent>
       </Card>
 
-      {/* School & Student Count */}
+      {/* Step 2: School, Time, Students */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle className="text-sm font-semibold">Session Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* School */}
           <div>
-            <Label className="mb-1.5 block text-sm">School</Label>
+            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
+              <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+              School
+            </Label>
             <Select value={schoolId} onValueChange={setSchoolId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a school" />
+              <SelectTrigger className="h-11">
+                <SelectValue placeholder="Select your school" />
               </SelectTrigger>
               <SelectContent>
                 {schools?.map((school) => (
                   <SelectItem key={school.id} value={school.id}>
-                    {school.name} ({school.district_name})
+                    {school.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
+          {/* Reached Time */}
           <div>
-            <Label className="mb-1.5 block text-sm">Student Count</Label>
+            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
+              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+              Reached School At
+            </Label>
+            <Input
+              type="time"
+              value={reachedAt}
+              onChange={(e) => setReachedAt(e.target.value)}
+              required
+              className="h-11"
+            />
+          </div>
+
+          {/* Student Count */}
+          <div>
+            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
+              <Users className="h-3.5 w-3.5 text-muted-foreground" />
+              Students Present
+            </Label>
             <Input
               type="number"
               value={studentCount}
               onChange={(e) => setStudentCount(e.target.value)}
-              placeholder="Number of students"
+              placeholder="e.g. 57"
               min={1}
               required
-            />
-          </div>
-
-          <div>
-            <Label className="mb-1.5 block text-sm">
-              Topics Covered (comma-separated)
-            </Label>
-            <Input
-              value={topicsCovered}
-              onChange={(e) => setTopicsCovered(e.target.value)}
-              placeholder="AI basics, Machine learning, ..."
+              className="h-11"
             />
           </div>
         </CardContent>
       </Card>
 
-      {/* Photos */}
+      {/* Step 3: Photos */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-semibold">
-              Photos ({photos.length}/12)
+              Photos ({photos.length}/{MAX_PHOTOS})
             </CardTitle>
-            {selectedDayTheme && (
-              <Badge
-                variant="outline"
-                className={`${selectedDayTheme.bgLight} ${selectedDayTheme.textColor}`}
-              >
-                Min 3 required
-              </Badge>
-            )}
+            <span className="text-[11px] text-muted-foreground">
+              Min {MIN_PHOTOS}, Max {MAX_PHOTOS}
+            </span>
           </div>
         </CardHeader>
         <CardContent>
-          {/* Photo grid */}
-          <div className="mb-3 grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
             {photoPreviews.map((preview, i) => (
               <div
                 key={i}
-                className="group relative aspect-square overflow-hidden rounded-lg border"
+                className="group relative aspect-square overflow-hidden rounded-xl border"
               >
                 <img
                   src={preview}
@@ -223,23 +253,26 @@ export function SubmissionForm() {
                 <button
                   type="button"
                   onClick={() => removePhoto(i)}
-                  className="absolute right-1 top-1 rounded-full bg-black/50 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  className="absolute right-1.5 top-1.5 rounded-full bg-black/60 p-1 text-white transition-opacity active:bg-black/80"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-3.5 w-3.5" />
                 </button>
+                <span className="absolute bottom-1.5 left-1.5 rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  {i + 1}
+                </span>
               </div>
             ))}
 
-            {photos.length < 12 && (
+            {photos.length < MAX_PHOTOS && (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex aspect-square items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 text-muted-foreground transition-colors hover:border-muted-foreground/50 hover:text-muted-foreground/70"
+                className="flex aspect-square flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors active:border-muted-foreground/50 active:bg-muted/50 hover:border-muted-foreground/40"
               >
-                <div className="text-center">
-                  <Camera className="mx-auto h-6 w-6" />
-                  <span className="mt-1 block text-[10px]">Add Photo</span>
-                </div>
+                <Camera className="h-6 w-6" />
+                <span className="mt-1 text-[10px] font-medium">
+                  Add
+                </span>
               </button>
             )}
           </div>
@@ -251,29 +284,41 @@ export function SubmissionForm() {
             multiple
             onChange={handlePhotoAdd}
             className="hidden"
+            capture="environment"
           />
 
-          {photos.length < 3 && (
-            <p className="text-xs text-orange-600">
-              Please upload at least 3 photos to submit.
+          {photos.length < MIN_PHOTOS && (
+            <p className="mt-2 text-xs text-orange-600">
+              Upload at least {MIN_PHOTOS - photos.length} more photo{MIN_PHOTOS - photos.length !== 1 ? "s" : ""}
             </p>
           )}
         </CardContent>
       </Card>
 
-      {/* Notes */}
+      {/* Step 4: Notes (optional) */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-semibold">Notes</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-semibold">
+            Notes <span className="font-normal text-muted-foreground">(optional)</span>
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <div>
-            <Label className="mb-1.5 block text-sm">Trainer Notes</Label>
+            <Label className="mb-1.5 block text-sm">Topics Covered</Label>
+            <Input
+              value={topicsCovered}
+              onChange={(e) => setTopicsCovered(e.target.value)}
+              placeholder="AI basics, Machine learning, ..."
+              className="h-11"
+            />
+          </div>
+          <div>
+            <Label className="mb-1.5 block text-sm">Session Notes</Label>
             <Textarea
               value={trainerNotes}
               onChange={(e) => setTrainerNotes(e.target.value)}
-              placeholder="How did the session go? Key observations..."
-              rows={3}
+              placeholder="How did the session go?"
+              rows={2}
             />
           </div>
           <div>
@@ -281,7 +326,7 @@ export function SubmissionForm() {
             <Textarea
               value={challenges}
               onChange={(e) => setChallenges(e.target.value)}
-              placeholder="Any challenges faced during the session..."
+              placeholder="Any issues faced..."
               rows={2}
             />
           </div>
@@ -291,15 +336,8 @@ export function SubmissionForm() {
       {/* Submit */}
       <Button
         type="submit"
-        className="w-full"
-        size="lg"
-        disabled={
-          submit.isPending ||
-          !schoolId ||
-          !dayNumber ||
-          !studentCount ||
-          photos.length < 3
-        }
+        className="h-12 w-full text-base"
+        disabled={!canSubmit}
       >
         {submit.isPending ? (
           <span className="flex items-center gap-2">
@@ -309,7 +347,7 @@ export function SubmissionForm() {
         ) : (
           <span className="flex items-center gap-2">
             <Upload className="h-4 w-4" />
-            Submit Session
+            Submit Day {dayNumber || "..."} Report
           </span>
         )}
       </Button>
