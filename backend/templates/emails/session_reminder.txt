@@ -1,0 +1,14 @@
+Hi {{ recipient_name }},
+
+This is a reminder that Day {{ day_number }} of the AI Literacy Program is scheduled for tomorrow.
+
+Date: {{ session_date|date:"d M Y" }}
+School: {{ school_name }}
+Session: {{ session_title }}
+
+{% if role == "trainer" %}Please ensure you have all materials ready and arrive at the school on time.{% else %}Please ensure the classroom and students are prepared for tomorrow's session.{% endif %}
+
+Questions? Contact {{ support_email }}
+Swinfy, Project Lead: +91 7981313783
+
+— AI Literacy Program | Swinfy

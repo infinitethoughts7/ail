@@ -1,0 +1,22 @@
+{% extends "emails/base.html" %}
+{% block title %}Session Reminder — Day {{ day_number }}{% endblock %}
+{% block content %}
+<h2 style="margin:0 0 16px; font-size:18px; font-weight:600; color:#1e3a5f;">Hi {{ recipient_name }},</h2>
+<p style="margin:0 0 16px; font-size:15px; line-height:1.6; color:#374151;">This is a reminder that <strong>Day {{ day_number }}</strong> of the AI Literacy Program is scheduled for tomorrow.</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0; background:#f0f6ff; border-left:4px solid #2563eb; border-radius:6px;">
+  <tr><td style="padding:16px 20px;">
+    <p style="margin:0 0 8px; font-size:14px; color:#374151;"><strong style="color:#1e3a5f;">Date:</strong> {{ session_date|date:"d M Y" }}</p>
+    <p style="margin:0 0 8px; font-size:14px; color:#374151;"><strong style="color:#1e3a5f;">School:</strong> {{ school_name }}</p>
+    <p style="margin:0; font-size:14px; color:#374151;"><strong style="color:#1e3a5f;">Session:</strong> {{ session_title }}</p>
+  </td></tr>
+</table>
+
+{% if role == "trainer" %}
+<p style="margin:0 0 12px; font-size:15px; line-height:1.6; color:#374151;">Please ensure you have all materials ready and arrive at the school on time.</p>
+{% else %}
+<p style="margin:0 0 12px; font-size:15px; line-height:1.6; color:#374151;">Please ensure the classroom and students are prepared for tomorrow's session.</p>
+{% endif %}
+
+<p style="margin:0; font-size:14px; line-height:1.6; color:#6b7280;">If you have any concerns, simply reply to this email.</p>
+{% endblock %}

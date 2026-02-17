@@ -1,0 +1,14 @@
+Hi {{ trainer_name }},
+
+You still need to complete your onboarding form before your sessions can begin.
+
+Deadline: {{ deadline|date:"d M Y" }}
+
+Complete the form here: {{ form_url }}
+
+If you've already completed the form, please disregard this message.
+
+Questions? Contact {{ support_email }}
+Swinfy, Project Lead: +91 7981313783
+
+— AI Literacy Program | Swinfy

@@ -1,0 +1,15 @@
+Dear {{ principal_name }},
+
+This is to confirm that today's AI Literacy session is scheduled at {{ school_name }}.
+
+Date: {{ session_date|date:"d M Y" }}
+Session: {{ session_title }}
+Trainer: {{ trainer_name }}
+Trainer Phone: {{ trainer_phone }}
+
+The trainer will arrive at the school as scheduled. Please ensure the classroom and students are ready.
+
+If you have any questions, contact the trainer directly or reply to this email.
+Swinfy, Project Lead: +91 7981313783
+
+— AI Literacy Program | Swinfy
