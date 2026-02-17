@@ -5,7 +5,7 @@ Seeds:
   - 4-day curriculum
   - 7 districts
   - 40 schools (from TGMREIS circular)
-  - User accounts (admin, sponsors, sample trainers)
+  - User accounts (admin, sponsors, 29 real trainers)
   - UWH control singleton
 
 Usage:
@@ -195,47 +195,36 @@ USERS = [
         "first_name": "UWH",
         "last_name": "Programs",
     },
-    # Sample Trainers
-    {
-        "email": "trainer1@swinfy.in",
-        "username": "trainer_1",
-        "password": "1234",
-        "role": "trainer",
-        "first_name": "Aisha",
-        "last_name": "Khan",
-    },
-    {
-        "email": "trainer2@swinfy.in",
-        "username": "trainer_2",
-        "password": "1234",
-        "role": "trainer",
-        "first_name": "Priya",
-        "last_name": "Reddy",
-    },
-    {
-        "email": "trainer3@swinfy.in",
-        "username": "trainer_3",
-        "password": "1234",
-        "role": "trainer",
-        "first_name": "Fatima",
-        "last_name": "Begum",
-    },
-    {
-        "email": "trainer4@swinfy.in",
-        "username": "trainer_4",
-        "password": "1234",
-        "role": "trainer",
-        "first_name": "Kavya",
-        "last_name": "Sharma",
-    },
-    {
-        "email": "trainer5@swinfy.in",
-        "username": "trainer_5",
-        "password": "1234",
-        "role": "trainer",
-        "first_name": "Meena",
-        "last_name": "Devi",
-    },
+    # Real Trainers (29 with emails)
+    {"email": "sathisht.1729@gmail.com", "username": "satish", "password": "1234", "role": "trainer", "first_name": "Satish", "last_name": ""},
+    {"email": "rockyg.swinfy@gmail.com", "username": "rocky", "password": "1234", "role": "trainer", "first_name": "Rocky", "last_name": ""},
+    {"email": "sridherddd@gmail.com", "username": "sridhar", "password": "1234", "role": "trainer", "first_name": "Sridhar", "last_name": ""},
+    {"email": "ranig.swinfy@gmail.com", "username": "rani", "password": "1234", "role": "trainer", "first_name": "Rani", "last_name": ""},
+    {"email": "sowkyab.swinfy@gmail.com", "username": "sowkya", "password": "1234", "role": "trainer", "first_name": "Sowkya", "last_name": ""},
+    {"email": "shireesha454@gmail.com", "username": "shirisha_k", "password": "1234", "role": "trainer", "first_name": "Shirisha", "last_name": "K"},
+    {"email": "prava1729@gmail.com", "username": "pravalika", "password": "1234", "role": "trainer", "first_name": "Pravalika", "last_name": ""},
+    {"email": "deepika.swinfy@gmail.com", "username": "deepika", "password": "1234", "role": "trainer", "first_name": "Deepika", "last_name": ""},
+    {"email": "sumasriv.swinfy@gmail.com", "username": "suma_sri", "password": "1234", "role": "trainer", "first_name": "Suma", "last_name": "Sri"},
+    {"email": "mallikaa.swinfy@gmail.com", "username": "mallika", "password": "1234", "role": "trainer", "first_name": "Mallika", "last_name": ""},
+    {"email": "bhanuvaldas22@gmail.com", "username": "bhanu", "password": "1234", "role": "trainer", "first_name": "Bhanu", "last_name": ""},
+    {"email": "maheshs.swinfy@gmail.com", "username": "mahesh", "password": "1234", "role": "trainer", "first_name": "Mahesh", "last_name": ""},
+    {"email": "shivakrishnaa.swinfy@gmail.com", "username": "shiva_krishna", "password": "1234", "role": "trainer", "first_name": "Shiva", "last_name": "Krishna"},
+    {"email": "ravikirand.swinfy@gmail.com", "username": "ravi_kiran", "password": "1234", "role": "trainer", "first_name": "Ravi", "last_name": "Kiran"},
+    {"email": "narmadas.swinfy@gmail.com", "username": "narmada", "password": "1234", "role": "trainer", "first_name": "Narmada", "last_name": ""},
+    {"email": "rajinikanththatikanti00@gmail.com", "username": "rajinikanth", "password": "1234", "role": "trainer", "first_name": "Rajinikanth", "last_name": ""},
+    {"email": "parveen.swinfy03@gmail.com", "username": "parveen", "password": "1234", "role": "trainer", "first_name": "Parveen", "last_name": ""},
+    {"email": "sangeethak.swinfy@gmail.com", "username": "sangeetha", "password": "1234", "role": "trainer", "first_name": "Sangeetha", "last_name": ""},
+    {"email": "manasaveenamasula@gmail.com", "username": "manasa_veena", "password": "1234", "role": "trainer", "first_name": "Manasa", "last_name": "Veena"},
+    {"email": "laxmiprasannamadduri@gmail.com", "username": "m_laxmi_prasanna", "password": "1234", "role": "trainer", "first_name": "M Laxmi", "last_name": "Prasanna"},
+    {"email": "mandadianitha14@gmail.com", "username": "anitha", "password": "1234", "role": "trainer", "first_name": "Anitha", "last_name": ""},
+    {"email": "harikakothapally1919@gmail.com", "username": "harika", "password": "1234", "role": "trainer", "first_name": "Harika", "last_name": ""},
+    {"email": "chukkaashwitha1706@gmail.com", "username": "ashwitha", "password": "1234", "role": "trainer", "first_name": "Ashwitha", "last_name": ""},
+    {"email": "vangoorishirisha2@gmail.com", "username": "sirisha_askes", "password": "1234", "role": "trainer", "first_name": "Sirisha", "last_name": ""},
+    {"email": "saniyanaseer2024@gmail.com", "username": "saniya", "password": "1234", "role": "trainer", "first_name": "Saniya", "last_name": ""},
+    {"email": "akshayram118@gmail.com", "username": "akshay", "password": "1234", "role": "trainer", "first_name": "Akshay", "last_name": ""},
+    {"email": "indupriya23700@gmail.com", "username": "indupriya", "password": "1234", "role": "trainer", "first_name": "Indupriya", "last_name": ""},
+    {"email": "prasannachandran2001@gmail.com", "username": "prasanna", "password": "1234", "role": "trainer", "first_name": "Prasanna", "last_name": ""},
+    {"email": "manasakosgi07@gmail.com", "username": "manasa", "password": "1234", "role": "trainer", "first_name": "Manasa", "last_name": ""},
 ]
 
 
@@ -257,7 +246,8 @@ class Command(BaseCommand):
             District.objects.all().delete()
             Curriculum.objects.all().delete()
             UWHControl.objects.all().delete()
-            self.stdout.write(self.style.WARNING("  Flushed dashboard data."))
+            User.objects.filter(role="trainer").delete()
+            self.stdout.write(self.style.WARNING("  Flushed dashboard data + trainers."))
 
         # 1. Curriculum
         self.stdout.write("Seeding curriculum...")
@@ -327,15 +317,16 @@ class Command(BaseCommand):
             if u["role"] == "trainer":
                 trainers.append(user)
 
-        # 5. Assign trainers to schools (round-robin)
+        # 5. Assign trainers to schools (1:1, extras left empty)
         if trainers:
-            self.stdout.write("Assigning trainers to schools (round-robin)...")
+            self.stdout.write("Assigning trainers to schools...")
             schools = School.objects.all().order_by("name")
             for i, school in enumerate(schools):
-                trainer = trainers[i % len(trainers)]
-                school.assigned_trainer = trainer
-                school.save(update_fields=["assigned_trainer"])
-            self.stdout.write(f"  {schools.count()} schools assigned to {len(trainers)} trainers.")
+                if i < len(trainers):
+                    school.assigned_trainer = trainers[i]
+                    school.save(update_fields=["assigned_trainer"])
+            unassigned = schools.count() - len(trainers)
+            self.stdout.write(f"  {len(trainers)} schools assigned, {unassigned} without a trainer.")
 
         # 6. UWH Control singleton
         self.stdout.write("Initializing UWH control panel...")
