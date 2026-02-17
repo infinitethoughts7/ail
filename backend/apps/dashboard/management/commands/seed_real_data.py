@@ -170,19 +170,19 @@ SCHOOLS = [
 USERS = [
     # Admin (Swinfy)
     {
-        "email": "Rocky@swinfy.in",
-        "username": "rocky_swinfy",
-        "password": "SwinFy@2026!",
+        "email": "rakesh.ganji@swinfy.com",
+        "username": "rakesh_swinfy",
+        "password": "1234",
         "role": "admin",
-        "first_name": "Rocky",
-        "last_name": "Swinfy",
+        "first_name": "Rakesh",
+        "last_name": "Ganji",
         "is_staff": True,
     },
     # UWH Sponsors
     {
         "email": "sponsor@uwh.org",
         "username": "uwh_sponsor",
-        "password": "UWH@2026!",
+        "password": "1234",
         "role": "sponsor",
         "first_name": "UWH",
         "last_name": "Sponsor",
@@ -190,7 +190,7 @@ USERS = [
     {
         "email": "programs@uwh.org",
         "username": "uwh_programs",
-        "password": "UWH@2026!",
+        "password": "1234",
         "role": "sponsor",
         "first_name": "UWH",
         "last_name": "Programs",
@@ -199,7 +199,7 @@ USERS = [
     {
         "email": "trainer1@swinfy.in",
         "username": "trainer_1",
-        "password": "Trainer@2026!",
+        "password": "1234",
         "role": "trainer",
         "first_name": "Aisha",
         "last_name": "Khan",
@@ -207,7 +207,7 @@ USERS = [
     {
         "email": "trainer2@swinfy.in",
         "username": "trainer_2",
-        "password": "Trainer@2026!",
+        "password": "1234",
         "role": "trainer",
         "first_name": "Priya",
         "last_name": "Reddy",
@@ -215,7 +215,7 @@ USERS = [
     {
         "email": "trainer3@swinfy.in",
         "username": "trainer_3",
-        "password": "Trainer@2026!",
+        "password": "1234",
         "role": "trainer",
         "first_name": "Fatima",
         "last_name": "Begum",
@@ -223,7 +223,7 @@ USERS = [
     {
         "email": "trainer4@swinfy.in",
         "username": "trainer_4",
-        "password": "Trainer@2026!",
+        "password": "1234",
         "role": "trainer",
         "first_name": "Kavya",
         "last_name": "Sharma",
@@ -231,7 +231,7 @@ USERS = [
     {
         "email": "trainer5@swinfy.in",
         "username": "trainer_5",
-        "password": "Trainer@2026!",
+        "password": "1234",
         "role": "trainer",
         "first_name": "Meena",
         "last_name": "Devi",
