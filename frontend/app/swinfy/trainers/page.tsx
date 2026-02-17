@@ -11,136 +11,170 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSwinfySubmissions } from "@/hooks/use-swinfy-data";
-import { Users } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSwinfyTrainers } from "@/hooks/use-swinfy-data";
+import { Users, School } from "lucide-react";
+
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
+  not_started: { label: "Not Started", className: "bg-gray-100 text-gray-700" },
+  in_progress: { label: "In Progress", className: "bg-blue-100 text-blue-700" },
+  completed: { label: "Completed", className: "bg-emerald-100 text-emerald-700" },
+};
 
 export default function TrainerTrackerPage() {
-  const { data: allSubmissions, isLoading } = useSwinfySubmissions();
+  const { data: trainers, isLoading } = useSwinfyTrainers();
 
   if (isLoading) {
     return (
-      <div className="p-6">
-        <Skeleton className="h-64 rounded-xl" />
+      <div className="p-6 space-y-4">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-96 rounded-xl" />
       </div>
     );
   }
 
-  // Aggregate by trainer
-  const trainerMap = new Map<
-    string,
-    {
-      name: string;
-      total: number;
-      verified: number;
-      flagged: number;
-      rejected: number;
-      pending: number;
-      schools: Set<string>;
-    }
-  >();
-
-  (allSubmissions || []).forEach((sub) => {
-    const key = sub.trainer;
-    if (!trainerMap.has(key)) {
-      trainerMap.set(key, {
-        name: sub.trainer_name,
-        total: 0,
-        verified: 0,
-        flagged: 0,
-        rejected: 0,
-        pending: 0,
-        schools: new Set(),
-      });
-    }
-    const t = trainerMap.get(key)!;
-    t.total++;
-    t.schools.add(sub.school);
-    if (sub.status === "verified") t.verified++;
-    else if (sub.status === "flagged") t.flagged++;
-    else if (sub.status === "rejected") t.rejected++;
-    else if (sub.status === "submitted") t.pending++;
-  });
-
-  const trainers = Array.from(trainerMap.values()).sort(
-    (a, b) => b.total - a.total
-  );
+  const assigned = trainers?.filter((t) => t.schools.length > 0) || [];
+  const unassigned = trainers?.filter((t) => t.schools.length === 0) || [];
 
   return (
-    <div className="p-4 sm:p-6">
-      <div className="mb-4 flex items-center gap-2">
+    <div className="p-4 sm:p-6 space-y-6">
+      <div className="flex items-center gap-2">
         <Users className="h-5 w-5 text-muted-foreground" />
-        <h1 className="text-xl font-bold sm:text-2xl">Trainer Performance</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">Trainers</h1>
+        <Badge variant="secondary" className="ml-1">
+          {trainers?.length || 0}
+        </Badge>
       </div>
 
-      {trainers.length === 0 ? (
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Card>
-          <CardContent className="py-12 text-center text-sm text-muted-foreground">
-            No trainer data available yet.
+          <CardContent className="pt-4 pb-4">
+            <p className="text-xs text-muted-foreground">Total Trainers</p>
+            <p className="text-2xl font-bold">{trainers?.length || 0}</p>
           </CardContent>
         </Card>
-      ) : (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-semibold">
-              {trainers.length} Trainers
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Trainer</TableHead>
-                  <TableHead className="text-center">Schools</TableHead>
-                  <TableHead className="text-center">Total</TableHead>
-                  <TableHead className="text-center">Verified</TableHead>
-                  <TableHead className="text-center">Pending</TableHead>
-                  <TableHead className="text-center">Flagged</TableHead>
-                  <TableHead className="text-center">Rejected</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {trainers.map((t) => (
-                  <TableRow key={t.name}>
-                    <TableCell className="font-medium">{t.name}</TableCell>
-                    <TableCell className="text-center">
-                      {t.schools.size}
-                    </TableCell>
-                    <TableCell className="text-center">{t.total}</TableCell>
-                    <TableCell className="text-center">
-                      {t.verified > 0 && (
-                        <Badge className="bg-emerald-100 text-emerald-800">
-                          {t.verified}
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {t.pending > 0 && (
-                        <Badge className="bg-yellow-100 text-yellow-800">
-                          {t.pending}
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {t.flagged > 0 && (
-                        <Badge className="bg-orange-100 text-orange-800">
-                          {t.flagged}
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {t.rejected > 0 && (
-                        <Badge className="bg-red-100 text-red-800">
-                          {t.rejected}
-                        </Badge>
-                      )}
-                    </TableCell>
+          <CardContent className="pt-4 pb-4">
+            <p className="text-xs text-muted-foreground">Assigned</p>
+            <p className="text-2xl font-bold">{assigned.length}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4 pb-4">
+            <p className="text-xs text-muted-foreground">Unassigned</p>
+            <p className="text-2xl font-bold">{unassigned.length}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4 pb-4">
+            <p className="text-xs text-muted-foreground">Schools Covered</p>
+            <p className="text-2xl font-bold">
+              {assigned.reduce((sum, t) => sum + t.schools.length, 0)}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Trainers table */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm font-semibold">
+            All Trainers & School Assignments
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!trainers || trainers.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              No trainers found.
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Trainer</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>School</TableHead>
+                    <TableHead className="text-center">Submissions</TableHead>
+                    <TableHead className="text-center">Verified</TableHead>
+                    <TableHead className="text-center">Pending</TableHead>
+                    <TableHead className="text-center">Flagged</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      )}
+                </TableHeader>
+                <TableBody>
+                  {trainers.map((t) => (
+                    <TableRow key={t.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-7 w-7">
+                            {t.profile_photo_url && (
+                              <AvatarImage src={t.profile_photo_url} />
+                            )}
+                            <AvatarFallback className="text-xs">
+                              {(t.first_name?.[0] || t.email[0]).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="font-medium">{t.full_name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {t.email}
+                      </TableCell>
+                      <TableCell>
+                        {t.schools.length > 0 ? (
+                          <div className="space-y-1">
+                            {t.schools.map((s) => {
+                              const badge = STATUS_BADGE[s.status] || STATUS_BADGE.not_started;
+                              return (
+                                <div key={s.id} className="flex items-center gap-1.5">
+                                  <School className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                  <span className="text-sm">{s.name}</span>
+                                  <Badge className={`text-[10px] px-1.5 py-0 ${badge.className}`}>
+                                    {badge.label}
+                                  </Badge>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground italic">
+                            Not assigned
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {t.total_submissions || "—"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {t.verified_submissions > 0 ? (
+                          <Badge className="bg-emerald-100 text-emerald-800">
+                            {t.verified_submissions}
+                          </Badge>
+                        ) : "—"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {t.pending_submissions > 0 ? (
+                          <Badge className="bg-yellow-100 text-yellow-800">
+                            {t.pending_submissions}
+                          </Badge>
+                        ) : "—"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {t.flagged_submissions > 0 ? (
+                          <Badge className="bg-orange-100 text-orange-800">
+                            {t.flagged_submissions}
+                          </Badge>
+                        ) : "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -351,17 +351,17 @@ def swinfy_trainers(request):
     trainers = User.objects.filter(role="trainer").prefetch_related(
         "assigned_schools__district"
     ).annotate(
-        total_submissions=Count(
-            "submission", filter=~Q(submission__status="draft")
+        subs_total=Count(
+            "submissions", filter=~Q(submissions__status="draft")
         ),
-        verified_submissions=Count(
-            "submission", filter=Q(submission__status="verified")
+        subs_verified=Count(
+            "submissions", filter=Q(submissions__status="verified")
         ),
-        pending_submissions=Count(
-            "submission", filter=Q(submission__status="submitted")
+        subs_pending=Count(
+            "submissions", filter=Q(submissions__status="submitted")
         ),
-        flagged_submissions=Count(
-            "submission", filter=Q(submission__status="flagged")
+        subs_flagged=Count(
+            "submissions", filter=Q(submissions__status="flagged")
         ),
     ).order_by("first_name", "last_name")
 
@@ -384,10 +384,10 @@ def swinfy_trainers(request):
                 }
                 for s in schools
             ],
-            "total_submissions": t.total_submissions,
-            "verified_submissions": t.verified_submissions,
-            "pending_submissions": t.pending_submissions,
-            "flagged_submissions": t.flagged_submissions,
+            "total_submissions": t.subs_total,
+            "verified_submissions": t.subs_verified,
+            "pending_submissions": t.subs_pending,
+            "flagged_submissions": t.subs_flagged,
         })
 
     return Response(data)
