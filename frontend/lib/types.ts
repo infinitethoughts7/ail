@@ -171,6 +171,26 @@ export interface TrainerProfile {
   } | null;
 }
 
+// --- Swinfy Trainer List ---
+export interface SwinfyTrainer {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  profile_photo_url: string | null;
+  schools: {
+    id: string;
+    name: string;
+    district_name: string;
+    status: "not_started" | "in_progress" | "completed";
+  }[];
+  total_submissions: number;
+  verified_submissions: number;
+  pending_submissions: number;
+  flagged_submissions: number;
+}
+
 // --- Summary responses (role-branched) ---
 export interface AdminSummary {
   total_schools: number;

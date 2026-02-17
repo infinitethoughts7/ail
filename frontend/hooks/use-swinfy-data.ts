@@ -8,6 +8,7 @@ import type {
   ProjectHighlight,
   ActivityLogEntry,
   UWHControl,
+  SwinfyTrainer,
 } from "@/lib/types";
 
 // ---- Queries ----
@@ -72,6 +73,14 @@ export function useUWHControl() {
     queryKey: ["swinfy", "uwh-control"],
     queryFn: () =>
       api.get("/api/dashboard/swinfy/uwh-control/").then((r) => r.data),
+  });
+}
+
+export function useSwinfyTrainers() {
+  return useQuery<SwinfyTrainer[]>({
+    queryKey: ["swinfy", "trainers"],
+    queryFn: () =>
+      api.get("/api/dashboard/swinfy/trainers/").then((r) => r.data),
   });
 }
 

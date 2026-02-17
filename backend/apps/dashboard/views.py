@@ -338,6 +338,62 @@ def trainer_projects(request):
 
 
 # ─────────────────────────────────────────
+#  SWINFY (Admin): Trainers List
+# ─────────────────────────────────────────
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdmin])
+def swinfy_trainers(request):
+    """All trainers with their assigned schools and submission stats."""
+    from apps.accounts.models import User
+
+    trainers = User.objects.filter(role="trainer").prefetch_related(
+        "assigned_schools__district"
+    ).annotate(
+        total_submissions=Count(
+            "submission", filter=~Q(submission__status="draft")
+        ),
+        verified_submissions=Count(
+            "submission", filter=Q(submission__status="verified")
+        ),
+        pending_submissions=Count(
+            "submission", filter=Q(submission__status="submitted")
+        ),
+        flagged_submissions=Count(
+            "submission", filter=Q(submission__status="flagged")
+        ),
+    ).order_by("first_name", "last_name")
+
+    data = []
+    for t in trainers:
+        schools = t.assigned_schools.all()
+        data.append({
+            "id": str(t.id),
+            "email": t.email,
+            "first_name": t.first_name,
+            "last_name": t.last_name,
+            "full_name": t.get_full_name() or t.username,
+            "profile_photo_url": request.build_absolute_uri(t.profile_photo.url) if t.profile_photo else None,
+            "schools": [
+                {
+                    "id": str(s.id),
+                    "name": s.name,
+                    "district_name": s.district.name,
+                    "status": s.status,
+                }
+                for s in schools
+            ],
+            "total_submissions": t.total_submissions,
+            "verified_submissions": t.verified_submissions,
+            "pending_submissions": t.pending_submissions,
+            "flagged_submissions": t.flagged_submissions,
+        })
+
+    return Response(data)
+
+
+# ─────────────────────────────────────────
 #  SWINFY (Admin): Verification Queue
 # ─────────────────────────────────────────
 

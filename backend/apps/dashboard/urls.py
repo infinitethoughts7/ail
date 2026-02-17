@@ -21,6 +21,9 @@ urlpatterns = [
     path("trainer/students/<uuid:pk>/delete/", views.trainer_delete_student),
     path("trainer/projects/", views.trainer_projects),
 
+    # Swinfy — Trainers
+    path("swinfy/trainers/", views.swinfy_trainers),
+
     # Swinfy — Verification Queue
     path("swinfy/submissions/", views.swinfy_submissions),
     path("swinfy/submissions/<uuid:pk>/", views.swinfy_submission_detail),
