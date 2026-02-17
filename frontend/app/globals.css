@@ -75,10 +75,7 @@
   --color-status-info: #2563EB;
   --color-status-live: #10B981;
 
-  /* Luxury font families */
-  --font-playfair: var(--font-playfair);
-  --font-dm-sans: var(--font-dm-sans);
-  --font-jetbrains: var(--font-jetbrains);
+  /* Font families */
 }
 
 :root {
@@ -270,27 +267,28 @@
     transform: translateY(-2px);
   }
 
-  /* UWH serif heading */
+  /* UWH heading */
   .uwh-heading {
-    font-family: var(--font-playfair), serif;
+    font-family: var(--font-geist-sans), sans-serif;
     color: var(--uwh-text-primary);
     letter-spacing: -0.01em;
   }
 
   /* UWH body text */
   .uwh-body {
-    font-family: var(--font-dm-sans), sans-serif;
+    font-family: var(--font-geist-sans), sans-serif;
     color: var(--uwh-text-secondary);
   }
 
   /* UWH mono numbers */
   .uwh-mono {
-    font-family: var(--font-jetbrains), monospace;
+    font-family: var(--font-geist-sans), sans-serif;
+    font-variant-numeric: tabular-nums;
   }
 
-  /* UWH label (small caps tracking) */
+  /* UWH label */
   .uwh-label {
-    font-family: var(--font-dm-sans), sans-serif;
+    font-family: var(--font-geist-sans), sans-serif;
     font-size: 0.6875rem;
     font-weight: 600;
     letter-spacing: 0.08em;
