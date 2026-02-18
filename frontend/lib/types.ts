@@ -171,6 +171,19 @@ export interface TrainerProfile {
   } | null;
 }
 
+// --- Trainer Gallery Photo ---
+export interface TrainerGalleryPhoto {
+  id: string;
+  image_url: string | null;
+  caption: string;
+  approval_status: "pending" | "approved" | "rejected";
+  is_featured: boolean;
+  rejection_reason: string;
+  uploaded_at: string;
+  school_name: string;
+  day_number: number;
+}
+
 // --- Swinfy Trainer List ---
 export interface SwinfyTrainer {
   id: string;

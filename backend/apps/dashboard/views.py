@@ -337,6 +337,31 @@ def trainer_projects(request):
     )
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_gallery(request):
+    """All photos uploaded by this trainer, across all submissions."""
+    photos = SessionPhoto.objects.filter(
+        submission__trainer=request.user
+    ).select_related("submission__school").order_by("-uploaded_at")
+
+    data = []
+    for p in photos:
+        data.append({
+            "id": str(p.id),
+            "image_url": request.build_absolute_uri(p.image.url) if p.image else None,
+            "caption": p.caption,
+            "approval_status": p.approval_status,
+            "is_featured": p.is_featured,
+            "rejection_reason": p.rejection_reason,
+            "uploaded_at": p.uploaded_at.isoformat(),
+            "school_name": p.submission.school.name,
+            "day_number": p.submission.day_number,
+        })
+
+    return Response(data)
+
+
 # ─────────────────────────────────────────
 #  SWINFY (Admin): Trainers List
 # ─────────────────────────────────────────

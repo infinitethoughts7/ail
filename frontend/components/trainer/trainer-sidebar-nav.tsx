@@ -9,6 +9,7 @@ import {
   List,
   Users,
   Lightbulb,
+  ImageIcon,
   LogOut,
   GraduationCap,
 } from "lucide-react";
@@ -46,6 +47,11 @@ const NAV_ITEMS = [
     label: "Students",
     href: "/trainer/students",
     icon: Users,
+  },
+  {
+    label: "My Gallery",
+    href: "/trainer/gallery",
+    icon: ImageIcon,
   },
   {
     label: "Student Ideas",

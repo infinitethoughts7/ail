@@ -9,6 +9,7 @@ import type {
   ProjectHighlight,
   TrainerProfile,
   Student,
+  TrainerGalleryPhoto,
 } from "@/lib/types";
 
 export function useTrainerSummary() {
@@ -150,6 +151,16 @@ export function useDeleteStudent() {
       qc.invalidateQueries({ queryKey: ["trainer", "students"] });
       qc.invalidateQueries({ queryKey: ["trainer", "summary"] });
     },
+  });
+}
+
+// --- Gallery ---
+
+export function useTrainerGallery() {
+  return useQuery<TrainerGalleryPhoto[]>({
+    queryKey: ["trainer", "gallery"],
+    queryFn: () =>
+      api.get("/api/dashboard/trainer/gallery/").then((r) => r.data),
   });
 }
 

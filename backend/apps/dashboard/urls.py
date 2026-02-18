@@ -20,6 +20,7 @@ urlpatterns = [
     path("trainer/students/<uuid:pk>/", views.trainer_update_student),
     path("trainer/students/<uuid:pk>/delete/", views.trainer_delete_student),
     path("trainer/projects/", views.trainer_projects),
+    path("trainer/gallery/", views.trainer_gallery),
 
     # Swinfy — Trainers
     path("swinfy/trainers/", views.swinfy_trainers),
