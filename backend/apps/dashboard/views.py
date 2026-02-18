@@ -340,10 +340,16 @@ def trainer_projects(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_gallery(request):
-    """All photos uploaded by this trainer, across all submissions."""
+    """All photos uploaded by this trainer. Filter by ?status= (approval_status), ?day="""
     photos = SessionPhoto.objects.filter(
         submission__trainer=request.user
     ).select_related("submission__school").order_by("-uploaded_at")
+    status_filter = request.query_params.get("status")
+    if status_filter:
+        photos = photos.filter(approval_status=status_filter)
+    day = request.query_params.get("day")
+    if day:
+        photos = photos.filter(submission__day_number=day)
 
     data = []
     for p in photos:
@@ -370,12 +376,18 @@ def trainer_gallery(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsAdmin])
 def swinfy_trainers(request):
-    """All trainers with their assigned schools and submission stats."""
+    """All trainers with their assigned schools and submission stats. Filter by ?district="""
     from apps.accounts.models import User
 
     trainers = User.objects.filter(role="trainer").prefetch_related(
         "assigned_schools__district"
-    ).annotate(
+    )
+    district = request.query_params.get("district")
+    if district:
+        trainers = trainers.filter(
+            assigned_schools__district_id=district
+        ).distinct()
+    trainers = trainers.annotate(
         subs_total=Count(
             "submissions", filter=~Q(submissions__status="draft")
         ),
@@ -426,7 +438,7 @@ def swinfy_trainers(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsAdmin])
 def swinfy_submissions(request):
-    """All submissions for review. Filter by ?status=submitted"""
+    """All submissions for review. Filter by ?status=, ?trainer=, ?school=, ?district=, ?day="""
     qs = Submission.objects.exclude(status="draft").select_related(
         "school", "trainer"
     ).annotate(
@@ -436,6 +448,18 @@ def swinfy_submissions(request):
     status_filter = request.query_params.get("status")
     if status_filter:
         qs = qs.filter(status=status_filter)
+    trainer = request.query_params.get("trainer")
+    if trainer:
+        qs = qs.filter(trainer_id=trainer)
+    school = request.query_params.get("school")
+    if school:
+        qs = qs.filter(school_id=school)
+    district = request.query_params.get("district")
+    if district:
+        qs = qs.filter(school__district_id=district)
+    day = request.query_params.get("day")
+    if day:
+        qs = qs.filter(day_number=day)
     return Response(SubmissionListSerializer(qs, many=True).data)
 
 
@@ -517,9 +541,25 @@ def swinfy_reject_submission(request, pk):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsAdmin])
 def swinfy_pending_photos(request):
-    qs = SessionPhoto.objects.filter(
-        approval_status="pending"
-    ).select_related("submission__school")
+    """Photos for review. Filter by ?status= (default pending, 'all'), ?school=, ?trainer=, ?district=, ?day="""
+    status_filter = request.query_params.get("status", "pending")
+    qs = SessionPhoto.objects.select_related(
+        "submission__school", "submission__trainer"
+    )
+    if status_filter != "all":
+        qs = qs.filter(approval_status=status_filter)
+    school = request.query_params.get("school")
+    if school:
+        qs = qs.filter(submission__school_id=school)
+    trainer = request.query_params.get("trainer")
+    if trainer:
+        qs = qs.filter(submission__trainer_id=trainer)
+    district = request.query_params.get("district")
+    if district:
+        qs = qs.filter(submission__school__district_id=district)
+    day = request.query_params.get("day")
+    if day:
+        qs = qs.filter(submission__day_number=day)
     return Response(
         SessionPhotoSerializer(qs, many=True, context={"request": request}).data
     )
@@ -584,6 +624,22 @@ def swinfy_reject_photo(request, pk):
     return Response({"status": "rejected"})
 
 
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated, IsAdmin])
+def swinfy_delete_photo(request, pk):
+    try:
+        photo = SessionPhoto.objects.select_related("submission__school").get(pk=pk)
+    except SessionPhoto.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    school_name = photo.submission.school.name
+    # Delete the actual file
+    if photo.image:
+        photo.image.delete(save=False)
+    photo.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsAdmin])
 def swinfy_bulk_approve_photos(request):
@@ -617,9 +673,22 @@ def swinfy_bulk_reject_photos(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsAdmin])
 def swinfy_pending_projects(request):
-    qs = ProjectHighlight.objects.filter(
-        approval_status="pending"
-    ).select_related("submission__school")
+    """Projects for review. Filter by ?status= (default pending, 'all'), ?school=, ?trainer=, ?district="""
+    status_filter = request.query_params.get("status", "pending")
+    qs = ProjectHighlight.objects.select_related(
+        "submission__school", "submission__trainer"
+    )
+    if status_filter != "all":
+        qs = qs.filter(approval_status=status_filter)
+    school = request.query_params.get("school")
+    if school:
+        qs = qs.filter(submission__school_id=school)
+    trainer = request.query_params.get("trainer")
+    if trainer:
+        qs = qs.filter(submission__trainer_id=trainer)
+    district = request.query_params.get("district")
+    if district:
+        qs = qs.filter(submission__school__district_id=district)
     return Response(ProjectHighlightSerializer(qs, many=True, context={"request": request}).data)
 
 
@@ -773,11 +842,18 @@ def uwh_summary(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsSponsor])
 def uwh_gallery(request):
-    """Only approved photos from verified submissions."""
+    """Only approved photos from verified submissions. Filter by ?district=, ?school="""
     photos = SessionPhoto.objects.filter(
         submission__status="verified",
         approval_status="approved",
     ).select_related("submission__school")
+
+    district = request.query_params.get("district")
+    if district:
+        photos = photos.filter(submission__school__district_id=district)
+    school = request.query_params.get("school")
+    if school:
+        photos = photos.filter(submission__school_id=school)
 
     featured = photos.filter(is_featured=True)
     regular = photos.filter(is_featured=False)
@@ -795,11 +871,19 @@ def uwh_gallery(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsSponsor])
 def uwh_projects(request):
-    """Only approved/featured projects from verified submissions."""
+    """Only approved/featured projects from verified submissions. Filter by ?district=, ?school="""
     projects = ProjectHighlight.objects.filter(
         submission__status="verified",
         approval_status__in=["approved", "featured"],
     ).select_related("submission__school")
+
+    district = request.query_params.get("district")
+    if district:
+        projects = projects.filter(submission__school__district_id=district)
+    school = request.query_params.get("school")
+    if school:
+        projects = projects.filter(submission__school_id=school)
+
     return Response(
         ProjectHighlightSerializer(
             projects, many=True, context={"request": request}
@@ -810,10 +894,35 @@ def uwh_projects(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsSponsor])
 def uwh_activity_feed(request):
-    activities = ActivityLog.objects.filter(
-        is_uwh_visible=True
-    ).select_related("user")[:30]
-    return Response(ActivityLogSerializer(activities, many=True).data)
+    activities = list(
+        ActivityLog.objects.filter(is_uwh_visible=True)
+        .select_related("user")[:30]
+    )
+    data = ActivityLogSerializer(activities, many=True).data
+
+    # Attach one approved session photo per activity entry
+    photos_qs = (
+        SessionPhoto.objects.filter(approval_status="approved")
+        .exclude(image="")
+        .select_related("submission")[:50]
+    )
+    sub_photos = {}
+    for p in photos_qs:
+        sid = str(p.submission_id)
+        if sid not in sub_photos:
+            sub_photos[sid] = request.build_absolute_uri(p.image.url)
+    photo_urls = list(sub_photos.values())
+
+    for i, item in enumerate(data):
+        sid = str((item.get("metadata") or {}).get("submission_id", ""))
+        if sid in sub_photos:
+            item["thumbnail_url"] = sub_photos[sid]
+        elif photo_urls:
+            item["thumbnail_url"] = photo_urls[i % len(photo_urls)]
+        else:
+            item["thumbnail_url"] = None
+
+    return Response(data)
 
 
 @api_view(["GET"])
