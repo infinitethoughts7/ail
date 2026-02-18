@@ -53,7 +53,7 @@ export function ProjectApprovalList({ projects }: Props) {
     return (
       <Card>
         <CardContent className="py-12 text-center text-sm text-muted-foreground">
-          No pending projects to review.
+          No projects match the current filters.
         </CardContent>
       </Card>
     );
@@ -92,32 +92,51 @@ export function ProjectApprovalList({ projects }: Props) {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <Button
-                  size="sm"
-                  onClick={() =>
-                    approve.mutate(proj.id, {
-                      onSuccess: () => toast.success("Project approved"),
-                    })
-                  }
-                  disabled={approve.isPending}
-                  className="bg-emerald-600 text-white hover:bg-emerald-700"
-                >
-                  <Check className="mr-1 h-3 w-3" />
-                  Approve
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    feature.mutate(proj.id, {
-                      onSuccess: () => toast.success("Project featured"),
-                    })
-                  }
-                  disabled={feature.isPending}
-                >
-                  <Star className="mr-1 h-3 w-3" />
-                  Feature
-                </Button>
+                {proj.approval_status === "pending" && (
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        approve.mutate(proj.id, {
+                          onSuccess: () => toast.success("Project approved"),
+                        })
+                      }
+                      disabled={approve.isPending}
+                      className="bg-emerald-600 text-white hover:bg-emerald-700"
+                    >
+                      <Check className="mr-1 h-3 w-3" />
+                      Approve
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        feature.mutate(proj.id, {
+                          onSuccess: () => toast.success("Project featured"),
+                        })
+                      }
+                      disabled={feature.isPending}
+                    >
+                      <Star className="mr-1 h-3 w-3" />
+                      Feature
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-red-400 text-red-600"
+                      onClick={() =>
+                        reject.mutate(
+                          { id: proj.id },
+                          { onSuccess: () => toast.success("Project rejected") }
+                        )
+                      }
+                      disabled={reject.isPending}
+                    >
+                      <X className="mr-1 h-3 w-3" />
+                      Reject
+                    </Button>
+                  </>
+                )}
                 <Button
                   size="sm"
                   variant="outline"
@@ -125,21 +144,6 @@ export function ProjectApprovalList({ projects }: Props) {
                 >
                   <Pencil className="mr-1 h-3 w-3" />
                   Edit for UWH
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-red-400 text-red-600"
-                  onClick={() =>
-                    reject.mutate(
-                      { id: proj.id },
-                      { onSuccess: () => toast.success("Project rejected") }
-                    )
-                  }
-                  disabled={reject.isPending}
-                >
-                  <X className="mr-1 h-3 w-3" />
-                  Reject
                 </Button>
               </div>
             </div>

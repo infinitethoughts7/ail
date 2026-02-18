@@ -1,8 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -12,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSwinfyTrainers } from "@/hooks/use-swinfy-data";
+import { useSwinfyTrainers, useDistricts } from "@/hooks/use-swinfy-data";
 import { Users, School } from "lucide-react";
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
@@ -22,7 +30,9 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
 };
 
 export default function TrainerTrackerPage() {
-  const { data: trainers, isLoading } = useSwinfyTrainers();
+  const [districtId, setDistrictId] = useState("");
+  const { data: districts } = useDistricts();
+  const { data: trainers, isLoading } = useSwinfyTrainers(districtId || undefined);
 
   if (isLoading) {
     return (
@@ -44,6 +54,24 @@ export default function TrainerTrackerPage() {
         <Badge variant="secondary" className="ml-1">
           {trainers?.length || 0}
         </Badge>
+        <div className="ml-auto">
+          <Select
+            value={districtId || "all"}
+            onValueChange={(v) => setDistrictId(v === "all" ? "" : v)}
+          >
+            <SelectTrigger size="sm" className="min-w-[160px]">
+              <SelectValue placeholder="All Districts" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Districts</SelectItem>
+              {districts?.map((d) => (
+                <SelectItem key={d.id} value={d.id}>
+                  {d.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Summary cards */}

@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useTrainerGallery } from "@/hooks/use-trainer-data";
 import { getDayTheme } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
+import { GalleryFilters } from "@/components/trainer/gallery-filters";
 import { ImageIcon, X, Star, Clock, CheckCircle, XCircle } from "lucide-react";
 
 const STATUS_CONFIG: Record<
@@ -33,7 +34,12 @@ const STATUS_CONFIG: Record<
 };
 
 export default function TrainerGalleryPage() {
-  const { data: photos, isLoading } = useTrainerGallery();
+  const [statusFilter, setStatusFilter] = useState("");
+  const [dayFilter, setDayFilter] = useState("");
+  const { data: photos, isLoading } = useTrainerGallery({
+    status: statusFilter || undefined,
+    day: dayFilter || undefined,
+  });
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   if (isLoading) {
@@ -72,6 +78,15 @@ export default function TrainerGalleryPage() {
       </header>
 
       <div className="p-4 sm:p-6">
+        <div className="mb-4">
+          <GalleryFilters
+            status={statusFilter}
+            day={dayFilter}
+            onStatusChange={setStatusFilter}
+            onDayChange={setDayFilter}
+          />
+        </div>
+
         {!photos || photos.length === 0 ? (
           <Card>
             <CardContent className="py-16 text-center">

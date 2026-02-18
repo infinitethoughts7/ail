@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import type {
   AdminSummary,
+  District,
+  School,
   SubmissionListItem,
   SubmissionDetail,
   SessionPhoto,
@@ -10,6 +12,41 @@ import type {
   UWHControl,
   SwinfyTrainer,
 } from "@/lib/types";
+
+// ---- Filter types ----
+
+export interface SubmissionFilters {
+  status?: string;
+  trainer?: string;
+  school?: string;
+  district?: string;
+  day?: string;
+}
+
+export interface PhotoFilters {
+  status?: string;
+  school?: string;
+  trainer?: string;
+  district?: string;
+  day?: string;
+}
+
+export interface ProjectFilters {
+  status?: string;
+  school?: string;
+  trainer?: string;
+  district?: string;
+}
+
+// ---- Helper ----
+
+function cleanParams(obj: { [key: string]: string | undefined }) {
+  const params: Record<string, string> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v) params[k] = v;
+  }
+  return params;
+}
 
 // ---- Queries ----
 
@@ -21,12 +58,32 @@ export function useAdminSummary() {
   });
 }
 
-export function useSwinfySubmissions(status?: string) {
-  return useQuery<SubmissionListItem[]>({
-    queryKey: ["swinfy", "submissions", status],
+export function useDistricts() {
+  return useQuery<District[]>({
+    queryKey: ["districts"],
+    queryFn: () => api.get("/api/dashboard/districts/").then((r) => r.data),
+  });
+}
+
+export function useSchools(districtId?: string) {
+  return useQuery<School[]>({
+    queryKey: ["schools", districtId],
     queryFn: () =>
       api
-        .get("/api/dashboard/swinfy/submissions/", { params: status ? { status } : {} })
+        .get("/api/dashboard/schools/", {
+          params: districtId ? { district: districtId } : {},
+        })
+        .then((r) => r.data),
+  });
+}
+
+export function useSwinfySubmissions(filters: SubmissionFilters = {}) {
+  const params = cleanParams({ ...filters });
+  return useQuery<SubmissionListItem[]>({
+    queryKey: ["swinfy", "submissions", params],
+    queryFn: () =>
+      api
+        .get("/api/dashboard/swinfy/submissions/", { params })
         .then((r) => r.data),
     refetchInterval: 15_000,
   });
@@ -41,22 +98,49 @@ export function useSwinfySubmissionDetail(id: string | null) {
   });
 }
 
-export function usePendingPhotos() {
+export function useSwinfyPhotos(filters: PhotoFilters = {}) {
+  const params = cleanParams({
+    status: filters.status || "pending",
+    school: filters.school,
+    trainer: filters.trainer,
+    district: filters.district,
+    day: filters.day,
+  });
   return useQuery<SessionPhoto[]>({
-    queryKey: ["swinfy", "photos", "pending"],
+    queryKey: ["swinfy", "photos", params],
     queryFn: () =>
-      api.get("/api/dashboard/swinfy/photos/pending/").then((r) => r.data),
+      api
+        .get("/api/dashboard/swinfy/photos/pending/", { params })
+        .then((r) => r.data),
     refetchInterval: 15_000,
   });
 }
 
-export function usePendingProjects() {
+/** @deprecated Use useSwinfyPhotos instead */
+export function usePendingPhotos(statusFilter: string = "pending") {
+  return useSwinfyPhotos({ status: statusFilter });
+}
+
+export function useSwinfyProjects(filters: ProjectFilters = {}) {
+  const params = cleanParams({
+    status: filters.status || "pending",
+    school: filters.school,
+    trainer: filters.trainer,
+    district: filters.district,
+  });
   return useQuery<ProjectHighlight[]>({
-    queryKey: ["swinfy", "projects", "pending"],
+    queryKey: ["swinfy", "projects", params],
     queryFn: () =>
-      api.get("/api/dashboard/swinfy/projects/pending/").then((r) => r.data),
+      api
+        .get("/api/dashboard/swinfy/projects/pending/", { params })
+        .then((r) => r.data),
     refetchInterval: 15_000,
   });
+}
+
+/** @deprecated Use useSwinfyProjects instead */
+export function usePendingProjects() {
+  return useSwinfyProjects({ status: "pending" });
 }
 
 export function useSwinfyActivityLog() {
@@ -76,11 +160,15 @@ export function useUWHControl() {
   });
 }
 
-export function useSwinfyTrainers() {
+export function useSwinfyTrainers(districtId?: string) {
   return useQuery<SwinfyTrainer[]>({
-    queryKey: ["swinfy", "trainers"],
+    queryKey: ["swinfy", "trainers", districtId],
     queryFn: () =>
-      api.get("/api/dashboard/swinfy/trainers/").then((r) => r.data),
+      api
+        .get("/api/dashboard/swinfy/trainers/", {
+          params: districtId ? { district: districtId } : {},
+        })
+        .then((r) => r.data),
   });
 }
 
@@ -144,6 +232,15 @@ export function useRejectPhoto() {
   return useMutation({
     mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
       api.patch(`/api/dashboard/swinfy/photos/${id}/reject/`, { reason }),
+    onSuccess: invalidate,
+  });
+}
+
+export function useDeletePhoto() {
+  const invalidate = useInvalidateSwinfy();
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.delete(`/api/dashboard/swinfy/photos/${id}/delete/`),
     onSuccess: invalidate,
   });
 }

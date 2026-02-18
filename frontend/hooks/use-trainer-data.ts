@@ -156,11 +156,19 @@ export function useDeleteStudent() {
 
 // --- Gallery ---
 
-export function useTrainerGallery() {
+export interface GalleryFilters {
+  status?: string;
+  day?: string;
+}
+
+export function useTrainerGallery(filters: GalleryFilters = {}) {
+  const params: Record<string, string> = {};
+  if (filters.status) params.status = filters.status;
+  if (filters.day) params.day = filters.day;
   return useQuery<TrainerGalleryPhoto[]>({
-    queryKey: ["trainer", "gallery"],
+    queryKey: ["trainer", "gallery", params],
     queryFn: () =>
-      api.get("/api/dashboard/trainer/gallery/").then((r) => r.data),
+      api.get("/api/dashboard/trainer/gallery/", { params }).then((r) => r.data),
   });
 }
 
