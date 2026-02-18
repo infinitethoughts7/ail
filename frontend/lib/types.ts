@@ -127,6 +127,7 @@ export interface ActivityLogEntry {
   description: string;
   is_uwh_visible: boolean;
   metadata: Record<string, unknown>;
+  thumbnail_url?: string | null;
   timestamp: string;
 }
 

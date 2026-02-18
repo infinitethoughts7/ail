@@ -17,7 +17,7 @@ import {
 } from "recharts";
 import { TrendingUp, Target } from "lucide-react";
 
-const COLORS = ["#059669", "#2563EB", "#E8E4DA"];
+const COLORS = ["#C9A84C", "#5C4A2E", "#E8E4DA"];
 
 export default function ImpactPage() {
   const { data: summary, isLoading } = useUWHSummary();
@@ -67,7 +67,7 @@ export default function ImpactPage() {
       {/* Headline metrics */}
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#059669]">{completionRate}%</p>
+          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#C9A84C]">{completionRate}%</p>
           <p className="uwh-label mt-2">Completion Rate</p>
         </div>
         <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
@@ -113,7 +113,7 @@ export default function ImpactPage() {
                       label={({ name, percent }) =>
                         `${name} (${(percent * 100).toFixed(0)}%)`
                       }
-                      style={{ fontFamily: "var(--font-dm-sans)", fontSize: 12 }}
+                      style={{ fontFamily: "var(--font-geist-sans)", fontSize: 12 }}
                     >
                       {pieData.map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -124,7 +124,7 @@ export default function ImpactPage() {
                         borderRadius: 12,
                         border: "1px solid #EDE9E0",
                         boxShadow: "0 4px 14px rgba(15,26,46,0.06)",
-                        fontFamily: "var(--font-dm-sans)",
+                        fontFamily: "var(--font-geist-sans)",
                       }}
                     />
                   </PieChart>
@@ -150,24 +150,24 @@ export default function ImpactPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#E8E4DA" />
                     <XAxis
                       dataKey="name"
-                      tick={{ fontSize: 11, fontFamily: "var(--font-dm-sans)", fill: "#718096" }}
+                      tick={{ fontSize: 11, fontFamily: "var(--font-geist-sans)", fill: "#718096" }}
                     />
                     <YAxis
-                      tick={{ fontSize: 11, fontFamily: "var(--font-jetbrains)", fill: "#718096" }}
+                      tick={{ fontSize: 11, fontFamily: "var(--font-geist-sans)", fill: "#718096" }}
                     />
                     <Tooltip
                       contentStyle={{
                         borderRadius: 12,
                         border: "1px solid #EDE9E0",
                         boxShadow: "0 4px 14px rgba(15,26,46,0.06)",
-                        fontFamily: "var(--font-dm-sans)",
+                        fontFamily: "var(--font-geist-sans)",
                       }}
                     />
                     <Legend
-                      wrapperStyle={{ fontSize: "12px", fontFamily: "var(--font-dm-sans)" }}
+                      wrapperStyle={{ fontSize: "12px", fontFamily: "var(--font-geist-sans)" }}
                     />
-                    <Bar dataKey="completed" fill="#059669" name="Completed" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="inProgress" fill="#2563EB" name="In Progress" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="completed" fill="#C9A84C" name="Completed" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="inProgress" fill="#5C4A2E" name="In Progress" radius={[4, 4, 0, 0]} />
                     <Bar dataKey="remaining" fill="#E8E4DA" name="Remaining" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>

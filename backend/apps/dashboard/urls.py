@@ -37,6 +37,7 @@ urlpatterns = [
     path("swinfy/photos/<uuid:pk>/approve/", views.swinfy_approve_photo),
     path("swinfy/photos/<uuid:pk>/feature/", views.swinfy_feature_photo),
     path("swinfy/photos/<uuid:pk>/reject/", views.swinfy_reject_photo),
+    path("swinfy/photos/<uuid:pk>/delete/", views.swinfy_delete_photo),
     path("swinfy/photos/bulk-approve/", views.swinfy_bulk_approve_photos),
     path("swinfy/photos/bulk-reject/", views.swinfy_bulk_reject_photos),
 

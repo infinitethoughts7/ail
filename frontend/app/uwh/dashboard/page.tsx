@@ -38,7 +38,7 @@ export default function UWHDashboardPage() {
   }
 
   const bannerStyles: Record<string, { bg: string; border: string; text: string; dot: string }> = {
-    green: { bg: "bg-[#059669]/5", border: "border-[#059669]/20", text: "text-[#059669]", dot: "bg-[#10B981]" },
+    green: { bg: "bg-[#C9A84C]/5", border: "border-[#C9A84C]/20", text: "text-[#C9A84C]", dot: "bg-[#C9A84C]" },
     yellow: { bg: "bg-[#D97706]/5", border: "border-[#D97706]/20", text: "text-[#D97706]", dot: "bg-[#D97706]" },
     red: { bg: "bg-[#DC2626]/5", border: "border-[#DC2626]/20", text: "text-[#DC2626]", dot: "bg-[#DC2626]" },
   };
@@ -144,7 +144,7 @@ export default function UWHDashboardPage() {
                           {d.completed}/{d.total_schools}
                         </span>
                       </div>
-                      <Progress value={pct} className="h-2 rounded-full" />
+                      <Progress value={pct} className="h-2 rounded-full [&>[data-slot=progress-indicator]]:bg-[#C9A84C]" />
                     </div>
                   );
                 })}
@@ -177,21 +177,30 @@ export default function UWHDashboardPage() {
                 {activities.slice(0, 8).map((a) => (
                   <div
                     key={a.id}
-                    className="border-b pb-3 last:border-0 last:pb-0"
+                    className="flex gap-3 border-b pb-3 last:border-0 last:pb-0"
                     style={{ borderColor: "var(--uwh-border-subtle)" }}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm font-medium leading-tight text-[#0F1A2E]">
-                        {a.title}
+                    {a.thumbnail_url && (
+                      <img
+                        src={a.thumbnail_url}
+                        alt=""
+                        className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                      />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-sm font-medium leading-tight text-[#0F1A2E]">
+                          {a.title}
+                        </p>
+                        <Badge className="shrink-0 rounded-md border border-[#EDE9E0] bg-[#FDFBF7] px-2 py-0.5 text-[10px] font-medium text-[#718096]">
+                          {ACTIVITY_TYPE_LABELS[a.activity_type] ||
+                            a.activity_type.replace(/_/g, " ")}
+                        </Badge>
+                      </div>
+                      <p className="uwh-mono mt-1 text-[11px] text-[#718096]">
+                        {timeAgo(a.timestamp)}
                       </p>
-                      <Badge className="shrink-0 rounded-md border border-[#EDE9E0] bg-[#FDFBF7] px-2 py-0.5 text-[10px] font-medium text-[#718096]">
-                        {ACTIVITY_TYPE_LABELS[a.activity_type] ||
-                          a.activity_type.replace(/_/g, " ")}
-                      </Badge>
                     </div>
-                    <p className="uwh-mono mt-1 text-[11px] text-[#718096]">
-                      {timeAgo(a.timestamp)}
-                    </p>
                   </div>
                 ))}
               </div>
