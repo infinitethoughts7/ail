@@ -1,12 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUWHProjects } from "@/hooks/use-uwh-data";
+import { UWHFilters } from "@/components/uwh/uwh-filters";
 import { Lightbulb, Star, User } from "lucide-react";
 
 export default function InnovationsPage() {
-  const { data: projects, isLoading } = useUWHProjects();
+  const [district, setDistrict] = useState("");
+  const [school, setSchool] = useState("");
+  const { data: projects, isLoading } = useUWHProjects({
+    district: district || undefined,
+    school: school || undefined,
+  });
 
   if (isLoading) {
     return (
@@ -31,6 +38,15 @@ export default function InnovationsPage() {
         <p className="mt-1 text-sm text-[#718096]">
           Showcasing real creativity and impact from the AI Literacy Program
         </p>
+      </div>
+
+      <div className="mb-6">
+        <UWHFilters
+          district={district}
+          school={school}
+          onDistrictChange={setDistrict}
+          onSchoolChange={setSchool}
+        />
       </div>
 
       {/* Featured Projects */}
@@ -120,7 +136,9 @@ export default function InnovationsPage() {
       {featured.length === 0 && approved.length === 0 && (
         <div className="uwh-card py-20 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
           <Lightbulb className="mx-auto mb-3 h-12 w-12 text-[#EDE9E0]" />
-          <p className="text-sm font-medium text-[#718096]">No student projects available yet.</p>
+          <p className="text-sm font-medium text-[#718096]">
+            {district || school ? "No projects match the current filters." : "No student projects available yet."}
+          </p>
         </div>
       )}
     </div>

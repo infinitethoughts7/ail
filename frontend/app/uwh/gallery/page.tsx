@@ -5,11 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useUWHGallery } from "@/hooks/use-uwh-data";
+import { UWHFilters } from "@/components/uwh/uwh-filters";
 import { Camera, Star } from "lucide-react";
 import type { SessionPhoto } from "@/lib/types";
 
 export default function GalleryPage() {
-  const { data: gallery, isLoading } = useUWHGallery();
+  const [district, setDistrict] = useState("");
+  const [school, setSchool] = useState("");
+  const { data: gallery, isLoading } = useUWHGallery({
+    district: district || undefined,
+    school: school || undefined,
+  });
   const [viewPhoto, setViewPhoto] = useState<SessionPhoto | null>(null);
 
   if (isLoading) {
@@ -38,6 +44,15 @@ export default function GalleryPage() {
         <p className="mt-1 text-sm text-[#718096]">
           The AI Literacy program in action — <span className="uwh-mono">{allPhotos.length}</span> photos
         </p>
+      </div>
+
+      <div className="mb-6">
+        <UWHFilters
+          district={district}
+          school={school}
+          onDistrictChange={setDistrict}
+          onSchoolChange={setSchool}
+        />
       </div>
 
       {/* Featured Section */}
@@ -109,7 +124,9 @@ export default function GalleryPage() {
       {allPhotos.length === 0 && (
         <div className="uwh-card py-20 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
           <Camera className="mx-auto mb-3 h-12 w-12 text-[#EDE9E0]" />
-          <p className="text-sm font-medium text-[#718096]">No approved photos available yet.</p>
+          <p className="text-sm font-medium text-[#718096]">
+            {district || school ? "No photos match the current filters." : "No approved photos available yet."}
+          </p>
         </div>
       )}
 

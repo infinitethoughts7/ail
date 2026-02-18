@@ -8,6 +8,19 @@ import type {
   DistrictProgress,
 } from "@/lib/types";
 
+export interface UWHFilters {
+  district?: string;
+  school?: string;
+}
+
+function cleanParams(obj: { [key: string]: string | undefined }) {
+  const params: Record<string, string> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v) params[k] = v;
+  }
+  return params;
+}
+
 export function useUWHSummary() {
   return useQuery<UWHSummary>({
     queryKey: ["uwh", "summary"],
@@ -16,18 +29,22 @@ export function useUWHSummary() {
   });
 }
 
-export function useUWHGallery() {
+export function useUWHGallery(filters: UWHFilters = {}) {
+  const params = cleanParams({ ...filters });
   return useQuery<UWHGallery>({
-    queryKey: ["uwh", "gallery"],
-    queryFn: () => api.get("/api/dashboard/uwh/gallery/").then((r) => r.data),
+    queryKey: ["uwh", "gallery", params],
+    queryFn: () =>
+      api.get("/api/dashboard/uwh/gallery/", { params }).then((r) => r.data),
     refetchInterval: 60_000,
   });
 }
 
-export function useUWHProjects() {
+export function useUWHProjects(filters: UWHFilters = {}) {
+  const params = cleanParams({ ...filters });
   return useQuery<ProjectHighlight[]>({
-    queryKey: ["uwh", "projects"],
-    queryFn: () => api.get("/api/dashboard/uwh/projects/").then((r) => r.data),
+    queryKey: ["uwh", "projects", params],
+    queryFn: () =>
+      api.get("/api/dashboard/uwh/projects/", { params }).then((r) => r.data),
     refetchInterval: 60_000,
   });
 }
