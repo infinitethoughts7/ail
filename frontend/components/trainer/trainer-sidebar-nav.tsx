@@ -12,6 +12,7 @@ import {
   ImageIcon,
   LogOut,
   GraduationCap,
+  Building2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -32,6 +33,11 @@ const NAV_ITEMS = [
     label: "Dashboard",
     href: "/trainer/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    label: "School Info",
+    href: "/trainer/school-info",
+    icon: Building2,
   },
   {
     label: "Submit Session",

@@ -79,7 +79,9 @@ def summary(request):
 
     elif role == "trainer":
         subs = Submission.objects.filter(trainer=request.user)
-        trainer_schools = School.objects.filter(assigned_trainer=request.user)
+        trainer_schools = School.objects.filter(
+            Q(assigned_trainer=request.user) | Q(second_trainer=request.user)
+        )
         return Response({
             "assigned_schools": trainer_schools.count(),
             "submissions_count": subs.count(),
@@ -265,7 +267,9 @@ def trainer_profile(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_students(request):
-    school = School.objects.filter(assigned_trainer=request.user).first()
+    school = School.objects.filter(
+        Q(assigned_trainer=request.user) | Q(second_trainer=request.user)
+    ).first()
     if not school:
         return Response([])
     students = Student.objects.filter(school=school)
@@ -275,7 +279,9 @@ def trainer_students(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_add_student(request):
-    school = School.objects.filter(assigned_trainer=request.user).first()
+    school = School.objects.filter(
+        Q(assigned_trainer=request.user) | Q(second_trainer=request.user)
+    ).first()
     if not school:
         return Response(
             {"detail": "No school assigned to this trainer"},
@@ -292,7 +298,8 @@ def trainer_add_student(request):
 def trainer_update_student(request, pk):
     try:
         student = Student.objects.get(
-            pk=pk, school__assigned_trainer=request.user
+            Q(school__assigned_trainer=request.user) | Q(school__second_trainer=request.user),
+            pk=pk,
         )
     except Student.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -310,7 +317,8 @@ def trainer_update_student(request, pk):
 def trainer_delete_student(request, pk):
     try:
         student = Student.objects.get(
-            pk=pk, school__assigned_trainer=request.user
+            Q(school__assigned_trainer=request.user) | Q(school__second_trainer=request.user),
+            pk=pk,
         )
     except Student.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)

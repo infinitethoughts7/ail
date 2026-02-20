@@ -151,8 +151,7 @@ class SubmissionCreateSerializer(serializers.ModelSerializer):
         fields = [
             "school", "day_number", "curriculum", "student_count",
             "reached_at", "topics_covered", "trainer_notes", "challenges",
-            "attendance_file", "expense_amount", "expense_notes",
-            "expense_receipt",
+            "attendance_file",
         ]
 
 
@@ -217,8 +216,18 @@ class TrainerProfileSerializer(serializers.ModelSerializer):
         return None
 
     def get_assigned_school(self, obj):
-        school = School.objects.filter(assigned_trainer=obj).first()
+        from django.db.models import Q
+        school = School.objects.filter(
+            Q(assigned_trainer=obj) | Q(second_trainer=obj)
+        ).select_related("district").first()
         if school:
+            # Get co-trainer name
+            co_trainer = None
+            if school.assigned_trainer and school.assigned_trainer != obj:
+                co_trainer = school.assigned_trainer.get_full_name() or school.assigned_trainer.username
+            elif school.second_trainer and school.second_trainer != obj:
+                co_trainer = school.second_trainer.get_full_name() or school.second_trainer.username
+
             return {
                 "id": str(school.id),
                 "name": school.name,
@@ -226,5 +235,11 @@ class TrainerProfileSerializer(serializers.ModelSerializer):
                 "status": school.status,
                 "total_students": school.total_students,
                 "total_days": school.total_days,
+                "map_url": school.map_url,
+                "poc_name": school.poc_name,
+                "poc_designation": school.poc_designation,
+                "poc_phone": school.poc_phone,
+                "principal_phone": school.principal_phone,
+                "co_trainer": co_trainer,
             }
         return None

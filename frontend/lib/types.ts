@@ -169,6 +169,12 @@ export interface TrainerProfile {
     status: string;
     total_students: number;
     total_days: number;
+    map_url: string;
+    poc_name: string;
+    poc_designation: string;
+    poc_phone: string;
+    principal_phone: string;
+    co_trainer: string | null;
   } | null;
 }
 

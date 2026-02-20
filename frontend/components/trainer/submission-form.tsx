@@ -17,7 +17,7 @@ import {
 import { useSchools, useCurriculum, useSubmitSession } from "@/hooks/use-trainer-data";
 import { CURRICULUM_DAYS } from "@/lib/constants";
 import { toast } from "sonner";
-import { Camera, X, Upload, Loader2, Clock, MapPin, Users, IndianRupee, Receipt } from "lucide-react";
+import { Camera, X, Upload, Loader2, Clock, MapPin, Users } from "lucide-react";
 
 const MAX_PHOTOS = 5;
 const MIN_PHOTOS = 3;
@@ -25,7 +25,6 @@ const MIN_PHOTOS = 3;
 export function SubmissionForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const receiptInputRef = useRef<HTMLInputElement>(null);
 
   const { data: schools } = useSchools();
   const { data: curriculum } = useCurriculum();
@@ -40,10 +39,6 @@ export function SubmissionForm() {
   const [challenges, setChallenges] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
-  const [expenseAmount, setExpenseAmount] = useState("");
-  const [expenseNotes, setExpenseNotes] = useState("");
-  const [expenseReceipt, setExpenseReceipt] = useState<File | null>(null);
-  const [receiptName, setReceiptName] = useState("");
 
   const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -108,10 +103,6 @@ export function SubmissionForm() {
 
     photos.forEach((photo) => formData.append("photos", photo));
 
-    if (expenseAmount) formData.append("expense_amount", expenseAmount);
-    if (expenseNotes) formData.append("expense_notes", expenseNotes);
-    if (expenseReceipt) formData.append("expense_receipt", expenseReceipt);
-
     submit.mutate(formData, {
       onSuccess: () => {
         toast.success("Session submitted successfully!");
@@ -131,14 +122,17 @@ export function SubmissionForm() {
     : null;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       {/* Step 1: Select Day */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">Select Day</CardTitle>
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <CardHeader className="border-b bg-muted/30 pb-3">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2DD4A8] text-[10px] font-bold text-white">1</span>
+            Select Day
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-4 gap-2">
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-4 gap-2.5">
             {CURRICULUM_DAYS.map((day) => {
               const isSelected = dayNumber === day.day.toString();
               return (
@@ -146,9 +140,9 @@ export function SubmissionForm() {
                   key={day.day}
                   type="button"
                   onClick={() => setDayNumber(day.day.toString())}
-                  className={`rounded-xl border-2 px-2 py-3 text-center transition-all ${
+                  className={`rounded-xl border-2 px-2 py-3.5 text-center transition-all ${
                     isSelected
-                      ? `border-[${day.hex}] bg-[${day.bgHex}]`
+                      ? "shadow-sm"
                       : "border-border hover:border-muted-foreground/30"
                   }`}
                   style={
@@ -168,7 +162,7 @@ export function SubmissionForm() {
             })}
           </div>
           {selectedDay && (
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
               {selectedDay.label}
             </p>
           )}
@@ -176,19 +170,22 @@ export function SubmissionForm() {
       </Card>
 
       {/* Step 2: School, Time, Students */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">Session Details</CardTitle>
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <CardHeader className="border-b bg-muted/30 pb-3">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2DD4A8] text-[10px] font-bold text-white">2</span>
+            Session Details
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-4">
           {/* School */}
           <div>
-            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
+            <Label className="mb-1.5 flex items-center gap-1.5 text-sm font-medium">
               <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
               School
             </Label>
             <Select value={schoolId} onValueChange={setSchoolId}>
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-11 rounded-xl">
                 <SelectValue placeholder="Select your school" />
               </SelectTrigger>
               <SelectContent>
@@ -201,45 +198,48 @@ export function SubmissionForm() {
             </Select>
           </div>
 
-          {/* Reached Time */}
-          <div>
-            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
-              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-              Reached School At
-            </Label>
-            <Input
-              type="time"
-              value={reachedAt}
-              onChange={(e) => setReachedAt(e.target.value)}
-              required
-              className="h-11"
-            />
-          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Reached Time */}
+            <div>
+              <Label className="mb-1.5 flex items-center gap-1.5 text-sm font-medium">
+                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                Reached At
+              </Label>
+              <Input
+                type="time"
+                value={reachedAt}
+                onChange={(e) => setReachedAt(e.target.value)}
+                required
+                className="h-11 rounded-xl"
+              />
+            </div>
 
-          {/* Student Count */}
-          <div>
-            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
-              <Users className="h-3.5 w-3.5 text-muted-foreground" />
-              Students Present
-            </Label>
-            <Input
-              type="number"
-              value={studentCount}
-              onChange={(e) => setStudentCount(e.target.value)}
-              placeholder="e.g. 57"
-              min={1}
-              required
-              className="h-11"
-            />
+            {/* Student Count */}
+            <div>
+              <Label className="mb-1.5 flex items-center gap-1.5 text-sm font-medium">
+                <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                Students Present
+              </Label>
+              <Input
+                type="number"
+                value={studentCount}
+                onChange={(e) => setStudentCount(e.target.value)}
+                placeholder="e.g. 57"
+                min={1}
+                required
+                className="h-11 rounded-xl"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Step 3: Photos */}
-      <Card>
-        <CardHeader className="pb-3">
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <CardHeader className="border-b bg-muted/30 pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-semibold">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#2DD4A8] text-[10px] font-bold text-white">3</span>
               Photos ({photos.length}/{MAX_PHOTOS})
             </CardTitle>
             <span className="text-[11px] text-muted-foreground">
@@ -247,8 +247,8 @@ export function SubmissionForm() {
             </span>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
             {photoPreviews.map((preview, i) => (
               <div
                 key={i}
@@ -297,7 +297,7 @@ export function SubmissionForm() {
           />
 
           {photos.length < MIN_PHOTOS && (
-            <p className="mt-2 text-xs text-orange-600">
+            <p className="mt-3 rounded-lg bg-orange-50 px-3 py-2 text-xs text-orange-600 dark:bg-orange-950/30">
               Upload at least {MIN_PHOTOS - photos.length} more photo{MIN_PHOTOS - photos.length !== 1 ? "s" : ""}
             </p>
           )}
@@ -305,118 +305,42 @@ export function SubmissionForm() {
       </Card>
 
       {/* Step 4: Notes (optional) */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">
-            Notes <span className="font-normal text-muted-foreground">(optional)</span>
+      <Card className="overflow-hidden border-0 shadow-sm">
+        <CardHeader className="border-b bg-muted/30 pb-3">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-300 text-[10px] font-bold text-gray-600 dark:bg-gray-600 dark:text-gray-300">4</span>
+            Notes
+            <span className="font-normal text-muted-foreground">(optional)</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 pt-4">
           <div>
-            <Label className="mb-1.5 block text-sm">Topics Covered</Label>
+            <Label className="mb-1.5 block text-sm font-medium">Topics Covered</Label>
             <Input
               value={topicsCovered}
               onChange={(e) => setTopicsCovered(e.target.value)}
               placeholder="AI basics, Machine learning, ..."
-              className="h-11"
+              className="h-11 rounded-xl"
             />
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Session Notes</Label>
+            <Label className="mb-1.5 block text-sm font-medium">Session Notes</Label>
             <Textarea
               value={trainerNotes}
               onChange={(e) => setTrainerNotes(e.target.value)}
               placeholder="How did the session go?"
               rows={2}
+              className="rounded-xl"
             />
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Challenges</Label>
+            <Label className="mb-1.5 block text-sm font-medium">Challenges</Label>
             <Textarea
               value={challenges}
               onChange={(e) => setChallenges(e.target.value)}
               placeholder="Any issues faced..."
               rows={2}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Step 5: Expenses (optional) */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">
-            Expenses <span className="font-normal text-muted-foreground">(optional)</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div>
-            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
-              <IndianRupee className="h-3.5 w-3.5 text-muted-foreground" />
-              Amount
-            </Label>
-            <Input
-              type="number"
-              value={expenseAmount}
-              onChange={(e) => setExpenseAmount(e.target.value)}
-              placeholder="e.g. 500"
-              min={0}
-              step="0.01"
-              className="h-11"
-            />
-          </div>
-          <div>
-            <Label className="mb-1.5 block text-sm">Expense Notes</Label>
-            <Textarea
-              value={expenseNotes}
-              onChange={(e) => setExpenseNotes(e.target.value)}
-              placeholder="Travel, food, materials..."
-              rows={2}
-            />
-          </div>
-          <div>
-            <Label className="mb-1.5 flex items-center gap-1.5 text-sm">
-              <Receipt className="h-3.5 w-3.5 text-muted-foreground" />
-              Receipt
-            </Label>
-            {expenseReceipt ? (
-              <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
-                <Receipt className="h-4 w-4 text-muted-foreground" />
-                <span className="flex-1 truncate text-sm">{receiptName}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setExpenseReceipt(null);
-                    setReceiptName("");
-                    if (receiptInputRef.current) receiptInputRef.current.value = "";
-                  }}
-                  className="rounded-full p-1 text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => receiptInputRef.current?.click()}
-                className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground transition-colors hover:border-muted-foreground/40 active:bg-muted/50"
-              >
-                <Upload className="h-4 w-4" />
-                Upload Receipt
-              </button>
-            )}
-            <input
-              ref={receiptInputRef}
-              type="file"
-              accept="image/*,.pdf"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setExpenseReceipt(file);
-                  setReceiptName(file.name);
-                }
-              }}
-              className="hidden"
+              className="rounded-xl"
             />
           </div>
         </CardContent>
@@ -425,7 +349,7 @@ export function SubmissionForm() {
       {/* Submit */}
       <Button
         type="submit"
-        className="h-12 w-full text-base"
+        className="h-12 w-full rounded-xl text-base font-semibold shadow-sm"
         disabled={!canSubmit}
       >
         {submit.isPending ? (

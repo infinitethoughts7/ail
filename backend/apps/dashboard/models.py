@@ -28,6 +28,10 @@ class School(models.Model):
         District, on_delete=models.CASCADE, related_name="schools"
     )
     address = models.TextField(blank=True)
+    map_url = models.URLField(max_length=500, blank=True)
+    poc_name = models.CharField(max_length=255, blank=True)
+    poc_designation = models.CharField(max_length=255, blank=True)
+    poc_phone = models.CharField(max_length=50, blank=True)
     principal_name = models.CharField(max_length=255, blank=True)
     principal_phone = models.CharField(max_length=20, blank=True)
     principal_email = models.EmailField(blank=True)
@@ -41,6 +45,14 @@ class School(models.Model):
         null=True,
         blank=True,
         related_name="assigned_schools",
+        limit_choices_to={"role": "trainer"},
+    )
+    second_trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="second_assigned_schools",
         limit_choices_to={"role": "trainer"},
     )
     total_days = models.IntegerField(default=4)
