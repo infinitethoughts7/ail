@@ -23,12 +23,12 @@ export function GalleryFilters({
   onDayChange,
 }: GalleryFiltersProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex items-center gap-2">
       <Select
         value={status || "all"}
         onValueChange={(v) => onStatusChange(v === "all" ? "" : v)}
       >
-        <SelectTrigger size="sm" className="min-w-[120px]">
+        <SelectTrigger className="h-9 w-auto min-w-[120px] rounded-xl border-0 bg-muted text-xs font-medium">
           <SelectValue placeholder="All Statuses" />
         </SelectTrigger>
         <SelectContent>
@@ -43,7 +43,7 @@ export function GalleryFilters({
         value={day || "all"}
         onValueChange={(v) => onDayChange(v === "all" ? "" : v)}
       >
-        <SelectTrigger size="sm" className="min-w-[100px]">
+        <SelectTrigger className="h-9 w-auto min-w-[100px] rounded-xl border-0 bg-muted text-xs font-medium">
           <SelectValue placeholder="All Days" />
         </SelectTrigger>
         <SelectContent>

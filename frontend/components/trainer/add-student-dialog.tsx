@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAddStudent, useUpdateStudent } from "@/hooks/use-trainer-data";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, UserPlus, Save } from "lucide-react";
 import type { Student } from "@/lib/types";
 
 interface AddStudentDialogProps {
@@ -99,25 +98,26 @@ export function AddStudentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-base">
             {isEditing ? "Edit Student" : "Add Student"}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label className="mb-1.5 block text-sm">Name *</Label>
+            <Label className="mb-2 block text-sm font-medium">Name *</Label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Student name"
               required
+              className="h-12 rounded-xl text-sm"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="mb-1.5 block text-sm">Age</Label>
+              <Label className="mb-2 block text-sm font-medium">Age</Label>
               <Input
                 type="number"
                 value={age}
@@ -125,60 +125,77 @@ export function AddStudentDialog({
                 placeholder="e.g. 12"
                 min={3}
                 max={25}
+                className="h-12 rounded-xl text-sm"
               />
             </div>
             <div>
-              <Label className="mb-1.5 block text-sm">Grade</Label>
+              <Label className="mb-2 block text-sm font-medium">Grade</Label>
               <Input
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
                 placeholder="e.g. 8th"
+                className="h-12 rounded-xl text-sm"
               />
             </div>
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Parent Name</Label>
+            <Label className="mb-2 block text-sm font-medium">Parent Name</Label>
             <Input
               value={parentName}
               onChange={(e) => setParentName(e.target.value)}
               placeholder="Parent / guardian name"
+              className="h-12 rounded-xl text-sm"
             />
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Parent Phone</Label>
+            <Label className="mb-2 block text-sm font-medium">Parent Phone</Label>
             <Input
+              type="tel"
               value={parentPhone}
               onChange={(e) => setParentPhone(e.target.value)}
               placeholder="Phone number"
+              className="h-12 rounded-xl text-sm"
             />
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Notes</Label>
+            <Label className="mb-2 block text-sm font-medium">Notes</Label>
             <Textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Any additional notes..."
               rows={2}
+              className="rounded-xl text-sm"
             />
           </div>
-          <DialogFooter>
+          <div className="flex gap-2 pt-1">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              className="h-12 flex-1 rounded-xl"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="h-12 flex-1 rounded-xl bg-[#0F4C4C] hover:bg-[#0F4C4C]/90"
+            >
               {isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : isEditing ? (
-                "Save"
+                <span className="flex items-center gap-1.5">
+                  <Save className="h-4 w-4" />
+                  Save
+                </span>
               ) : (
-                "Add Student"
+                <span className="flex items-center gap-1.5">
+                  <UserPlus className="h-4 w-4" />
+                  Add Student
+                </span>
               )}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

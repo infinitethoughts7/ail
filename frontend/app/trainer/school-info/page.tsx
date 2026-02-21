@@ -1,7 +1,9 @@
 "use client";
 
 import { useTrainerProfile } from "@/hooks/use-trainer-data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   MapPin,
   Phone,
@@ -19,164 +21,173 @@ export default function SchoolInfoPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-sm text-muted-foreground">
-        Loading school information...
+      <div>
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-white/80 px-4 backdrop-blur-lg dark:bg-gray-950/80">
+          <SidebarTrigger className="md:hidden" />
+          <h1 className="text-base font-semibold">School Info</h1>
+        </header>
+        <div className="mx-auto max-w-2xl space-y-3 p-4">
+          <Skeleton className="h-24 rounded-2xl" />
+          <Skeleton className="h-40 rounded-2xl" />
+          <Skeleton className="h-28 rounded-2xl" />
+        </div>
       </div>
     );
   }
 
   if (!school) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-2 px-4 text-center">
-        <Building2 className="h-12 w-12 text-muted-foreground/40" />
-        <p className="text-lg font-medium">No School Assigned</p>
-        <p className="text-sm text-muted-foreground">
-          You haven&apos;t been assigned to a school yet. Contact your
-          coordinator for assistance.
-        </p>
+      <div>
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-white/80 px-4 backdrop-blur-lg dark:bg-gray-950/80">
+          <SidebarTrigger className="md:hidden" />
+          <h1 className="text-base font-semibold">School Info</h1>
+        </header>
+        <div className="flex min-h-[60vh] flex-col items-center justify-center gap-2 px-4 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-muted">
+            <Building2 className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <p className="mt-2 text-lg font-semibold">No School Assigned</p>
+          <p className="text-sm text-muted-foreground">
+            Contact your coordinator for assistance
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4 p-4 pb-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold tracking-tight">{school.name}</h1>
-        <p className="text-sm text-muted-foreground">{school.district_name} District</p>
-      </div>
+    <div>
+      <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-white/80 px-4 backdrop-blur-lg dark:bg-gray-950/80">
+        <SidebarTrigger className="md:hidden" />
+        <h1 className="text-base font-semibold">School Info</h1>
+      </header>
 
-      {/* School Overview */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-            <Building2 className="h-4 w-4 text-[#2DD4A8]" />
-            School Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-xl bg-muted/50 p-3 text-center">
-              <p className="text-2xl font-bold text-[#2DD4A8]">{school.total_students}</p>
-              <p className="text-xs text-muted-foreground">Total Students</p>
-            </div>
-            <div className="rounded-xl bg-muted/50 p-3 text-center">
-              <p className="text-2xl font-bold text-[#2DD4A8]">{school.total_days}</p>
-              <p className="text-xs text-muted-foreground">Program Days</p>
-            </div>
-          </div>
-          <div className="mt-3 flex items-center gap-2 rounded-lg border px-3 py-2">
-            <span className={`inline-block h-2 w-2 rounded-full ${
-              school.status === "completed" ? "bg-green-500" :
-              school.status === "in_progress" ? "bg-yellow-500" : "bg-gray-400"
-            }`} />
-            <span className="text-sm capitalize">
-              {school.status.replace("_", " ")}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Point of Contact */}
-      {school.poc_name && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-              <User className="h-4 w-4 text-blue-500" />
-              Point of Contact (POC)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">{school.poc_name}</p>
-                {school.poc_designation && (
-                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Briefcase className="h-3 w-3" />
-                    {school.poc_designation}
-                  </p>
-                )}
+      <div className="mx-auto max-w-2xl space-y-3 p-4 pb-8">
+        {/* School Header Card */}
+        <Card className="overflow-hidden border-0 bg-gradient-to-br from-[#0F4C4C] to-[#1A6B6B] text-white shadow-lg">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-white/50 uppercase tracking-wider">
+              Assigned School
+            </p>
+            <h2 className="mt-1 text-lg font-bold">{school.name}</h2>
+            <p className="text-sm text-white/70">{school.district_name} District</p>
+            <div className="mt-3 flex gap-4">
+              <div className="rounded-xl bg-white/10 px-3 py-2 text-center backdrop-blur-sm">
+                <p className="text-xl font-bold">{school.total_students}</p>
+                <p className="text-[10px] text-white/60">Students</p>
+              </div>
+              <div className="rounded-xl bg-white/10 px-3 py-2 text-center backdrop-blur-sm">
+                <p className="text-xl font-bold">{school.total_days}</p>
+                <p className="text-[10px] text-white/60">Program Days</p>
+              </div>
+              <div className="ml-auto flex items-end">
+                <span className={`inline-flex items-center gap-1.5 rounded-lg bg-white/15 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${
+                    school.status === "completed" ? "bg-emerald-400" :
+                    school.status === "in_progress" ? "bg-yellow-400" : "bg-gray-400"
+                  }`} />
+                  {school.status.replace(/_/g, " ")}
+                </span>
               </div>
             </div>
-            {school.poc_phone && (
+          </CardContent>
+        </Card>
+
+        {/* Point of Contact */}
+        {school.poc_name && (
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/30">
+                  <User className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Point of Contact</p>
+                  <p className="text-sm font-semibold">{school.poc_name}</p>
+                </div>
+              </div>
+              {school.poc_designation && (
+                <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
+                  <Briefcase className="h-3 w-3" />
+                  {school.poc_designation}
+                </div>
+              )}
+              {school.poc_phone && (
+                <a
+                  href={`tel:${school.poc_phone.split(",")[0].trim()}`}
+                  className="flex items-center gap-2.5 rounded-xl bg-blue-50 px-4 py-3.5 text-sm font-medium text-blue-700 transition-colors active:bg-blue-100 dark:bg-blue-950/30 dark:text-blue-400"
+                >
+                  <Phone className="h-4 w-4" />
+                  {school.poc_phone}
+                </a>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Principal Contact */}
+        {school.principal_phone && (
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/30">
+                  <UserCheck className="h-4 w-4 text-purple-600" />
+                </div>
+                <p className="text-xs text-muted-foreground">Principal</p>
+              </div>
               <a
-                href={`tel:${school.poc_phone.split(",")[0].trim()}`}
-                className="flex items-center gap-2 rounded-xl bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-colors active:bg-blue-100 dark:bg-blue-950/30 dark:text-blue-400"
+                href={`tel:${school.principal_phone}`}
+                className="flex items-center gap-2.5 rounded-xl bg-purple-50 px-4 py-3.5 text-sm font-medium text-purple-700 transition-colors active:bg-purple-100 dark:bg-purple-950/30 dark:text-purple-400"
               >
                 <Phone className="h-4 w-4" />
-                {school.poc_phone}
+                {school.principal_phone}
               </a>
-            )}
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Principal Contact */}
-      {school.principal_phone && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-              <UserCheck className="h-4 w-4 text-purple-500" />
-              Principal Contact
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <a
-              href={`tel:${school.principal_phone}`}
-              className="flex items-center gap-2 rounded-xl bg-purple-50 px-4 py-3 text-sm font-medium text-purple-700 transition-colors active:bg-purple-100 dark:bg-purple-950/30 dark:text-purple-400"
-            >
-              <Phone className="h-4 w-4" />
-              {school.principal_phone}
-            </a>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Co-Trainer */}
-      {school.co_trainer && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-              <Users className="h-4 w-4 text-orange-500" />
-              Co-Trainer
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-3 rounded-xl bg-orange-50 px-4 py-3 dark:bg-orange-950/30">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-200 text-orange-700 dark:bg-orange-900 dark:text-orange-300">
-                <User className="h-4 w-4" />
+        {/* Co-Trainer */}
+        {school.co_trainer && (
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30">
+                  <Users className="h-5 w-5 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Co-Trainer</p>
+                  <p className="text-sm font-semibold">{school.co_trainer}</p>
+                </div>
               </div>
-              <p className="text-sm font-medium text-orange-700 dark:text-orange-400">
-                {school.co_trainer}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Location / Map */}
-      {school.map_url && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-sm font-semibold">
-              <MapPin className="h-4 w-4 text-red-500" />
-              School Location
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <a
-              href={school.map_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 rounded-xl bg-red-50 px-4 py-3.5 text-sm font-medium text-red-700 transition-colors active:bg-red-100 dark:bg-red-950/30 dark:text-red-400"
-            >
-              <MapPin className="h-5 w-5 flex-shrink-0" />
-              <span className="flex-1">Open in Google Maps</span>
-              <ExternalLink className="h-4 w-4 flex-shrink-0 opacity-60" />
-            </a>
-          </CardContent>
-        </Card>
-      )}
+        {/* Location / Map */}
+        {school.map_url && (
+          <a
+            href={school.map_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <Card className="border-0 shadow-sm transition-all active:scale-[0.99]">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 dark:bg-red-950/30">
+                    <MapPin className="h-5 w-5 text-red-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs text-muted-foreground">Location</p>
+                    <p className="text-sm font-medium">Open in Google Maps</p>
+                  </div>
+                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </CardContent>
+            </Card>
+          </a>
+        )}
+      </div>
     </div>
   );
 }

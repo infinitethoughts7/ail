@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +23,7 @@ import {
   useAddProject,
 } from "@/hooks/use-trainer-data";
 import { toast } from "sonner";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, ImagePlus, X, Lightbulb } from "lucide-react";
 
 interface AddProjectDialogProps {
   open: boolean;
@@ -96,15 +94,18 @@ export function AddProjectDialog({
         onOpenChange(val);
       }}
     >
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Student Idea</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-base">
+            <Lightbulb className="h-4 w-4 text-amber-500" />
+            Add Student Idea
+          </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label className="mb-1.5 block text-sm">Submission *</Label>
+            <Label className="mb-2 block text-sm font-medium">Submission *</Label>
             <Select value={submissionId} onValueChange={setSubmissionId}>
-              <SelectTrigger>
+              <SelectTrigger className="h-12 rounded-xl text-sm">
                 <SelectValue placeholder="Select a submission" />
               </SelectTrigger>
               <SelectContent>
@@ -117,17 +118,18 @@ export function AddProjectDialog({
             </Select>
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Student Name *</Label>
+            <Label className="mb-2 block text-sm font-medium">Student Name *</Label>
             <Input
               value={studentName}
               onChange={(e) => setStudentName(e.target.value)}
               placeholder="Student name"
               required
+              className="h-12 rounded-xl text-sm"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="mb-1.5 block text-sm">Age</Label>
+              <Label className="mb-2 block text-sm font-medium">Age</Label>
               <Input
                 type="number"
                 value={studentAge}
@@ -135,44 +137,48 @@ export function AddProjectDialog({
                 placeholder="e.g. 14"
                 min={3}
                 max={25}
+                className="h-12 rounded-xl text-sm"
               />
             </div>
             <div>
-              <Label className="mb-1.5 block text-sm">Grade</Label>
+              <Label className="mb-2 block text-sm font-medium">Grade</Label>
               <Input
                 value={studentGrade}
                 onChange={(e) => setStudentGrade(e.target.value)}
                 placeholder="e.g. 9th"
+                className="h-12 rounded-xl text-sm"
               />
             </div>
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Project Title *</Label>
+            <Label className="mb-2 block text-sm font-medium">Project Title *</Label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="What did they build?"
               required
+              className="h-12 rounded-xl text-sm"
             />
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Description *</Label>
+            <Label className="mb-2 block text-sm font-medium">Description *</Label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the project idea..."
               rows={3}
               required
+              className="rounded-xl text-sm"
             />
           </div>
           <div>
-            <Label className="mb-1.5 block text-sm">Image</Label>
+            <Label className="mb-2 block text-sm font-medium">Image</Label>
             {imagePreview ? (
-              <div className="relative w-fit">
+              <div className="relative inline-block">
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="h-24 w-24 rounded-lg object-cover"
+                  className="h-28 w-28 rounded-2xl object-cover"
                 />
                 <button
                   type="button"
@@ -181,7 +187,7 @@ export function AddProjectDialog({
                     setImagePreview(null);
                     if (imageRef.current) imageRef.current.value = "";
                   }}
-                  className="absolute -right-1.5 -top-1.5 rounded-full bg-black/60 p-1 text-white"
+                  className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -190,10 +196,10 @@ export function AddProjectDialog({
               <button
                 type="button"
                 onClick={() => imageRef.current?.click()}
-                className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 text-sm text-muted-foreground transition-colors hover:border-muted-foreground/40"
+                className="flex h-28 w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-muted-foreground/20 text-sm text-muted-foreground transition-colors active:bg-muted/50"
               >
-                <Upload className="h-4 w-4" />
-                Upload Image
+                <ImagePlus className="h-5 w-5" />
+                <span>Upload Image</span>
               </button>
             )}
             <input
@@ -210,22 +216,30 @@ export function AddProjectDialog({
               className="hidden"
             />
           </div>
-          <DialogFooter>
+          <div className="flex gap-2 pt-1">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              className="h-12 flex-1 rounded-xl"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={addProject.isPending}>
+            <Button
+              type="submit"
+              disabled={addProject.isPending}
+              className="h-12 flex-1 rounded-xl bg-[#0F4C4C] hover:bg-[#0F4C4C]/90"
+            >
               {addProject.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                "Add Project"
+                <span className="flex items-center gap-1.5">
+                  <Lightbulb className="h-4 w-4" />
+                  Add Idea
+                </span>
               )}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

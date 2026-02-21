@@ -6,6 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useTrainerSubmissions } from "@/hooks/use-trainer-data";
 import { SUBMISSION_STATUS_STYLES, getDayTheme } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
+import { Camera, Users, ClipboardCheck, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export function SubmissionList() {
   const { data: submissions, isLoading } = useTrainerSubmissions();
@@ -13,8 +15,8 @@ export function SubmissionList() {
   if (isLoading) {
     return (
       <div className="space-y-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 rounded-xl" />
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-[76px] rounded-2xl" />
         ))}
       </div>
     );
@@ -22,54 +24,78 @@ export function SubmissionList() {
 
   if (!submissions || submissions.length === 0) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center text-sm text-muted-foreground">
-          No submissions yet. Start by submitting a session.
+      <Card className="border-dashed">
+        <CardContent className="py-16 text-center">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+            <ClipboardCheck className="h-7 w-7 text-muted-foreground" />
+          </div>
+          <p className="font-medium">No submissions yet</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Your session reports will appear here
+          </p>
+          <Link
+            href="/trainer/form"
+            className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#0F4C4C]"
+          >
+            Submit your first session <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5">
       {submissions.map((sub) => {
         const dayTheme = getDayTheme(sub.day_number);
         const statusStyle = SUBMISSION_STATUS_STYLES[sub.status];
 
         return (
-          <Card key={sub.id}>
-            <CardContent className="px-4 py-3">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-sm font-semibold">
-                      {sub.school_name}
-                    </p>
-                    <Badge
-                      variant="outline"
-                      className={`${dayTheme.bgLight} ${dayTheme.textColor} ${dayTheme.borderColor}`}
-                    >
-                      {dayTheme.shortLabel}
-                    </Badge>
-                    {statusStyle && (
-                      <Badge
-                        variant="outline"
-                        className={`${statusStyle.bg} ${statusStyle.text}`}
-                      >
-                        {statusStyle.label}
-                      </Badge>
+          <Card
+            key={sub.id}
+            className="overflow-hidden border-0 shadow-sm transition-all active:scale-[0.99]"
+          >
+            <CardContent className="flex items-center gap-3 p-0">
+              {/* Color accent */}
+              <div
+                className="flex h-full w-1 self-stretch rounded-l-xl"
+                style={{ backgroundColor: dayTheme.hex }}
+              />
+              <div className="flex flex-1 items-center gap-3 py-3 pr-4">
+                {/* Day badge */}
+                <div
+                  className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl text-white"
+                  style={{ backgroundColor: dayTheme.hex }}
+                >
+                  <span className="text-[10px] font-medium leading-none opacity-80">Day</span>
+                  <span className="text-lg font-bold leading-tight">{sub.day_number}</span>
+                </div>
+                {/* Content */}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{sub.school_name}</p>
+                  <div className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Users className="h-3 w-3" />
+                      {sub.student_count}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Camera className="h-3 w-3" />
+                      {sub.photo_count}
+                    </span>
+                    {sub.submitted_at && (
+                      <span>{timeAgo(sub.submitted_at)}</span>
                     )}
                   </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {sub.student_count} students · {sub.photo_count} photos ·{" "}
-                    {sub.project_count} projects
-                  </p>
-                  {sub.submitted_at && (
-                    <p className="text-[11px] text-muted-foreground">
-                      {timeAgo(sub.submitted_at)}
-                    </p>
-                  )}
                 </div>
+                {/* Status */}
+                {statusStyle && (
+                  <Badge
+                    variant="outline"
+                    className={`shrink-0 border-0 text-[10px] font-semibold ${statusStyle.bg} ${statusStyle.text}`}
+                  >
+                    {statusStyle.label}
+                  </Badge>
+                )}
               </div>
             </CardContent>
           </Card>
