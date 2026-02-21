@@ -7,6 +7,12 @@ const ROLE_ROUTES: Record<string, string> = {
   trainer: "/trainer",
 };
 
+const DEFAULT_PAGES: Record<string, string> = {
+  admin: "/swinfy/verification",
+  sponsor: "/uwh/dashboard",
+  trainer: "/trainer/form",
+};
+
 const ROLE_PREFIXES: Record<string, string> = {
   "/swinfy": "admin",
   "/uwh": "sponsor",
@@ -46,16 +52,10 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Redirect old routes to new role-based routes
-  if (pathname === "/admin") {
-    return NextResponse.redirect(new URL("/swinfy/verification", req.url));
-  }
-  if (pathname === "/dashboard") {
-    if (role === "sponsor") {
-      return NextResponse.redirect(new URL("/uwh/dashboard", req.url));
-    }
+  // Redirect old routes and /dashboard to role-specific default pages
+  if (pathname === "/admin" || pathname === "/dashboard") {
     return NextResponse.redirect(
-      new URL(ROLE_ROUTES[role] || "/login", req.url)
+      new URL(DEFAULT_PAGES[role] || "/login", req.url)
     );
   }
 

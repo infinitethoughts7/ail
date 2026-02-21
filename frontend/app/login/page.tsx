@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -70,30 +70,14 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    setLoading(false);
-
     if (res?.error) {
+      setLoading(false);
       setError("Invalid email or password. Please try again.");
       return;
     }
 
-    // Fetch session to get user role for role-based redirect
-    const session = await getSession();
-    const role = session?.user?.role;
-
-    switch (role) {
-      case "admin":
-        router.push("/swinfy/verification");
-        break;
-      case "sponsor":
-        router.push("/uwh/dashboard");
-        break;
-      case "trainer":
-        router.push("/trainer/form");
-        break;
-      default:
-        router.push("/login");
-    }
+    // Middleware handles role-based redirect from /dashboard
+    router.push("/dashboard");
   };
 
   return (
