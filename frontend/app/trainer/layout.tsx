@@ -8,6 +8,7 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { TrainerSidebarNav } from "@/components/trainer/trainer-sidebar-nav";
+import { MobileBottomNav } from "@/components/trainer/mobile-bottom-nav";
 
 export default function TrainerLayout({
   children,
@@ -23,8 +24,11 @@ export default function TrainerLayout({
 
   if (status === "loading") {
     return (
-      <div className="flex min-h-dvh items-center justify-center text-sm text-muted-foreground">
-        Loading...
+      <div className="flex min-h-dvh items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#2DD4A8] border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -33,8 +37,9 @@ export default function TrainerLayout({
     <SidebarProvider>
       <TrainerSidebarNav />
       <SidebarInset>
-        <div className="min-h-dvh">{children}</div>
+        <div className="min-h-dvh pb-16 md:pb-0">{children}</div>
       </SidebarInset>
+      <MobileBottomNav />
     </SidebarProvider>
   );
 }
