@@ -6,7 +6,7 @@ Seeds:
   - 7 districts
   - 40 schools (from TGMREIS circular) with POC/map data for assigned schools
   - User accounts (admin, sponsors, trainers with ail@2026 password)
-  - Trainer-to-school assignments (trainer1 + trainer2 per school)
+  - Trainer-to-school assignments (each trainer individually mapped to a school)
   - UWH control singleton
 
 Usage:
@@ -166,164 +166,48 @@ SCHOOLS = [
 ]
 
 # ──────────────────────────────────────────────
-# School assignments with POC, Map, Trainers
-# (only schools with confirmed trainer data)
+# Trainer → School assignments (one entry per trainer)
+# Two trainers at the same school = two entries with same school details
 # ──────────────────────────────────────────────
-SCHOOL_ASSIGNMENTS = [
-    {
-        "school_name": "TMREIS Chandrayangutta G-1",
-        "poc_name": "Sravanthi",
-        "poc_designation": "Librarian",
-        "principal_phone": "7995057965",
-        "poc_phone": "8179780395",
-        "trainer1_email": "sangeethakasipeta05@gmail.com",
-        "trainer2_email": None,
-        "map_url": "https://maps.app.goo.gl/VVF6hGSWFwZBMVxT7",
-        "total_students": 42,
-    },
-    {
-        "school_name": "TMREIS Yakutpura G-2",
-        "poc_name": "Sandhya Rani",
-        "poc_designation": "Librarian",
-        "principal_phone": "7995057907",
-        "poc_phone": "9000020606",
-        "trainer1_email": None,
-        "trainer2_email": "sureshdodde86@gmail.com",
-        "map_url": "https://maps.app.goo.gl/RqA4VhNh23mE2brq7",
-        "total_students": 36,
-    },
-    {
-        "school_name": "TMREIS Rajendranagar G-1",
-        "poc_name": "Shahbaz Nosheen",
-        "poc_designation": "PGT Bio Science",
-        "principal_phone": "7331170801",
-        "poc_phone": "8087287410",
-        "trainer1_email": "sathisht.1729@gmail.com",
-        "trainer2_email": "prava1729@gmail.com",
-        "map_url": "https://maps.app.goo.gl/Lb3mBA9bdiqyvuri7?g_st=aw",
-        "total_students": 39,
-    },
-    {
-        "school_name": "TMREIS Mahbubnagar G-1",
-        "poc_name": "Mahamuda Begum",
-        "poc_designation": "TGT Hindi",
-        "principal_phone": "7207998977",
-        "poc_phone": "9010903523, 9346952488",
-        "trainer1_email": "sankinarmada06@gmail.com",
-        "trainer2_email": "parveen.swinfy03@gmail.com",
-        "map_url": "https://maps.app.goo.gl/QhXQLsRUDHQ6n4Bf6",
-        "total_students": 65,
-    },
-    {
-        "school_name": "TMREIS Sanathnagar G-1",
-        "poc_name": "D Deepika",
-        "poc_designation": "Jr Assistant",
-        "principal_phone": "7995057901",
-        "poc_phone": "9390351277",
-        "trainer1_email": "ravikirand.swinfy@gmail.com",
-        "trainer2_email": "maheshs.swinfy@gmail.com",
-        "map_url": "https://maps.app.goo.gl/AHouZPfSNbax51f28?g_st=aw",
-        "total_students": 50,
-    },
-    {
-        "school_name": "TMREIS Karimnagar G-1",
-        "poc_name": "Irfana Ahmed",
-        "poc_designation": "PGT Physical Science",
-        "principal_phone": "7331170843",
-        "poc_phone": "8121206108",
-        "trainer1_email": "sravanikodari9@gmail.com",
-        "trainer2_email": "swathiikodam@gmail.com",
-        "map_url": "https://maps.google.com/maps?q=18.4604282%2C79.1011746&z=17&hl=en",
-        "total_students": 57,
-    },
-    {
-        "school_name": "TMREIS Asifnagar G-2",
-        "poc_name": "Saba Maheen",
-        "poc_designation": "PGT Bio",
-        "principal_phone": "7995057886",
-        "poc_phone": "9182052709",
-        "trainer1_email": "shivakrishnaa.swinfy@gmail.com",
-        "trainer2_email": None,
-        "map_url": "https://maps.app.goo.gl/9vqurWkUdc2LCC859?g_st=aw",
-        "total_students": 51,
-    },
-    {
-        "school_name": "TMREIS Khairtabad G-1",
-        "poc_name": "Hannah Marlin",
-        "poc_designation": "PGT English",
-        "principal_phone": "7995057984",
-        "poc_phone": "8886987575",
-        "trainer1_email": "rockyg.swinfy@gmail.com",
-        "trainer2_email": "sasvaldas@gmail.com",
-        "map_url": "https://maps.app.goo.gl/Wd8ZHs1K33Rs5X3w6",
-        "total_students": 68,
-    },
-    {
-        "school_name": "TMREIS Golconda G-1",
-        "poc_name": "Radhika",
-        "poc_designation": "PGT English",
-        "principal_phone": "7331170798",
-        "poc_phone": "7989083584",
-        "trainer1_email": "sowkyab.swinfy@gmail.com",
-        "trainer2_email": "vangoorishirisha2@gmail.com",
-        "map_url": "https://maps.app.goo.gl/wT6gwrhAYaeYtD1D8",
-        "total_students": 39,
-    },
-    {
-        "school_name": "TMREIS Asifnagar G-1",
-        "poc_name": "S N Lakshmi",
-        "poc_designation": "PGT English",
-        "principal_phone": "7995057986",
-        "poc_phone": "9989994396",
-        "trainer1_email": "ranig.swinfy@gmail.com",
-        "trainer2_email": "bhanuvaldas22@gmail.com",
-        "map_url": "https://maps.app.goo.gl/UQqoMziiYPn9doQy8",
-        "total_students": 49,
-    },
-    {
-        "school_name": "TMREIS Barkas G-1",
-        "poc_name": "Subhashini",
-        "poc_designation": "TGT Maths",
-        "principal_phone": "7995057884",
-        "poc_phone": "7993198193",
-        "trainer1_email": "royyamadhavi116@gmail.com",
-        "trainer2_email": "manasakosgi07@gmail.com",
-        "map_url": "https://maps.app.goo.gl/j5K9WDVv246EjPiu6?g_st=aw",
-        "total_students": 70,
-    },
-    {
-        "school_name": "TMREIS Bahadurpura G-2",
-        "poc_name": "Anitha Rani",
-        "poc_designation": "TGT Hindi",
-        "principal_phone": "7995057885",
-        "poc_phone": "9000133934",
-        "trainer1_email": "mallikaa.swinfy@gmail.com",
-        "trainer2_email": None,
-        "map_url": "https://maps.app.goo.gl/ZQNcSBCiQ8EYZiuA8",
-        "total_students": 42,
-    },
-    {
-        "school_name": "TMREIS Makthal G-1",
-        "poc_name": "Mubeena",
-        "poc_designation": "PGT English",
-        "principal_phone": "7995057970",
-        "poc_phone": "9059074261",
-        "trainer1_email": "manasaveenamasula@gmail.com",
-        "trainer2_email": "laxmiprasanna73374@gmail.com",
-        "map_url": "https://maps.app.goo.gl/DWmcRAkzqCHfAyLq7",
-        "total_students": 80,
-    },
-    {
-        "school_name": "TMREIS Charminar G-1",
-        "poc_name": "Yasaswini",
-        "poc_designation": "Jr Assistant",
-        "principal_phone": "7207998972",
-        "poc_phone": "9346282052",
-        "trainer1_email": "rajinikanththatikanti00@gmail.com",
-        "trainer2_email": "prasannachandran2001@gmail.com",
-        "map_url": "https://maps.app.goo.gl/4NdsY6HD3LUqS9W59?g_st=aw",
-        "total_students": 78,
-    },
+TRAINER_SCHOOL_MAP = [
+    # Chandrayangutta G-1 (1 trainer)
+    {"trainer_email": "sangeethakasipeta05@gmail.com", "school_name": "TMREIS Chandrayangutta G-1", "poc_name": "Sravanthi", "poc_designation": "Librarian", "principal_phone": "7995057965", "poc_phone": "8179780395", "map_url": "https://maps.app.goo.gl/VVF6hGSWFwZBMVxT7", "total_students": 42},
+    # Yakutpura G-2 (1 trainer)
+    {"trainer_email": "sureshdodde86@gmail.com", "school_name": "TMREIS Yakutpura G-2", "poc_name": "Sandhya Rani", "poc_designation": "Librarian", "principal_phone": "7995057907", "poc_phone": "9000020606", "map_url": "https://maps.app.goo.gl/RqA4VhNh23mE2brq7", "total_students": 36},
+    # Rajendranagar G-1 (2 trainers)
+    {"trainer_email": "sathisht.1729@gmail.com", "school_name": "TMREIS Rajendranagar G-1", "poc_name": "Shahbaz Nosheen", "poc_designation": "PGT Bio Science", "principal_phone": "7331170801", "poc_phone": "8087287410", "map_url": "https://maps.app.goo.gl/Lb3mBA9bdiqyvuri7?g_st=aw", "total_students": 39},
+    {"trainer_email": "prava1729@gmail.com", "school_name": "TMREIS Rajendranagar G-1", "poc_name": "Shahbaz Nosheen", "poc_designation": "PGT Bio Science", "principal_phone": "7331170801", "poc_phone": "8087287410", "map_url": "https://maps.app.goo.gl/Lb3mBA9bdiqyvuri7?g_st=aw", "total_students": 39},
+    # Mahbubnagar G-1 (2 trainers)
+    {"trainer_email": "sankinarmada06@gmail.com", "school_name": "TMREIS Mahbubnagar G-1", "poc_name": "Mahamuda Begum", "poc_designation": "TGT Hindi", "principal_phone": "7207998977", "poc_phone": "9010903523, 9346952488", "map_url": "https://maps.app.goo.gl/QhXQLsRUDHQ6n4Bf6", "total_students": 65},
+    {"trainer_email": "parveen.swinfy03@gmail.com", "school_name": "TMREIS Mahbubnagar G-1", "poc_name": "Mahamuda Begum", "poc_designation": "TGT Hindi", "principal_phone": "7207998977", "poc_phone": "9010903523, 9346952488", "map_url": "https://maps.app.goo.gl/QhXQLsRUDHQ6n4Bf6", "total_students": 65},
+    # Karimnagar G-1 (2 trainers)
+    {"trainer_email": "sravanikodari9@gmail.com", "school_name": "TMREIS Karimnagar G-1", "poc_name": "Irfana Ahmed", "poc_designation": "PGT Physical Science", "principal_phone": "7331170843", "poc_phone": "8121206108", "map_url": "https://maps.google.com/maps?q=18.4604282%2C79.1011746&z=17&hl=en", "total_students": 57},
+    {"trainer_email": "swathiikodam@gmail.com", "school_name": "TMREIS Karimnagar G-1", "poc_name": "Irfana Ahmed", "poc_designation": "PGT Physical Science", "principal_phone": "7331170843", "poc_phone": "8121206108", "map_url": "https://maps.google.com/maps?q=18.4604282%2C79.1011746&z=17&hl=en", "total_students": 57},
+    # Asifnagar G-2 (1 trainer)
+    {"trainer_email": "shivakrishnaa.swinfy@gmail.com", "school_name": "TMREIS Asifnagar G-2", "poc_name": "Saba Maheen", "poc_designation": "PGT Bio", "principal_phone": "7995057886", "poc_phone": "9182052709", "map_url": "https://maps.app.goo.gl/9vqurWkUdc2LCC859?g_st=aw", "total_students": 51},
+    # Khairtabad G-1 (2 trainers)
+    {"trainer_email": "rockyg.swinfy@gmail.com", "school_name": "TMREIS Khairtabad G-1", "poc_name": "Hannah Marlin", "poc_designation": "PGT English", "principal_phone": "7995057984", "poc_phone": "8886987575", "map_url": "https://maps.app.goo.gl/Wd8ZHs1K33Rs5X3w6", "total_students": 68},
+    {"trainer_email": "sasvaldas@gmail.com", "school_name": "TMREIS Khairtabad G-1", "poc_name": "Hannah Marlin", "poc_designation": "PGT English", "principal_phone": "7995057984", "poc_phone": "8886987575", "map_url": "https://maps.app.goo.gl/Wd8ZHs1K33Rs5X3w6", "total_students": 68},
+    # Golconda G-1 (2 trainers)
+    {"trainer_email": "sowkyab.swinfy@gmail.com", "school_name": "TMREIS Golconda G-1", "poc_name": "Radhika", "poc_designation": "PGT English", "principal_phone": "7331170798", "poc_phone": "7989083584", "map_url": "https://maps.app.goo.gl/wT6gwrhAYaeYtD1D8", "total_students": 39},
+    {"trainer_email": "vangoorishirisha2@gmail.com", "school_name": "TMREIS Golconda G-1", "poc_name": "Radhika", "poc_designation": "PGT English", "principal_phone": "7331170798", "poc_phone": "7989083584", "map_url": "https://maps.app.goo.gl/wT6gwrhAYaeYtD1D8", "total_students": 39},
+    # Asifnagar G-1 (2 trainers)
+    {"trainer_email": "ranig.swinfy@gmail.com", "school_name": "TMREIS Asifnagar G-1", "poc_name": "S N Lakshmi", "poc_designation": "PGT English", "principal_phone": "7995057986", "poc_phone": "9989994396", "map_url": "https://maps.app.goo.gl/UQqoMziiYPn9doQy8", "total_students": 49},
+    {"trainer_email": "bhanuvaldas22@gmail.com", "school_name": "TMREIS Asifnagar G-1", "poc_name": "S N Lakshmi", "poc_designation": "PGT English", "principal_phone": "7995057986", "poc_phone": "9989994396", "map_url": "https://maps.app.goo.gl/UQqoMziiYPn9doQy8", "total_students": 49},
+    # Barkas G-1 (2 trainers)
+    {"trainer_email": "royyamadhavi116@gmail.com", "school_name": "TMREIS Barkas G-1", "poc_name": "Subhashini", "poc_designation": "TGT Maths", "principal_phone": "7995057884", "poc_phone": "7993198193", "map_url": "https://maps.app.goo.gl/j5K9WDVv246EjPiu6?g_st=aw", "total_students": 70},
+    {"trainer_email": "manasakosgi07@gmail.com", "school_name": "TMREIS Barkas G-1", "poc_name": "Subhashini", "poc_designation": "TGT Maths", "principal_phone": "7995057884", "poc_phone": "7993198193", "map_url": "https://maps.app.goo.gl/j5K9WDVv246EjPiu6?g_st=aw", "total_students": 70},
+    # Bahadurpura G-2 (2 trainers)
+    {"trainer_email": "mallikaa.swinfy@gmail.com", "school_name": "TMREIS Bahadurpura G-2", "poc_name": "Anitha Rani", "poc_designation": "TGT Hindi", "principal_phone": "7995057885", "poc_phone": "9000133934", "map_url": "https://maps.app.goo.gl/ZQNcSBCiQ8EYZiuA8", "total_students": 42},
+    {"trainer_email": "ravikirand.swinfy@gmail.com", "school_name": "TMREIS Bahadurpura G-2", "poc_name": "Anitha Rani", "poc_designation": "TGT Hindi", "principal_phone": "7995057885", "poc_phone": "9000133934", "map_url": "https://maps.app.goo.gl/ZQNcSBCiQ8EYZiuA8", "total_students": 42},
+    # Makthal G-1 (2 trainers)
+    {"trainer_email": "manasaveenamasula@gmail.com", "school_name": "TMREIS Makthal G-1", "poc_name": "Mubeena", "poc_designation": "PGT English", "principal_phone": "7995057970", "poc_phone": "9059074261", "map_url": "https://maps.app.goo.gl/DWmcRAkzqCHfAyLq7", "total_students": 80},
+    {"trainer_email": "laxmiprasanna73374@gmail.com", "school_name": "TMREIS Makthal G-1", "poc_name": "Mubeena", "poc_designation": "PGT English", "principal_phone": "7995057970", "poc_phone": "9059074261", "map_url": "https://maps.app.goo.gl/DWmcRAkzqCHfAyLq7", "total_students": 80},
+    # Charminar G-1 (2 trainers)
+    {"trainer_email": "maheshs.swinfy@gmail.com", "school_name": "TMREIS Charminar G-1", "poc_name": "Yasaswini", "poc_designation": "Jr Assistant", "principal_phone": "7207998972", "poc_phone": "9346282052", "map_url": "https://maps.app.goo.gl/4NdsY6HD3LUqS9W59?g_st=aw", "total_students": 78},
+    {"trainer_email": "prasannachandran2001@gmail.com", "school_name": "TMREIS Charminar G-1", "poc_name": "Yasaswini", "poc_designation": "Jr Assistant", "principal_phone": "7207998972", "poc_phone": "9346282052", "map_url": "https://maps.app.goo.gl/4NdsY6HD3LUqS9W59?g_st=aw", "total_students": 78},
+    # Sanathnagar G-1 (no trainers assigned yet — POC data only)
+    {"trainer_email": None, "school_name": "TMREIS Sanathnagar G-1", "poc_name": "D Deepika", "poc_designation": "Jr Assistant", "principal_phone": "7995057901", "poc_phone": "9390351277", "map_url": "https://maps.app.goo.gl/AHouZPfSNbax51f28?g_st=aw", "total_students": 50},
 ]
 
 # ──────────────────────────────────────────────
@@ -361,30 +245,30 @@ USERS = [
 
 # All trainers with password ail@2026
 TRAINERS = [
-    {"email": "sangeethakasipeta05@gmail.com", "username": "sangeetha_k", "first_name": "Sangeetha", "last_name": ""},
-    {"email": "sureshdodde86@gmail.com", "username": "suresh", "first_name": "Suresh", "last_name": ""},
-    {"email": "sathisht.1729@gmail.com", "username": "sathish", "first_name": "Sathish", "last_name": ""},
-    {"email": "prava1729@gmail.com", "username": "pravalika", "first_name": "Pravalika", "last_name": ""},
-    {"email": "sankinarmada06@gmail.com", "username": "narmada", "first_name": "Narmada", "last_name": ""},
-    {"email": "parveen.swinfy03@gmail.com", "username": "parveen", "first_name": "Parveen", "last_name": ""},
-    {"email": "ravikirand.swinfy@gmail.com", "username": "ravi_kiran", "first_name": "Ravi", "last_name": "Kiran"},
-    {"email": "maheshs.swinfy@gmail.com", "username": "mahesh", "first_name": "Mahesh", "last_name": ""},
-    {"email": "sravanikodari9@gmail.com", "username": "sravani", "first_name": "Sravani", "last_name": ""},
-    {"email": "swathiikodam@gmail.com", "username": "swathi", "first_name": "Swathi", "last_name": ""},
-    {"email": "shivakrishnaa.swinfy@gmail.com", "username": "shiva_krishna", "first_name": "Shiva", "last_name": "Krishna"},
-    {"email": "rockyg.swinfy@gmail.com", "username": "rocky", "first_name": "Rocky", "last_name": ""},
-    {"email": "sasvaldas@gmail.com", "username": "ajay_mh", "first_name": "Ajay", "last_name": "MH"},
-    {"email": "sowkyab.swinfy@gmail.com", "username": "sowkya", "first_name": "Sowkya", "last_name": ""},
-    {"email": "vangoorishirisha2@gmail.com", "username": "sirisha", "first_name": "Sirisha", "last_name": ""},
-    {"email": "ranig.swinfy@gmail.com", "username": "rani", "first_name": "Rani", "last_name": ""},
-    {"email": "bhanuvaldas22@gmail.com", "username": "bhanu", "first_name": "Bhanu", "last_name": ""},
-    {"email": "royyamadhavi116@gmail.com", "username": "madhavi", "first_name": "Madhavi", "last_name": ""},
-    {"email": "manasakosgi07@gmail.com", "username": "manasa_kosgi", "first_name": "Manasa", "last_name": "Kosgi"},
-    {"email": "mallikaa.swinfy@gmail.com", "username": "mallika", "first_name": "Mallika", "last_name": ""},
-    {"email": "manasaveenamasula@gmail.com", "username": "manasa_veena", "first_name": "Manasaveena", "last_name": ""},
-    {"email": "laxmiprasanna73374@gmail.com", "username": "laxmi_prasanna", "first_name": "Laxmi", "last_name": "Prasanna"},
-    {"email": "rajinikanththatikanti00@gmail.com", "username": "rajinikanth", "first_name": "Rajinikanth", "last_name": ""},
-    {"email": "prasannachandran2001@gmail.com", "username": "prasanna", "first_name": "Prasanna", "last_name": ""},
+    {"email": "sangeethakasipeta05@gmail.com", "first_name": "Sangeetha", "last_name": ""},
+    {"email": "sureshdodde86@gmail.com", "first_name": "Suresh", "last_name": ""},
+    {"email": "sathisht.1729@gmail.com", "first_name": "Sathish", "last_name": ""},
+    {"email": "prava1729@gmail.com", "first_name": "Pravalika", "last_name": ""},
+    {"email": "sankinarmada06@gmail.com", "first_name": "Narmada", "last_name": ""},
+    {"email": "parveen.swinfy03@gmail.com", "first_name": "Parveen", "last_name": ""},
+    {"email": "ravikirand.swinfy@gmail.com", "first_name": "Ravi", "last_name": "Kiran"},
+    {"email": "maheshs.swinfy@gmail.com", "first_name": "Mahesh", "last_name": ""},
+    {"email": "sravanikodari9@gmail.com", "first_name": "Sravani", "last_name": ""},
+    {"email": "swathiikodam@gmail.com", "first_name": "Swathi", "last_name": ""},
+    {"email": "shivakrishnaa.swinfy@gmail.com", "first_name": "Shiva", "last_name": "Krishna"},
+    {"email": "rockyg.swinfy@gmail.com", "first_name": "Rocky", "last_name": ""},
+    {"email": "sasvaldas@gmail.com", "first_name": "Ajay", "last_name": "MH"},
+    {"email": "sowkyab.swinfy@gmail.com", "first_name": "Sowkya", "last_name": ""},
+    {"email": "vangoorishirisha2@gmail.com", "first_name": "Sirisha", "last_name": ""},
+    {"email": "ranig.swinfy@gmail.com", "first_name": "Rani", "last_name": ""},
+    {"email": "bhanuvaldas22@gmail.com", "first_name": "Bhanu", "last_name": ""},
+    {"email": "royyamadhavi116@gmail.com", "first_name": "Madhavi", "last_name": ""},
+    {"email": "manasakosgi07@gmail.com", "first_name": "Manasa", "last_name": "Kosgi"},
+    {"email": "mallikaa.swinfy@gmail.com", "first_name": "Mallika", "last_name": ""},
+    {"email": "manasaveenamasula@gmail.com", "first_name": "Manasaveena", "last_name": ""},
+    {"email": "laxmiprasanna73374@gmail.com", "first_name": "Laxmi", "last_name": "Prasanna"},
+    {"email": "rajinikanththatikanti00@gmail.com", "first_name": "Rajinikanth", "last_name": ""},
+    {"email": "prasannachandran2001@gmail.com", "first_name": "Prasanna", "last_name": ""},
 ]
 
 TRAINER_PASSWORD = "ail@2026"
@@ -487,10 +371,10 @@ class Command(BaseCommand):
                 trainer_map[t["email"]] = user
                 self.stdout.write(f"  {t['email']} ({t['first_name']}) [updated]")
             else:
-                # New user — handle potential username conflicts
-                username = t["username"]
+                # New user — derive username from email
+                username = t["email"].split("@")[0]
                 if User.objects.filter(username=username).exists():
-                    username = f"{username}_{t['email'].split('@')[0][-4:]}"
+                    username = f"{username}_{User.objects.count()}"
                 user = User.objects.create_user(
                     email=t["email"],
                     username=username,
@@ -504,39 +388,43 @@ class Command(BaseCommand):
 
         # 6. Assign trainers to schools + update POC/map data
         self.stdout.write("Assigning trainers and updating school details...")
-        for assign in SCHOOL_ASSIGNMENTS:
+
+        # Group trainers by school (preserving order: first = assigned, second = second_trainer)
+        from collections import OrderedDict
+        school_trainers = OrderedDict()  # school_name -> [trainer_emails]
+        school_details = {}  # school_name -> POC/map details
+
+        for entry in TRAINER_SCHOOL_MAP:
+            sname = entry["school_name"]
+            school_details[sname] = entry
+            if sname not in school_trainers:
+                school_trainers[sname] = []
+            if entry["trainer_email"]:
+                school_trainers[sname].append(entry["trainer_email"])
+
+        for sname, trainers in school_trainers.items():
             try:
-                school = School.objects.get(name=assign["school_name"])
+                school = School.objects.get(name=sname)
             except School.DoesNotExist:
-                self.stdout.write(self.style.WARNING(
-                    f"  School not found: {assign['school_name']}"
-                ))
+                self.stdout.write(self.style.WARNING(f"  School not found: {sname}"))
                 continue
 
-            # Update POC and school details
-            school.poc_name = assign["poc_name"]
-            school.poc_designation = assign["poc_designation"]
-            school.poc_phone = assign["poc_phone"]
-            school.principal_phone = assign["principal_phone"]
-            school.map_url = assign["map_url"]
-            school.total_students = assign["total_students"]
+            details = school_details[sname]
+            school.poc_name = details["poc_name"]
+            school.poc_designation = details["poc_designation"]
+            school.poc_phone = details["poc_phone"]
+            school.principal_phone = details["principal_phone"]
+            school.map_url = details["map_url"]
+            school.total_students = details["total_students"]
 
-            # Assign trainer 1
-            t1_email = assign.get("trainer1_email")
-            if t1_email and t1_email in trainer_map:
-                school.assigned_trainer = trainer_map[t1_email]
-
-            # Assign trainer 2
-            t2_email = assign.get("trainer2_email")
-            if t2_email and t2_email in trainer_map:
-                school.second_trainer = trainer_map[t2_email]
+            # First trainer → assigned_trainer, second → second_trainer
+            school.assigned_trainer = trainer_map.get(trainers[0]) if len(trainers) > 0 else None
+            school.second_trainer = trainer_map.get(trainers[1]) if len(trainers) > 1 else None
 
             school.save()
-            t1_name = trainer_map[t1_email].first_name if t1_email and t1_email in trainer_map else "—"
-            t2_name = trainer_map[t2_email].first_name if t2_email and t2_email in trainer_map else "—"
-            self.stdout.write(
-                f"  {school.name}: T1={t1_name}, T2={t2_name}, POC={assign['poc_name']}"
-            )
+            t1 = trainer_map[trainers[0]].first_name if len(trainers) > 0 and trainers[0] in trainer_map else "—"
+            t2 = trainer_map[trainers[1]].first_name if len(trainers) > 1 and trainers[1] in trainer_map else "—"
+            self.stdout.write(f"  {sname}: T1={t1}, T2={t2}, POC={details['poc_name']}")
 
         # 7. UWH Control singleton
         self.stdout.write("Initializing UWH control panel...")
