@@ -30,3 +30,38 @@ class UserSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(obj.profile_photo.url)
             return obj.profile_photo.url
         return None
+
+
+# ── OTP Serializers ──────────────────────────────────────────────
+
+
+class RequestOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No account found with this email.")
+        return value
+
+
+class VerifyOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(min_length=6, max_length=6)
+
+    def validate_code(self, value):
+        if not value.isdigit():
+            raise serializers.ValidationError("OTP must be 6 digits.")
+        return value
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(min_length=6, max_length=6)
+    new_password = serializers.CharField(min_length=6, write_only=True)
+
+    def validate_code(self, value):
+        if not value.isdigit():
+            raise serializers.ValidationError("OTP must be 6 digits.")
+        return value
