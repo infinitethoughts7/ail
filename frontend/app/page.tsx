@@ -17,10 +17,10 @@ export default function Home() {
       {/* Full-screen Banner */}
       <div className="absolute inset-0">
         <Image
-          src="/ail_banner_3.png"
+          src="/banner_image_ail.jpg"
           alt="AI Literacy Program — Empowering Minority Schools"
           fill
-          className="object-cover"
+          className="object-cover object-[center_65%]"
           priority
           sizes="100vw"
         />
