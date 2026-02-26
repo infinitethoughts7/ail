@@ -8,13 +8,13 @@ import { timeAgo } from "@/lib/utils";
 import { Activity, Clock } from "lucide-react";
 
 const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  submission_verified: { bg: "bg-[#C9A84C]/5", text: "text-[#C9A84C]", border: "border-[#C9A84C]/15" },
-  photo_approved: { bg: "bg-[#5C4A2E]/5", text: "text-[#5C4A2E]", border: "border-[#5C4A2E]/15" },
-  project_approved: { bg: "bg-[#8B6914]/5", text: "text-[#8B6914]", border: "border-[#8B6914]/15" },
-  project_featured: { bg: "bg-[#C9A84C]/5", text: "text-[#C9A84C]", border: "border-[#C9A84C]/15" },
+  submission_verified: { bg: "bg-[#7C3AED]/5", text: "text-[#7C3AED]", border: "border-[#7C3AED]/15" },
+  photo_approved: { bg: "bg-[#4B5563]/5", text: "text-[#4B5563]", border: "border-[#4B5563]/15" },
+  project_approved: { bg: "bg-[#2563EB]/5", text: "text-[#2563EB]", border: "border-[#2563EB]/15" },
+  project_featured: { bg: "bg-[#7C3AED]/5", text: "text-[#7C3AED]", border: "border-[#7C3AED]/15" },
 };
 
-const DEFAULT_TYPE_STYLE = { bg: "bg-[#F3F0E8]", text: "text-[#718096]", border: "border-[#EDE9E0]" };
+const DEFAULT_TYPE_STYLE = { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]", border: "border-[#E5E7EB]" };
 
 export default function ActivityPage() {
   const { data: activities, isLoading } = useUWHActivityFeed();
@@ -23,7 +23,7 @@ export default function ActivityPage() {
     return (
       <div className="p-6 sm:p-8 space-y-3">
         {Array.from({ length: 8 }).map((_, i) => (
-          <Skeleton key={i} className="h-16 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+          <Skeleton key={i} className="h-16 rounded-xl bg-[#F3F4F6]" />
         ))}
       </div>
     );
@@ -36,15 +36,15 @@ export default function ActivityPage() {
         <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
           Activity Timeline
         </h1>
-        <p className="mt-1 text-sm text-[#718096]">
+        <p className="mt-1 text-sm text-[#9CA3AF]">
           A chronological record of program milestones and updates
         </p>
       </div>
 
       {!activities || activities.length === 0 ? (
-        <div className="uwh-card py-20 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <Activity className="mx-auto mb-3 h-12 w-12 text-[#EDE9E0]" />
-          <p className="text-sm font-medium text-[#718096]">
+        <div className="uwh-card py-20 text-center">
+          <Activity className="mx-auto mb-3 h-12 w-12 text-[#E5E7EB]" />
+          <p className="text-sm font-medium text-[#9CA3AF]">
             No activity to display yet.
           </p>
         </div>
@@ -52,8 +52,7 @@ export default function ActivityPage() {
         <div className="relative">
           {/* Timeline line */}
           <div
-            className="absolute left-[18px] top-2 h-[calc(100%-16px)] w-[2px]"
-            style={{ background: "var(--uwh-border-subtle)" }}
+            className="absolute left-[18px] top-2 h-[calc(100%-16px)] w-[2px] bg-[#E5E7EB]"
           />
 
           <div className="space-y-4">
@@ -64,18 +63,14 @@ export default function ActivityPage() {
                 <div key={a.id} className="relative pl-12">
                   {/* Timeline dot */}
                   <div
-                    className="absolute left-[11px] top-5 h-[16px] w-[16px] rounded-full border-[3px]"
+                    className="absolute left-[11px] top-5 h-[16px] w-[16px] rounded-full border-[3px] border-white"
                     style={{
-                      borderColor: "var(--uwh-bg)",
-                      background: a.activity_type.includes("featured") ? "#C9A84C" : "#0F1A2E",
+                      background: a.activity_type.includes("featured") ? "#7C3AED" : "#4B5563",
                     }}
                   />
 
                   {/* Activity card */}
-                  <div
-                    className="uwh-card px-5 py-4"
-                    style={{ border: "1px solid var(--uwh-border-card)" }}
-                  >
+                  <div className="uwh-card px-5 py-4">
                     <div className="flex items-start gap-4">
                       {a.thumbnail_url && (
                         <img
@@ -86,7 +81,7 @@ export default function ActivityPage() {
                       )}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-4">
-                          <p className="text-sm font-medium text-[#0F1A2E]">{a.title}</p>
+                          <p className="text-sm font-medium text-[#1F2937]">{a.title}</p>
                           <div className="flex shrink-0 flex-col items-end gap-1.5">
                             <Badge
                               className={`rounded-md border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${typeStyle.bg} ${typeStyle.text} ${typeStyle.border}`}
@@ -94,14 +89,14 @@ export default function ActivityPage() {
                               {ACTIVITY_TYPE_LABELS[a.activity_type] ||
                                 a.activity_type.replace(/_/g, " ")}
                             </Badge>
-                            <span className="uwh-mono flex items-center gap-1 text-[11px] text-[#718096]">
+                            <span className="uwh-mono flex items-center gap-1 text-[11px] text-[#9CA3AF]">
                               <Clock className="h-3 w-3" />
                               {timeAgo(a.timestamp)}
                             </span>
                           </div>
                         </div>
                         {a.description && (
-                          <p className="mt-1 text-xs leading-relaxed text-[#718096]">
+                          <p className="mt-1 text-xs leading-relaxed text-[#9CA3AF]">
                             {a.description}
                           </p>
                         )}

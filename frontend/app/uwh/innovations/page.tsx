@@ -19,7 +19,7 @@ export default function InnovationsPage() {
     return (
       <div className="p-6 sm:p-8 space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-40 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+          <Skeleton key={i} className="h-40 rounded-xl bg-[#F3F4F6]" />
         ))}
       </div>
     );
@@ -35,7 +35,7 @@ export default function InnovationsPage() {
         <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
           Student Innovations
         </h1>
-        <p className="mt-1 text-sm text-[#718096]">
+        <p className="mt-1 text-sm text-[#9CA3AF]">
           Showcasing real creativity and impact from the AI Literacy Program
         </p>
       </div>
@@ -53,38 +53,34 @@ export default function InnovationsPage() {
       {featured.length > 0 && (
         <div className="mb-10">
           <div className="mb-4 flex items-center gap-2">
-            <Star className="h-4 w-4 text-[#C9A84C]" />
-            <span className="uwh-label text-[#C9A84C]">Featured Projects</span>
+            <Star className="h-4 w-4 text-[#7C3AED]" />
+            <span className="uwh-label text-[#7C3AED]">Featured Projects</span>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((proj) => (
               <div
                 key={proj.id}
-                className="uwh-card group overflow-hidden"
-                style={{
-                  border: "2px solid rgba(201, 168, 76, 0.2)",
-                  background: "linear-gradient(to bottom, rgba(201, 168, 76, 0.03), white)",
-                }}
+                className="uwh-card group overflow-hidden border-2 border-[#7C3AED]/15"
               >
                 <div className="p-5">
-                  <Badge className="mb-3 rounded-lg bg-[#C9A84C] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow-sm">
+                  <Badge className="mb-3 rounded-lg bg-[#7C3AED] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow-sm">
                     <Star className="mr-1 h-3 w-3" /> Featured
                   </Badge>
                   {proj.image_url && (
                     <img
                       src={proj.image_url}
                       alt={proj.title}
-                      className="mb-4 h-44 w-full rounded-xl object-cover"
+                      className="mb-4 h-44 w-full rounded-lg object-cover"
                     />
                   )}
                   <h3 className="uwh-heading text-base font-semibold">{proj.title}</h3>
-                  <div className="mt-2 flex items-center gap-1.5 text-xs text-[#718096]">
+                  <div className="mt-2 flex items-center gap-1.5 text-xs text-[#9CA3AF]">
                     <User className="h-3 w-3" />
                     <span>{proj.student_name}</span>
                     {proj.student_grade && <span>· Grade {proj.student_grade}</span>}
                     {proj.student_age && <span>· Age {proj.student_age}</span>}
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-[#4A5568]">
+                  <p className="mt-3 text-sm leading-relaxed text-[#4B5563]">
                     {proj.display_description}
                   </p>
                 </div>
@@ -98,32 +94,31 @@ export default function InnovationsPage() {
       {approved.length > 0 && (
         <div>
           <div className="mb-4 flex items-center gap-2">
-            <Lightbulb className="h-4 w-4 text-[#718096]" />
+            <Lightbulb className="h-4 w-4 text-[#9CA3AF]" />
             <span className="uwh-label">All Projects</span>
-            <span className="uwh-mono text-xs text-[#718096]">({approved.length})</span>
+            <span className="uwh-mono text-xs text-[#9CA3AF]">({approved.length})</span>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {approved.map((proj) => (
               <div
                 key={proj.id}
                 className="uwh-card group overflow-hidden"
-                style={{ border: "1px solid var(--uwh-border-card)" }}
               >
                 <div className="p-5">
                   {proj.image_url && (
                     <img
                       src={proj.image_url}
                       alt={proj.title}
-                      className="mb-4 h-40 w-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                      className="mb-4 h-40 w-full rounded-lg object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                     />
                   )}
                   <h3 className="uwh-heading text-sm font-semibold">{proj.title}</h3>
-                  <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#718096]">
+                  <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#9CA3AF]">
                     <User className="h-3 w-3" />
                     <span>{proj.student_name}</span>
                     {proj.student_grade && <span>· Grade {proj.student_grade}</span>}
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-[#4A5568]">
+                  <p className="mt-3 text-sm leading-relaxed text-[#4B5563]">
                     {proj.display_description}
                   </p>
                 </div>
@@ -134,9 +129,9 @@ export default function InnovationsPage() {
       )}
 
       {featured.length === 0 && approved.length === 0 && (
-        <div className="uwh-card py-20 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <Lightbulb className="mx-auto mb-3 h-12 w-12 text-[#EDE9E0]" />
-          <p className="text-sm font-medium text-[#718096]">
+        <div className="uwh-card py-20 text-center">
+          <Lightbulb className="mx-auto mb-3 h-12 w-12 text-[#E5E7EB]" />
+          <p className="text-sm font-medium text-[#9CA3AF]">
             {district || school ? "No projects match the current filters." : "No student projects available yet."}
           </p>
         </div>

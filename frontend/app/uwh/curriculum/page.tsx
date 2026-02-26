@@ -18,7 +18,7 @@ export default function CurriculumPage() {
     return (
       <div className="p-6 sm:p-8 space-y-6">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-48 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+          <Skeleton key={i} className="h-48 rounded-xl bg-[#F3F4F6]" />
         ))}
       </div>
     );
@@ -31,7 +31,7 @@ export default function CurriculumPage() {
         <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
           Curriculum Journey
         </h1>
-        <p className="mt-1 text-sm text-[#718096]">
+        <p className="mt-1 text-sm text-[#9CA3AF]">
           The complete 4-day AI Literacy learning path
         </p>
       </div>
@@ -41,8 +41,8 @@ export default function CurriculumPage() {
         {CURRICULUM_DAYS.map((day, i) => (
           <div key={day.day} className="flex items-center">
             <div
-              className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-white shadow-lg"
-              style={{ background: day.hex, boxShadow: `0 4px 14px ${day.hex}30` }}
+              className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-white"
+              style={{ background: day.hex }}
             >
               {day.day}
             </div>
@@ -73,8 +73,8 @@ export default function CurriculumPage() {
                 style={{ background: theme.bgHex }}
               >
                 <div
-                  className="flex h-12 w-12 items-center justify-center rounded-xl font-bold text-white"
-                  style={{ background: theme.hex, boxShadow: `0 4px 12px ${theme.hex}25` }}
+                  className="flex h-12 w-12 items-center justify-center rounded-lg font-bold text-white"
+                  style={{ background: theme.hex }}
                 >
                   {dayConfig.day}
                 </div>
@@ -83,7 +83,7 @@ export default function CurriculumPage() {
                     {dayData?.title || dayConfig.label}
                   </h2>
                   {dayData?.description && (
-                    <p className="mt-0.5 text-sm text-[#718096]">
+                    <p className="mt-0.5 text-sm text-[#9CA3AF]">
                       {dayData.description}
                     </p>
                   )}
@@ -107,7 +107,7 @@ export default function CurriculumPage() {
                           {dayData.learning_objectives.map((obj, i) => (
                             <li
                               key={i}
-                              className="flex items-start gap-2.5 text-sm text-[#4A5568]"
+                              className="flex items-start gap-2.5 text-sm text-[#4B5563]"
                             >
                               <span
                                 className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
@@ -150,7 +150,7 @@ export default function CurriculumPage() {
                 </div>
               ) : (
                 <div className="px-6 py-8 text-center">
-                  <p className="text-sm text-[#718096]">
+                  <p className="text-sm text-[#9CA3AF]">
                     Curriculum details not yet available.
                   </p>
                 </div>

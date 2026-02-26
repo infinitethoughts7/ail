@@ -52,23 +52,23 @@
   --color-day-3: var(--day-3);
   --color-day-4: var(--day-4);
 
-  /* Luxury UWH brand colors */
-  --color-uwh-navy: #0F1A2E;
-  --color-uwh-navy-light: #1A2942;
-  --color-uwh-navy-muted: #2A3F5F;
-  --color-uwh-gold: #C9A84C;
-  --color-uwh-gold-light: #E8D48B;
-  --color-uwh-bg: #F8F6F1;
+  /* Clean UWH brand colors */
+  --color-uwh-navy: #1F2937;
+  --color-uwh-navy-light: #374151;
+  --color-uwh-navy-muted: #6B7280;
+  --color-uwh-gold: #7C3AED;
+  --color-uwh-gold-light: #A78BFA;
+  --color-uwh-bg: #FFFFFF;
   --color-uwh-surface: #FFFFFF;
-  --color-uwh-surface-warm: #FDFBF7;
-  --color-uwh-surface-hover: #F3F0E8;
-  --color-uwh-text-primary: #0F1A2E;
-  --color-uwh-text-secondary: #4A5568;
-  --color-uwh-text-muted: #718096;
-  --color-uwh-text-on-dark: #E2E8F0;
-  --color-uwh-text-on-dark-muted: #94A3B8;
-  --color-uwh-border-subtle: #E8E4DA;
-  --color-uwh-border-card: #EDE9E0;
+  --color-uwh-surface-warm: #F9FAFB;
+  --color-uwh-surface-hover: #F3F4F6;
+  --color-uwh-text-primary: #1F2937;
+  --color-uwh-text-secondary: #4B5563;
+  --color-uwh-text-muted: #9CA3AF;
+  --color-uwh-text-on-dark: #F3F4F6;
+  --color-uwh-text-on-dark-muted: #D1D5DB;
+  --color-uwh-border-subtle: #E5E7EB;
+  --color-uwh-border-card: #E5E7EB;
   --color-status-success: #059669;
   --color-status-warning: #D97706;
   --color-status-danger: #DC2626;
@@ -118,28 +118,28 @@
   --day-3: #B45309;
   --day-4: #B91C1C;
 
-  /* UWH Luxury palette */
-  --uwh-navy: #0F1A2E;
-  --uwh-navy-light: #1A2942;
-  --uwh-navy-muted: #2A3F5F;
-  --uwh-gold: #C9A84C;
-  --uwh-gold-light: #E8D48B;
-  --uwh-gold-muted: rgba(201, 168, 76, 0.1);
-  --uwh-bg: #F8F6F1;
+  /* Clean UWH palette */
+  --uwh-navy: #1F2937;
+  --uwh-navy-light: #374151;
+  --uwh-navy-muted: #6B7280;
+  --uwh-gold: #7C3AED;
+  --uwh-gold-light: #A78BFA;
+  --uwh-gold-muted: rgba(124, 58, 237, 0.08);
+  --uwh-bg: #F3F4F6;
   --uwh-surface: #FFFFFF;
-  --uwh-surface-warm: #FDFBF7;
-  --uwh-surface-hover: #F3F0E8;
-  --uwh-text-primary: #0F1A2E;
-  --uwh-text-secondary: #4A5568;
-  --uwh-text-muted: #718096;
-  --uwh-text-on-dark: #E2E8F0;
-  --uwh-text-on-dark-muted: #94A3B8;
-  --uwh-border-subtle: #E8E4DA;
-  --uwh-border-card: #EDE9E0;
-  --shadow-card: 0 1px 3px rgba(15, 26, 46, 0.04), 0 1px 2px rgba(15, 26, 46, 0.02);
-  --shadow-card-hover: 0 10px 25px rgba(15, 26, 46, 0.06), 0 4px 10px rgba(15, 26, 46, 0.03);
-  --shadow-elevated: 0 20px 40px rgba(15, 26, 46, 0.08);
-  --shadow-gold: 0 4px 14px rgba(201, 168, 76, 0.15);
+  --uwh-surface-warm: #F9FAFB;
+  --uwh-surface-hover: #F3F4F6;
+  --uwh-text-primary: #1F2937;
+  --uwh-text-secondary: #4B5563;
+  --uwh-text-muted: #9CA3AF;
+  --uwh-text-on-dark: #F3F4F6;
+  --uwh-text-on-dark-muted: #D1D5DB;
+  --uwh-border-subtle: #E5E7EB;
+  --uwh-border-card: #E5E7EB;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 12px 28px rgba(0, 0, 0, 0.08);
+  --shadow-gold: 0 4px 14px rgba(124, 58, 237, 0.12);
 
   /* Refined day backgrounds */
   --day-1-bg: #EEF2FF;
@@ -191,7 +191,7 @@
   }
 }
 
-/* ── UWH Luxury Animations ── */
+/* ── UWH Clean Animations ── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -212,7 +212,7 @@
 
 @keyframes numberGlow {
   0% { text-shadow: 0 0 0 transparent; }
-  50% { text-shadow: 0 0 20px rgba(201, 168, 76, 0.15); }
+  50% { text-shadow: 0 0 20px rgba(124, 58, 237, 0.1); }
   100% { text-shadow: 0 0 0 transparent; }
 }
 
@@ -247,24 +247,23 @@
 
   .uwh-activity-new {
     animation: slideInFromTop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(201, 168, 76, 0.04);
+    background: rgba(124, 58, 237, 0.03);
   }
 
   .uwh-number-glow {
     animation: numberGlow 2s ease-in-out;
   }
 
-  /* UWH luxury card */
+  /* UWH clean card */
   .uwh-card {
     background: var(--uwh-surface);
     border: 1px solid var(--uwh-border-card);
-    border-radius: 16px;
+    border-radius: 12px;
     box-shadow: var(--shadow-card);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
   }
   .uwh-card:hover {
     box-shadow: var(--shadow-card-hover);
-    transform: translateY(-2px);
   }
 
   /* UWH heading */

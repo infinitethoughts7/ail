@@ -23,7 +23,7 @@ export default function GalleryPage() {
       <div className="p-6 sm:p-8">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {Array.from({ length: 12 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+            <Skeleton key={i} className="aspect-square rounded-xl bg-[#F3F4F6]" />
           ))}
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function GalleryPage() {
         <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
           Photo Gallery
         </h1>
-        <p className="mt-1 text-sm text-[#718096]">
+        <p className="mt-1 text-sm text-[#9CA3AF]">
           The AI Literacy program in action — <span className="uwh-mono">{allPhotos.length}</span> photos
         </p>
       </div>
@@ -59,18 +59,14 @@ export default function GalleryPage() {
       {featured.length > 0 && (
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-2">
-            <Star className="h-4 w-4 text-[#C9A84C]" />
-            <span className="uwh-label text-[#C9A84C]">Featured Photos</span>
+            <Star className="h-4 w-4 text-[#7C3AED]" />
+            <span className="uwh-label text-[#7C3AED]">Featured Photos</span>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {featured.map((photo) => (
               <div
                 key={photo.id}
-                className="group relative cursor-pointer overflow-hidden rounded-2xl transition-all hover:-translate-y-1"
-                style={{
-                  border: "2px solid rgba(201, 168, 76, 0.25)",
-                  boxShadow: "var(--shadow-gold)",
-                }}
+                className="group relative cursor-pointer overflow-hidden rounded-xl border-2 border-[#7C3AED]/20 transition-all hover:shadow-md"
                 onClick={() => setViewPhoto(photo)}
               >
                 <img
@@ -79,7 +75,7 @@ export default function GalleryPage() {
                   className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute left-2.5 top-2.5">
-                  <Badge className="rounded-lg bg-[#C9A84C] px-2.5 py-1 text-[10px] font-semibold text-white shadow-lg">
+                  <Badge className="rounded-lg bg-[#7C3AED] px-2.5 py-1 text-[10px] font-semibold text-white shadow-sm">
                     <Star className="mr-1 h-2.5 w-2.5" /> Featured
                   </Badge>
                 </div>
@@ -98,16 +94,15 @@ export default function GalleryPage() {
       {regular.length > 0 && (
         <div className="mb-8">
           <div className="mb-4 flex items-center gap-2">
-            <Camera className="h-4 w-4 text-[#718096]" />
+            <Camera className="h-4 w-4 text-[#9CA3AF]" />
             <span className="uwh-label">All Photos</span>
-            <span className="uwh-mono text-xs text-[#718096]">({regular.length})</span>
+            <span className="uwh-mono text-xs text-[#9CA3AF]">({regular.length})</span>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {regular.map((photo) => (
               <div
                 key={photo.id}
-                className="uwh-card group cursor-pointer overflow-hidden rounded-2xl"
-                style={{ border: "1px solid var(--uwh-border-card)" }}
+                className="uwh-card group cursor-pointer overflow-hidden rounded-xl"
                 onClick={() => setViewPhoto(photo)}
               >
                 <img
@@ -122,9 +117,9 @@ export default function GalleryPage() {
       )}
 
       {allPhotos.length === 0 && (
-        <div className="uwh-card py-20 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <Camera className="mx-auto mb-3 h-12 w-12 text-[#EDE9E0]" />
-          <p className="text-sm font-medium text-[#718096]">
+        <div className="uwh-card py-20 text-center">
+          <Camera className="mx-auto mb-3 h-12 w-12 text-[#E5E7EB]" />
+          <p className="text-sm font-medium text-[#9CA3AF]">
             {district || school ? "No photos match the current filters." : "No approved photos available yet."}
           </p>
         </div>
@@ -133,7 +128,7 @@ export default function GalleryPage() {
       {/* Photo Lightbox */}
       <Dialog open={!!viewPhoto} onOpenChange={() => setViewPhoto(null)}>
         <DialogContent
-          className="max-w-3xl overflow-hidden rounded-2xl border-0 p-0"
+          className="max-w-3xl overflow-hidden rounded-xl border border-[#E5E7EB] p-0"
           style={{ boxShadow: "var(--shadow-elevated)" }}
         >
           <DialogTitle className="sr-only">Photo Detail</DialogTitle>
@@ -142,11 +137,11 @@ export default function GalleryPage() {
               <img
                 src={viewPhoto.image_url}
                 alt={viewPhoto.caption || "Session photo"}
-                className="w-full rounded-t-2xl object-contain"
+                className="w-full rounded-t-xl object-contain"
               />
               {viewPhoto.caption && (
-                <div className="px-6 py-4" style={{ background: "var(--uwh-surface-warm)" }}>
-                  <p className="text-sm text-[#4A5568]">{viewPhoto.caption}</p>
+                <div className="bg-[#F9FAFB] px-6 py-4">
+                  <p className="text-sm text-[#4B5563]">{viewPhoto.caption}</p>
                 </div>
               )}
             </div>

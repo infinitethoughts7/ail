@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUWHDistrictProgress } from "@/hooks/use-uwh-data";
 
@@ -35,18 +34,21 @@ export function UWHDistrictProgress() {
               <div key={d.id}>
                 <div className="mb-1.5 flex items-center justify-between">
                   <span className="text-sm font-medium">{d.name}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">
-                      {d.completed}/{d.total_schools} completed
-                    </span>
-                    {d.in_progress > 0 && (
-                      <span className="text-xs text-blue-600">
-                        ({d.in_progress} active)
-                      </span>
-                    )}
-                  </div>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {d.completed}/{d.total_schools}
+                  </span>
                 </div>
-                <Progress value={pct} className="h-2" />
+                <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                  <div
+                    className="h-full rounded-full bg-emerald-400/60 transition-all duration-500"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                {d.in_progress > 0 && (
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    {d.in_progress} active
+                  </p>
+                )}
               </div>
             );
           })}

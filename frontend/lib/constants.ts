@@ -2,7 +2,7 @@
 export const CURRICULUM_DAYS = [
   {
     day: 1,
-    label: "Day 1: Introduction to AI",
+    label: "Day 1: Foundations of Computers & Introduction to AI",
     shortLabel: "Day 1",
     color: "bg-[#4338CA]",
     textColor: "text-[#4338CA]",
@@ -14,7 +14,7 @@ export const CURRICULUM_DAYS = [
   },
   {
     day: 2,
-    label: "Day 2: AI in Daily Life",
+    label: "Day 2: Creative AI – Prompting & Content Creation, Image generation, Story and Lyric writing",
     shortLabel: "Day 2",
     color: "bg-[#047857]",
     textColor: "text-[#047857]",
@@ -26,7 +26,7 @@ export const CURRICULUM_DAYS = [
   },
   {
     day: 3,
-    label: "Day 3: Hands-On Projects",
+    label: "Day 3: Building with AI – Design & website Development and Game designing",
     shortLabel: "Day 3",
     color: "bg-[#B45309]",
     textColor: "text-[#B45309]",
@@ -38,7 +38,7 @@ export const CURRICULUM_DAYS = [
   },
   {
     day: 4,
-    label: "Day 4: Showcase & Reflection",
+    label: "Day 4: Responsible AI & Career Pathways",
     shortLabel: "Day 4",
     color: "bg-[#B91C1C]",
     textColor: "text-[#B91C1C]",

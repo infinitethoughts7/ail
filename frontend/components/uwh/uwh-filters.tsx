@@ -34,7 +34,7 @@ export function UWHFilters({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <div className="flex items-center gap-1.5 text-xs text-[#718096]">
+      <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF]">
         <Filter className="h-3.5 w-3.5" />
         <span className="uwh-label">Filter</span>
       </div>
@@ -42,7 +42,7 @@ export function UWHFilters({
       <Select value={district || "all"} onValueChange={handleDistrictChange}>
         <SelectTrigger
           size="sm"
-          className="min-w-[160px] rounded-lg border-[#EDE9E0] bg-white text-sm"
+          className="min-w-[160px] rounded-lg border-[#E5E7EB] bg-white text-sm"
         >
           <SelectValue placeholder="All Districts" />
         </SelectTrigger>
@@ -62,7 +62,7 @@ export function UWHFilters({
       >
         <SelectTrigger
           size="sm"
-          className="min-w-[160px] rounded-lg border-[#EDE9E0] bg-white text-sm"
+          className="min-w-[160px] rounded-lg border-[#E5E7EB] bg-white text-sm"
         >
           <SelectValue placeholder="All Schools" />
         </SelectTrigger>

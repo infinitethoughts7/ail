@@ -17,7 +17,7 @@ import {
 } from "recharts";
 import { TrendingUp, Target } from "lucide-react";
 
-const COLORS = ["#C9A84C", "#5C4A2E", "#E8E4DA"];
+const COLORS = ["#7C3AED", "#4B5563", "#E5E7EB"];
 
 export default function ImpactPage() {
   const { data: summary, isLoading } = useUWHSummary();
@@ -26,8 +26,8 @@ export default function ImpactPage() {
   if (isLoading) {
     return (
       <div className="p-6 sm:p-8 space-y-6">
-        <Skeleton className="h-64 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
-        <Skeleton className="h-64 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+        <Skeleton className="h-64 rounded-xl bg-[#F3F4F6]" />
+        <Skeleton className="h-64 rounded-xl bg-[#F3F4F6]" />
       </div>
     );
   }
@@ -59,31 +59,31 @@ export default function ImpactPage() {
         <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
           Impact & Outcomes
         </h1>
-        <p className="mt-1 text-sm text-[#718096]">
+        <p className="mt-1 text-sm text-[#9CA3AF]">
           Measuring the real effectiveness of the AI Literacy Program
         </p>
       </div>
 
       {/* Headline metrics */}
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#C9A84C]">{completionRate}%</p>
+        <div className="uwh-card px-5 py-5 text-center">
+          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#7C3AED]">{completionRate}%</p>
           <p className="uwh-label mt-2">Completion Rate</p>
         </div>
-        <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#0F1A2E]">
+        <div className="uwh-card px-5 py-5 text-center">
+          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#1F2937]">
             {summary?.kpis.total_students_trained || 0}
           </p>
           <p className="uwh-label mt-2">Students Reached</p>
         </div>
-        <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#0F1A2E]">
+        <div className="uwh-card px-5 py-5 text-center">
+          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#1F2937]">
             {summary?.kpis.total_sessions || 0}
           </p>
           <p className="uwh-label mt-2">Sessions Delivered</p>
         </div>
-        <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#0F1A2E]">
+        <div className="uwh-card px-5 py-5 text-center">
+          <p className="uwh-mono uwh-number-glow text-4xl font-bold text-[#1F2937]">
             {summary?.kpis.total_districts || 0}
           </p>
           <p className="uwh-label mt-2">Districts Covered</p>
@@ -92,9 +92,9 @@ export default function ImpactPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Program Completion Pie */}
-        <div className="uwh-card overflow-hidden" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <div className="flex items-center gap-2 border-b px-5 py-4" style={{ borderColor: "var(--uwh-border-card)" }}>
-            <Target className="h-4 w-4 text-[#C9A84C]" />
+        <div className="uwh-card overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-[#E5E7EB] px-5 py-4">
+            <Target className="h-4 w-4 text-[#7C3AED]" />
             <h2 className="uwh-heading text-base font-semibold">Program Completion</h2>
           </div>
           <div className="p-5">
@@ -121,9 +121,9 @@ export default function ImpactPage() {
                     </Pie>
                     <Tooltip
                       contentStyle={{
-                        borderRadius: 12,
-                        border: "1px solid #EDE9E0",
-                        boxShadow: "0 4px 14px rgba(15,26,46,0.06)",
+                        borderRadius: 8,
+                        border: "1px solid #E5E7EB",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                         fontFamily: "var(--font-geist-sans)",
                       }}
                     />
@@ -131,15 +131,15 @@ export default function ImpactPage() {
                 </ResponsiveContainer>
               </div>
             ) : (
-              <p className="py-12 text-center text-sm text-[#718096]">No data yet.</p>
+              <p className="py-12 text-center text-sm text-[#9CA3AF]">No data yet.</p>
             )}
           </div>
         </div>
 
         {/* District Bar Chart */}
-        <div className="uwh-card overflow-hidden" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <div className="flex items-center gap-2 border-b px-5 py-4" style={{ borderColor: "var(--uwh-border-card)" }}>
-            <TrendingUp className="h-4 w-4 text-[#C9A84C]" />
+        <div className="uwh-card overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-[#E5E7EB] px-5 py-4">
+            <TrendingUp className="h-4 w-4 text-[#7C3AED]" />
             <h2 className="uwh-heading text-base font-semibold">Impact by District</h2>
           </div>
           <div className="p-5">
@@ -147,33 +147,33 @@ export default function ImpactPage() {
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={barData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E8E4DA" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                     <XAxis
                       dataKey="name"
-                      tick={{ fontSize: 11, fontFamily: "var(--font-geist-sans)", fill: "#718096" }}
+                      tick={{ fontSize: 11, fontFamily: "var(--font-geist-sans)", fill: "#9CA3AF" }}
                     />
                     <YAxis
-                      tick={{ fontSize: 11, fontFamily: "var(--font-geist-sans)", fill: "#718096" }}
+                      tick={{ fontSize: 11, fontFamily: "var(--font-geist-sans)", fill: "#9CA3AF" }}
                     />
                     <Tooltip
                       contentStyle={{
-                        borderRadius: 12,
-                        border: "1px solid #EDE9E0",
-                        boxShadow: "0 4px 14px rgba(15,26,46,0.06)",
+                        borderRadius: 8,
+                        border: "1px solid #E5E7EB",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
                         fontFamily: "var(--font-geist-sans)",
                       }}
                     />
                     <Legend
                       wrapperStyle={{ fontSize: "12px", fontFamily: "var(--font-geist-sans)" }}
                     />
-                    <Bar dataKey="completed" fill="#C9A84C" name="Completed" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="inProgress" fill="#5C4A2E" name="In Progress" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="remaining" fill="#E8E4DA" name="Remaining" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="completed" fill="#7C3AED" name="Completed" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="inProgress" fill="#4B5563" name="In Progress" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="remaining" fill="#E5E7EB" name="Remaining" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
-              <p className="py-12 text-center text-sm text-[#718096]">No data yet.</p>
+              <p className="py-12 text-center text-sm text-[#9CA3AF]">No data yet.</p>
             )}
           </div>
         </div>

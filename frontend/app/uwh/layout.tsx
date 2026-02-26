@@ -20,9 +20,9 @@ export default function UWHLayout({
 
   if (status === "loading") {
     return (
-      <div className="flex min-h-dvh items-center justify-center" style={{ background: "#F8F6F1" }}>
+      <div className="flex min-h-dvh items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C9A84C] border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#7C3AED] border-t-transparent" />
           <p className="uwh-label">Loading dashboard</p>
         </div>
       </div>
@@ -33,7 +33,7 @@ export default function UWHLayout({
     <SidebarProvider>
       <UWHSidebarNav />
       <SidebarInset>
-        <div className="min-h-dvh uwh-body" style={{ background: "#F8F6F1" }}>
+        <div className="min-h-dvh uwh-body bg-[#F3F4F6]">
           {children}
         </div>
       </SidebarInset>

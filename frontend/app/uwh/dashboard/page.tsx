@@ -26,11 +26,11 @@ export default function UWHDashboardPage() {
   if (isLoading) {
     return (
       <div className="p-6 sm:p-8 space-y-6">
-        <Skeleton className="h-10 w-64 rounded-xl" style={{ background: "var(--uwh-border-subtle)" }} />
-        <Skeleton className="h-20 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+        <Skeleton className="h-10 w-64 rounded-lg bg-[#F3F4F6]" />
+        <Skeleton className="h-20 rounded-xl bg-[#F3F4F6]" />
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-28 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+            <Skeleton key={i} className="h-28 rounded-xl bg-[#F3F4F6]" />
           ))}
         </div>
       </div>
@@ -38,7 +38,7 @@ export default function UWHDashboardPage() {
   }
 
   const bannerStyles: Record<string, { bg: string; border: string; text: string; dot: string }> = {
-    green: { bg: "bg-[#C9A84C]/5", border: "border-[#C9A84C]/20", text: "text-[#C9A84C]", dot: "bg-[#C9A84C]" },
+    green: { bg: "bg-[#059669]/5", border: "border-[#059669]/20", text: "text-[#059669]", dot: "bg-[#059669]" },
     yellow: { bg: "bg-[#D97706]/5", border: "border-[#D97706]/20", text: "text-[#D97706]", dot: "bg-[#D97706]" },
     red: { bg: "bg-[#DC2626]/5", border: "border-[#DC2626]/20", text: "text-[#DC2626]", dot: "bg-[#DC2626]" },
   };
@@ -61,7 +61,7 @@ export default function UWHDashboardPage() {
         <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
           Program Dashboard
         </h1>
-        <p className="mt-1 text-sm text-[#718096]">
+        <p className="mt-1 text-sm text-[#9CA3AF]">
           Real-time overview of the AI Literacy Program
         </p>
       </div>
@@ -71,7 +71,7 @@ export default function UWHDashboardPage() {
         const style = bannerStyles[summary.status_banner.color] || bannerStyles.green;
         return (
           <div
-            className={`mb-6 flex items-center gap-3 rounded-2xl border px-5 py-4 ${style.bg} ${style.border}`}
+            className={`mb-6 flex items-center gap-3 rounded-xl border px-5 py-4 ${style.bg} ${style.border}`}
           >
             <span className={`h-2.5 w-2.5 animate-pulse rounded-full ${style.dot}`} />
             <span className={`text-sm font-medium ${style.text}`}>
@@ -97,13 +97,12 @@ export default function UWHDashboardPage() {
           <div
             key={kpi.label}
             className="uwh-card group px-4 py-5 sm:px-5"
-            style={{ border: "1px solid var(--uwh-border-card)" }}
           >
             <div className="flex items-center justify-between">
               <p className="uwh-label">{kpi.label}</p>
-              <kpi.icon className="h-4 w-4 text-[#718096]" />
+              <kpi.icon className="h-4 w-4 text-[#D1D5DB]" />
             </div>
-            <p className="uwh-mono uwh-number-glow mt-2 text-3xl font-bold text-[#0F1A2E]">
+            <p className="uwh-mono uwh-number-glow mt-2 text-3xl font-bold text-[#1F2937]">
               {kpi.value}
             </p>
           </div>
@@ -113,60 +112,57 @@ export default function UWHDashboardPage() {
       {/* Quick overview grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* District Progress */}
-        <div
-          className="uwh-card overflow-hidden"
-          style={{ border: "1px solid var(--uwh-border-card)" }}
-        >
-          <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: "var(--uwh-border-card)" }}>
+        <div className="uwh-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 py-4">
             <h2 className="uwh-heading text-base font-semibold">
               District Progress
             </h2>
             <Link
               href="/uwh/districts"
-              className="uwh-gold-line flex items-center gap-1 text-xs font-medium text-[#C9A84C] transition-colors hover:text-[#B89840]"
+              className="flex items-center gap-1 text-xs font-medium text-[#7C3AED] transition-colors hover:text-[#6D28D9]"
             >
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
           <div className="p-5">
             {districts && districts.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-0 divide-y divide-[#F3F4F6]">
                 {districts.slice(0, 5).map((d) => {
                   const pct =
                     d.total_schools > 0
                       ? Math.round((d.completed / d.total_schools) * 100)
                       : 0;
+                  const isComplete = d.completed === d.total_schools;
                   return (
-                    <div key={d.id}>
-                      <div className="mb-1.5 flex justify-between">
-                        <span className="text-sm font-medium text-[#0F1A2E]">{d.name}</span>
-                        <span className="uwh-mono text-xs text-[#718096]">
-                          {d.completed}/{d.total_schools}
+                    <div key={d.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
+                      <div className="flex items-center gap-3">
+                        <span className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold ${isComplete ? "bg-[#F0FDF4] text-[#16A34A]" : "bg-[#F9FAFB] text-[#9CA3AF]"}`}>
+                          {pct}%
                         </span>
+                        <span className="text-sm font-medium text-[#1F2937]">{d.name}</span>
                       </div>
-                      <Progress value={pct} className="h-2 rounded-full [&>[data-slot=progress-indicator]]:bg-[#C9A84C]" />
+                      <span className="uwh-mono text-xs text-[#9CA3AF]">
+                        {d.completed}/{d.total_schools}
+                      </span>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <p className="py-8 text-center text-sm text-[#718096]">No district data yet.</p>
+              <p className="py-8 text-center text-sm text-[#9CA3AF]">No district data yet.</p>
             )}
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div
-          className="uwh-card overflow-hidden"
-          style={{ border: "1px solid var(--uwh-border-card)" }}
-        >
-          <div className="flex items-center justify-between border-b px-5 py-4" style={{ borderColor: "var(--uwh-border-card)" }}>
+        <div className="uwh-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-[#E5E7EB] px-5 py-4">
             <h2 className="uwh-heading text-base font-semibold">
               Recent Activity
             </h2>
             <Link
               href="/uwh/activity"
-              className="uwh-gold-line flex items-center gap-1 text-xs font-medium text-[#C9A84C] transition-colors hover:text-[#B89840]"
+              className="flex items-center gap-1 text-xs font-medium text-[#7C3AED] transition-colors hover:text-[#6D28D9]"
             >
               View all <ArrowRight className="h-3 w-3" />
             </Link>
@@ -177,8 +173,7 @@ export default function UWHDashboardPage() {
                 {activities.slice(0, 8).map((a) => (
                   <div
                     key={a.id}
-                    className="flex gap-3 border-b pb-3 last:border-0 last:pb-0"
-                    style={{ borderColor: "var(--uwh-border-subtle)" }}
+                    className="flex gap-3 border-b border-[#F3F4F6] pb-3 last:border-0 last:pb-0"
                   >
                     {a.thumbnail_url && (
                       <img
@@ -189,15 +184,15 @@ export default function UWHDashboardPage() {
                     )}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-3">
-                        <p className="text-sm font-medium leading-tight text-[#0F1A2E]">
+                        <p className="text-sm font-medium leading-tight text-[#1F2937]">
                           {a.title}
                         </p>
-                        <Badge className="shrink-0 rounded-md border border-[#EDE9E0] bg-[#FDFBF7] px-2 py-0.5 text-[10px] font-medium text-[#718096]">
+                        <Badge className="shrink-0 rounded-md border border-[#E5E7EB] bg-[#F9FAFB] px-2 py-0.5 text-[10px] font-medium text-[#6B7280]">
                           {ACTIVITY_TYPE_LABELS[a.activity_type] ||
                             a.activity_type.replace(/_/g, " ")}
                         </Badge>
                       </div>
-                      <p className="uwh-mono mt-1 text-[11px] text-[#718096]">
+                      <p className="uwh-mono mt-1 text-[11px] text-[#9CA3AF]">
                         {timeAgo(a.timestamp)}
                       </p>
                     </div>
@@ -205,7 +200,7 @@ export default function UWHDashboardPage() {
                 ))}
               </div>
             ) : (
-              <p className="py-8 text-center text-sm text-[#718096]">No activity yet.</p>
+              <p className="py-8 text-center text-sm text-[#9CA3AF]">No activity yet.</p>
             )}
           </div>
         </div>

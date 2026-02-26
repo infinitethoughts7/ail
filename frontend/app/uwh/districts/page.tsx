@@ -21,7 +21,7 @@ export default function DistrictsPage() {
     return (
       <div className="p-6 sm:p-8 space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 rounded-2xl" style={{ background: "var(--uwh-border-subtle)" }} />
+          <Skeleton key={i} className="h-20 rounded-xl bg-[#F3F4F6]" />
         ))}
       </div>
     );
@@ -38,22 +38,22 @@ export default function DistrictsPage() {
         <h1 className="uwh-heading text-2xl font-bold sm:text-3xl">
           District Progress
         </h1>
-        <p className="mt-1 text-sm text-[#718096]">
+        <p className="mt-1 text-sm text-[#9CA3AF]">
           Which districts are on track? Which need attention?
         </p>
       </div>
 
       {/* Summary cards */}
       <div className="mb-8 grid grid-cols-3 gap-4">
-        <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <p className="uwh-mono uwh-number-glow text-3xl font-bold text-[#0F1A2E]">{total}</p>
+        <div className="uwh-card px-5 py-5 text-center">
+          <p className="uwh-mono uwh-number-glow text-3xl font-bold text-[#1F2937]">{total}</p>
           <p className="uwh-label mt-1">Total Schools</p>
         </div>
-        <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
+        <div className="uwh-card px-5 py-5 text-center">
           <p className="uwh-mono uwh-number-glow text-3xl font-bold text-[#059669]">{completed}</p>
           <p className="uwh-label mt-1">Completed</p>
         </div>
-        <div className="uwh-card px-5 py-5 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
+        <div className="uwh-card px-5 py-5 text-center">
           <p className="uwh-mono uwh-number-glow text-3xl font-bold text-[#2563EB]">{inProgress}</p>
           <p className="uwh-label mt-1">In Progress</p>
         </div>
@@ -61,23 +61,23 @@ export default function DistrictsPage() {
 
       {/* District Table */}
       {!districts?.length ? (
-        <div className="uwh-card py-16 text-center" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <MapPin className="mx-auto mb-3 h-10 w-10 text-[#EDE9E0]" />
-          <p className="text-sm text-[#718096]">No district data available yet.</p>
+        <div className="uwh-card py-16 text-center">
+          <MapPin className="mx-auto mb-3 h-10 w-10 text-[#E5E7EB]" />
+          <p className="text-sm text-[#9CA3AF]">No district data available yet.</p>
         </div>
       ) : (
-        <div className="uwh-card overflow-hidden" style={{ border: "1px solid var(--uwh-border-card)" }}>
-          <div className="flex items-center gap-2 border-b px-5 py-4" style={{ borderColor: "var(--uwh-border-card)" }}>
-            <MapPin className="h-4 w-4 text-[#C9A84C]" />
+        <div className="uwh-card overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-[#E5E7EB] px-5 py-4">
+            <MapPin className="h-4 w-4 text-[#7C3AED]" />
             <h2 className="uwh-heading text-base font-semibold">
               All Districts
             </h2>
-            <span className="uwh-mono ml-1 text-sm text-[#718096]">({districts.length})</span>
+            <span className="uwh-mono ml-1 text-sm text-[#9CA3AF]">({districts.length})</span>
           </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow style={{ borderColor: "var(--uwh-border-subtle)" }}>
+                <TableRow className="border-[#E5E7EB]">
                   <TableHead className="uwh-label py-3">District</TableHead>
                   <TableHead className="uwh-label py-3 text-center">Total</TableHead>
                   <TableHead className="uwh-label py-3 text-center">Completed</TableHead>
@@ -97,9 +97,9 @@ export default function DistrictsPage() {
                     d.total_schools - d.completed - d.in_progress
                   );
                   return (
-                    <TableRow key={d.id} className="hover:bg-[#F3F0E8]/50" style={{ borderColor: "var(--uwh-border-subtle)" }}>
-                      <TableCell className="font-medium text-[#0F1A2E]">{d.name}</TableCell>
-                      <TableCell className="uwh-mono text-center text-[#4A5568]">
+                    <TableRow key={d.id} className="border-[#E5E7EB] hover:bg-[#F9FAFB]">
+                      <TableCell className="font-medium text-[#1F2937]">{d.name}</TableCell>
+                      <TableCell className="uwh-mono text-center text-[#4B5563]">
                         {d.total_schools}
                       </TableCell>
                       <TableCell className="text-center">
@@ -118,15 +118,15 @@ export default function DistrictsPage() {
                       </TableCell>
                       <TableCell className="text-center">
                         {remaining > 0 && (
-                          <Badge className="uwh-mono rounded-md border border-[#EDE9E0] bg-transparent px-2.5 text-[#718096]">
+                          <Badge className="uwh-mono rounded-md border border-[#E5E7EB] bg-transparent px-2.5 text-[#9CA3AF]">
                             {remaining}
                           </Badge>
                         )}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <Progress value={pct} className="h-2 flex-1 rounded-full" />
-                          <span className="uwh-mono w-12 text-right text-xs text-[#718096]">
+                          <Progress value={pct} className="h-2 flex-1 rounded-full [&>[data-slot=progress-indicator]]:bg-[#7C3AED]" />
+                          <span className="uwh-mono w-12 text-right text-xs text-[#9CA3AF]">
                             {pct}%
                           </span>
                         </div>
