@@ -34,10 +34,10 @@ DISTRICTS = [
 
 # Day schedule mapping
 DAY_SCHEDULE = {
-    1: {"date": date(2026, 2, 21), "title": "Introduction to AI & Machine Learning Basics"},
-    2: {"date": date(2026, 2, 22), "title": "Data Literacy & AI Tools"},
-    3: {"date": date(2026, 2, 23), "title": "AI for Problem Solving"},
-    4: {"date": date(2026, 2, 24), "title": "AI Projects & Showcase"},
+    1: {"date": date(2026, 2, 21), "title": "Foundations of Computers & Introduction to AI"},
+    2: {"date": date(2026, 2, 22), "title": "Creative AI – Prompting & Content Creation, Image generation, Story and Lyric writing"},
+    3: {"date": date(2026, 2, 23), "title": "Building with AI – Design & website Development and Game designing"},
+    4: {"date": date(2026, 2, 24), "title": "Responsible AI & Career Pathways"},
 }
 
 # Media upload limits
