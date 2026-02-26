@@ -54,9 +54,7 @@ export function useSubmitSession() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (formData: FormData) =>
-      api.post("/api/dashboard/trainer/submit/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      }),
+      api.post("/api/dashboard/trainer/submit/", formData),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["trainer"] });
     },
@@ -70,8 +68,7 @@ export function useAddProject() {
       api
         .post(
           `/api/dashboard/trainer/submissions/${submissionId}/projects/`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          formData
         )
         .then((r) => r.data),
     onSuccess: () => {
@@ -95,9 +92,7 @@ export function useUpdateTrainerProfile() {
   return useMutation<TrainerProfile, Error, FormData>({
     mutationFn: (formData) =>
       api
-        .patch("/api/dashboard/trainer/profile/", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+        .patch("/api/dashboard/trainer/profile/", formData)
         .then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["trainer", "profile"] });
