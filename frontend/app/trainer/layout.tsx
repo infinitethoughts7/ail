@@ -37,7 +37,7 @@ export default function TrainerLayout({
     <SidebarProvider>
       <TrainerSidebarNav />
       <SidebarInset>
-        <div className="min-h-dvh pb-16 md:pb-0">{children}</div>
+        <div className="min-h-dvh bg-[#F3F4F6] pb-16 md:pb-0">{children}</div>
       </SidebarInset>
       <MobileBottomNav />
     </SidebarProvider>

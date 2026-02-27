@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { TrainerHeader } from "@/components/trainer/trainer-header";
 import { useTrainerGallery } from "@/hooks/use-trainer-data";
 import { getDayTheme } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
@@ -44,10 +44,7 @@ export default function TrainerGalleryPage() {
   if (isLoading) {
     return (
       <div>
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-white/80 px-4 backdrop-blur-lg dark:bg-gray-950/80">
-          <SidebarTrigger className="md:hidden" />
-          <h1 className="text-base font-semibold">My Gallery</h1>
-        </header>
+        <TrainerHeader title="My Gallery" />
         <div className="p-4">
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -63,15 +60,13 @@ export default function TrainerGalleryPage() {
 
   return (
     <div>
-      <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-white/80 px-4 backdrop-blur-lg dark:bg-gray-950/80">
-        <SidebarTrigger className="md:hidden" />
-        <h1 className="text-base font-semibold">My Gallery</h1>
+      <TrainerHeader title="My Gallery">
         {photos && (
           <Badge variant="secondary" className="ml-1 text-[10px]">
             {photos.length}
           </Badge>
         )}
-      </header>
+      </TrainerHeader>
 
       <div className="p-4 sm:p-6">
         <div className="mb-4">
