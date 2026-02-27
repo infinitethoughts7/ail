@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Eye,
   Users,
+  School,
   LogOut,
 } from "lucide-react";
 import {
@@ -78,6 +79,11 @@ const SECONDARY_ITEMS = [
     label: "Trainers",
     href: "/swinfy/trainers",
     icon: Users,
+  },
+  {
+    label: "Schools",
+    href: "/swinfy/schools",
+    icon: School,
   },
 ];
 

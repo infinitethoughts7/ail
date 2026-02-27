@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
@@ -20,8 +21,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSwinfyTrainers, useDistricts } from "@/hooks/use-swinfy-data";
-import { Users, School } from "lucide-react";
+import {
+  useSwinfyTrainers,
+  useDistricts,
+  useUnassignTrainer,
+} from "@/hooks/use-swinfy-data";
+import { TrainerAssignmentDialog } from "@/components/swinfy/trainer-assignment-dialog";
+import { toast } from "sonner";
+import { Users, School, Plus, X } from "lucide-react";
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   not_started: { label: "Not Started", className: "bg-gray-100 text-gray-700" },
@@ -29,10 +36,25 @@ const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   completed: { label: "Completed", className: "bg-emerald-100 text-emerald-700" },
 };
 
+const ROLE_BADGE: Record<string, string> = {
+  primary: "bg-indigo-100 text-indigo-700",
+  secondary: "bg-orange-100 text-orange-700",
+};
+
 export default function TrainerTrackerPage() {
   const [districtId, setDistrictId] = useState("");
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const { data: districts } = useDistricts();
   const { data: trainers, isLoading } = useSwinfyTrainers(districtId || undefined);
+  const unassign = useUnassignTrainer();
+
+  const handleUnassign = (assignmentId: string, trainerName: string, schoolName: string) => {
+    if (!confirm(`Remove ${trainerName} from ${schoolName}?`)) return;
+    unassign.mutate(assignmentId, {
+      onSuccess: () => toast.success(`${trainerName} removed from ${schoolName}`),
+      onError: () => toast.error("Failed to unassign trainer"),
+    });
+  };
 
   if (isLoading) {
     return (
@@ -54,7 +76,15 @@ export default function TrainerTrackerPage() {
         <Badge variant="secondary" className="ml-1">
           {trainers?.length || 0}
         </Badge>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          <Button
+            onClick={() => setAssignDialogOpen(true)}
+            size="sm"
+            className="h-9"
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            Assign Trainer
+          </Button>
           <Select
             value={districtId || "all"}
             onValueChange={(v) => setDistrictId(v === "all" ? "" : v)}
@@ -154,13 +184,24 @@ export default function TrainerTrackerPage() {
                           <div className="space-y-1">
                             {t.schools.map((s) => {
                               const badge = STATUS_BADGE[s.status] || STATUS_BADGE.not_started;
+                              const roleBadge = ROLE_BADGE[s.role] || ROLE_BADGE.primary;
                               return (
-                                <div key={s.id} className="flex items-center gap-1.5">
+                                <div key={s.assignment_id} className="flex items-center gap-1.5">
                                   <School className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                                   <span className="text-sm">{s.name}</span>
                                   <Badge className={`text-[10px] px-1.5 py-0 ${badge.className}`}>
                                     {badge.label}
                                   </Badge>
+                                  <Badge className={`text-[10px] px-1.5 py-0 ${roleBadge}`}>
+                                    {s.role}
+                                  </Badge>
+                                  <button
+                                    onClick={() => handleUnassign(s.assignment_id, t.full_name, s.name)}
+                                    className="ml-1 flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-red-100 hover:text-red-600"
+                                    title="Unassign"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </button>
                                 </div>
                               );
                             })}
@@ -172,28 +213,28 @@ export default function TrainerTrackerPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-center">
-                        {t.total_submissions || "—"}
+                        {t.total_submissions || "\u2014"}
                       </TableCell>
                       <TableCell className="text-center">
                         {t.verified_submissions > 0 ? (
                           <Badge className="bg-emerald-100 text-emerald-800">
                             {t.verified_submissions}
                           </Badge>
-                        ) : "—"}
+                        ) : "\u2014"}
                       </TableCell>
                       <TableCell className="text-center">
                         {t.pending_submissions > 0 ? (
                           <Badge className="bg-yellow-100 text-yellow-800">
                             {t.pending_submissions}
                           </Badge>
-                        ) : "—"}
+                        ) : "\u2014"}
                       </TableCell>
                       <TableCell className="text-center">
                         {t.flagged_submissions > 0 ? (
                           <Badge className="bg-orange-100 text-orange-800">
                             {t.flagged_submissions}
                           </Badge>
-                        ) : "—"}
+                        ) : "\u2014"}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -203,6 +244,11 @@ export default function TrainerTrackerPage() {
           )}
         </CardContent>
       </Card>
+
+      <TrainerAssignmentDialog
+        open={assignDialogOpen}
+        onOpenChange={setAssignDialogOpen}
+      />
     </div>
   );
 }
