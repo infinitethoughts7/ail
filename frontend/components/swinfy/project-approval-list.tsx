@@ -13,7 +13,26 @@ import {
 } from "@/hooks/use-swinfy-data";
 import type { ProjectHighlight } from "@/lib/types";
 import { toast } from "sonner";
-import { Check, X, Star, Pencil } from "lucide-react";
+import {
+  Check,
+  X,
+  Star,
+  Pencil,
+  Globe,
+  Music,
+  Video,
+  Image as ImageIcon,
+  Users,
+  ExternalLink,
+} from "lucide-react";
+import type { ProjectType } from "@/lib/types";
+
+const TYPE_CONFIG: Record<ProjectType, { label: string; icon: React.ReactNode; bg: string; text: string }> = {
+  image: { label: "Image", icon: <ImageIcon className="h-3 w-3" />, bg: "bg-violet-50", text: "text-violet-700" },
+  website_link: { label: "Website", icon: <Globe className="h-3 w-3" />, bg: "bg-sky-50", text: "text-sky-700" },
+  music: { label: "Music", icon: <Music className="h-3 w-3" />, bg: "bg-orange-50", text: "text-orange-700" },
+  video: { label: "Video", icon: <Video className="h-3 w-3" />, bg: "bg-pink-50", text: "text-pink-700" },
+};
 
 interface Props {
   projects: ProjectHighlight[];
@@ -66,27 +85,83 @@ export function ProjectApprovalList({ projects }: Props) {
           <CardContent className="px-4 py-4 sm:px-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold sm:text-base">
                     {proj.title}
                   </p>
                   <Badge variant="outline" className="text-[10px]">
                     {proj.approval_status}
                   </Badge>
+                  {proj.project_type && TYPE_CONFIG[proj.project_type] && (
+                    <Badge
+                      variant="outline"
+                      className={`border-0 text-[10px] font-semibold ${TYPE_CONFIG[proj.project_type].bg} ${TYPE_CONFIG[proj.project_type].text}`}
+                    >
+                      {TYPE_CONFIG[proj.project_type].icon}
+                      <span className="ml-1">{TYPE_CONFIG[proj.project_type].label}</span>
+                    </Badge>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {proj.student_name}
                   {proj.student_grade && ` · Grade ${proj.student_grade}`}
                   {proj.student_age && ` · Age ${proj.student_age}`}
+                  {proj.school_name && ` · ${proj.school_name}`}
                 </p>
+
+                {/* Group info */}
+                {proj.group_name && (
+                  <div className="mt-1.5 flex items-center gap-1.5">
+                    <Users className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">
+                      {proj.group_name}
+                      {proj.group_members.length > 0 &&
+                        ` (${proj.group_members.join(", ")})`}
+                    </span>
+                  </div>
+                )}
+
                 <p className="mt-2 text-sm text-muted-foreground">
                   {proj.description}
                 </p>
+
+                {/* Image */}
                 {proj.image_url && (
                   <img
                     src={proj.image_url}
                     alt={proj.title}
                     className="mt-2 h-32 w-auto rounded-lg object-cover"
+                  />
+                )}
+
+                {/* Website link */}
+                {proj.project_type === "website_link" && proj.website_url && (
+                  <a
+                    href={proj.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-sky-50 px-2.5 py-1.5 text-xs text-sky-700 hover:bg-sky-100"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    {proj.website_url}
+                  </a>
+                )}
+
+                {/* Audio/Song */}
+                {proj.project_type === "music" && proj.media_file_url && (
+                    <audio
+                      controls
+                      className="mt-2 w-full max-w-sm"
+                      src={proj.media_file_url}
+                    />
+                  )}
+
+                {/* Video */}
+                {proj.project_type === "video" && proj.media_file_url && (
+                  <video
+                    controls
+                    className="mt-2 max-h-48 w-auto rounded-lg"
+                    src={proj.media_file_url}
                   />
                 )}
               </div>

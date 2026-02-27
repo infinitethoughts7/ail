@@ -5,7 +5,68 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUWHProjects } from "@/hooks/use-uwh-data";
 import { UWHFilters } from "@/components/uwh/uwh-filters";
-import { Lightbulb, Star, User } from "lucide-react";
+import {
+  Lightbulb,
+  Star,
+  User,
+  Globe,
+  Music,
+  Video,
+  Image as ImageIcon,
+  Users,
+  ExternalLink,
+} from "lucide-react";
+import type { ProjectType, ProjectHighlight } from "@/lib/types";
+
+const TYPE_ICON: Record<ProjectType, React.ReactNode> = {
+  image: <ImageIcon className="h-3 w-3" />,
+  website_link: <Globe className="h-3 w-3" />,
+  music: <Music className="h-3 w-3" />,
+  video: <Video className="h-3 w-3" />,
+};
+
+const TYPE_LABEL: Record<ProjectType, string> = {
+  image: "Image",
+  website_link: "Website",
+  music: "Music",
+  video: "Video",
+};
+
+function ProjectMedia({ proj }: { proj: ProjectHighlight }) {
+  if (proj.project_type === "image" && proj.image_url) {
+    return (
+      <img
+        src={proj.image_url}
+        alt={proj.title}
+        className="mb-4 h-40 w-full rounded-lg object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+      />
+    );
+  }
+  if (proj.project_type === "website_link" && proj.website_url) {
+    return (
+      <a
+        href={proj.website_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb-4 flex items-center gap-1.5 rounded-lg bg-[#EFF6FF] px-3 py-2 text-xs text-[#2563EB] hover:bg-[#DBEAFE]"
+      >
+        <ExternalLink className="h-3 w-3" />
+        <span className="truncate">{proj.website_url}</span>
+      </a>
+    );
+  }
+  if (proj.project_type === "music" && proj.media_file_url) {
+    return (
+      <audio controls className="mb-4 w-full" src={proj.media_file_url} />
+    );
+  }
+  if (proj.project_type === "video" && proj.media_file_url) {
+    return (
+      <video controls className="mb-4 w-full rounded-lg" src={proj.media_file_url} />
+    );
+  }
+  return null;
+}
 
 export default function InnovationsPage() {
   const [district, setDistrict] = useState("");
@@ -63,16 +124,18 @@ export default function InnovationsPage() {
                 className="uwh-card group overflow-hidden border-2 border-[#7C3AED]/15"
               >
                 <div className="p-5">
-                  <Badge className="mb-3 rounded-lg bg-[#7C3AED] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow-sm">
-                    <Star className="mr-1 h-3 w-3" /> Featured
-                  </Badge>
-                  {proj.image_url && (
-                    <img
-                      src={proj.image_url}
-                      alt={proj.title}
-                      className="mb-4 h-44 w-full rounded-lg object-cover"
-                    />
-                  )}
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <Badge className="rounded-lg bg-[#7C3AED] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white shadow-sm">
+                      <Star className="mr-1 h-3 w-3" /> Featured
+                    </Badge>
+                    {proj.project_type && TYPE_LABEL[proj.project_type] && (
+                      <Badge variant="outline" className="text-[10px]">
+                        {TYPE_ICON[proj.project_type]}
+                        <span className="ml-1">{TYPE_LABEL[proj.project_type]}</span>
+                      </Badge>
+                    )}
+                  </div>
+                  <ProjectMedia proj={proj} />
                   <h3 className="uwh-heading text-base font-semibold">{proj.title}</h3>
                   <div className="mt-2 flex items-center gap-1.5 text-xs text-[#9CA3AF]">
                     <User className="h-3 w-3" />
@@ -80,6 +143,15 @@ export default function InnovationsPage() {
                     {proj.student_grade && <span>· Grade {proj.student_grade}</span>}
                     {proj.student_age && <span>· Age {proj.student_age}</span>}
                   </div>
+                  {proj.group_name && (
+                    <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#9CA3AF]">
+                      <Users className="h-3 w-3" />
+                      <span>{proj.group_name}</span>
+                      {proj.group_members?.length > 0 && (
+                        <span>· {proj.group_members.join(", ")}</span>
+                      )}
+                    </div>
+                  )}
                   <p className="mt-3 text-sm leading-relaxed text-[#4B5563]">
                     {proj.display_description}
                   </p>
@@ -105,19 +177,28 @@ export default function InnovationsPage() {
                 className="uwh-card group overflow-hidden"
               >
                 <div className="p-5">
-                  {proj.image_url && (
-                    <img
-                      src={proj.image_url}
-                      alt={proj.title}
-                      className="mb-4 h-40 w-full rounded-lg object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                    />
+                  {proj.project_type && TYPE_LABEL[proj.project_type] && (
+                    <Badge variant="outline" className="mb-3 text-[10px]">
+                      {TYPE_ICON[proj.project_type]}
+                      <span className="ml-1">{TYPE_LABEL[proj.project_type]}</span>
+                    </Badge>
                   )}
+                  <ProjectMedia proj={proj} />
                   <h3 className="uwh-heading text-sm font-semibold">{proj.title}</h3>
                   <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#9CA3AF]">
                     <User className="h-3 w-3" />
                     <span>{proj.student_name}</span>
                     {proj.student_grade && <span>· Grade {proj.student_grade}</span>}
                   </div>
+                  {proj.group_name && (
+                    <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#9CA3AF]">
+                      <Users className="h-3 w-3" />
+                      <span>{proj.group_name}</span>
+                      {proj.group_members?.length > 0 && (
+                        <span>· {proj.group_members.join(", ")}</span>
+                      )}
+                    </div>
+                  )}
                   <p className="mt-3 text-sm leading-relaxed text-[#4B5563]">
                     {proj.display_description}
                   </p>
