@@ -83,8 +83,8 @@ export function UWHSidebarNav() {
       style={{
         ["--sidebar" as string]: "#F3F4F6",
         ["--sidebar-foreground" as string]: "#4B5563",
-        ["--sidebar-accent" as string]: "#F3F4F6",
-        ["--sidebar-accent-foreground" as string]: "#1F2937",
+        ["--sidebar-accent" as string]: "#EDE9FE",
+        ["--sidebar-accent-foreground" as string]: "#7C3AED",
         ["--sidebar-border" as string]: "#E5E7EB",
         ["--sidebar-primary" as string]: "#7C3AED",
         ["--sidebar-primary-foreground" as string]: "#FFFFFF",
@@ -125,8 +125,8 @@ export function UWHSidebarNav() {
                       className={`
                         mb-0.5 rounded-lg px-3 py-2.5 transition-all duration-150
                         ${isActive
-                          ? "bg-[#7C3AED]/15 text-[#7C3AED] font-semibold shadow-[inset_3px_0_0_0_#7C3AED] rounded-l-none"
-                          : "text-[#6B7280] hover:bg-[#F3F4F6] hover:text-[#1F2937]"
+                          ? "font-semibold"
+                          : "text-[#6B7280] hover:!bg-white/60 hover:!text-[#1F2937]"
                         }
                       `}
                     >
