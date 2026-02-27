@@ -19,11 +19,24 @@ urlpatterns = [
     path("trainer/students/add/", views.trainer_add_student),
     path("trainer/students/<uuid:pk>/", views.trainer_update_student),
     path("trainer/students/<uuid:pk>/delete/", views.trainer_delete_student),
+    path("trainer/groups/", views.trainer_groups),
+    path("trainer/groups/create/", views.trainer_create_group),
+    path("trainer/groups/<uuid:pk>/", views.trainer_update_group),
+    path("trainer/groups/<uuid:pk>/delete/", views.trainer_delete_group),
+    path("trainer/groups/<uuid:pk>/assign-students/", views.trainer_assign_students_to_group),
+    path("trainer/groups/<uuid:pk>/remove-students/", views.trainer_remove_students_from_group),
     path("trainer/projects/", views.trainer_projects),
+    path("trainer/projects/create/", views.trainer_create_project),
     path("trainer/gallery/", views.trainer_gallery),
+    path("trainer/schools/", views.trainer_assigned_schools),
+
+    # Swinfy — Schools
+    path("swinfy/schools/<uuid:pk>/", views.swinfy_update_school),
 
     # Swinfy — Trainers
     path("swinfy/trainers/", views.swinfy_trainers),
+    path("swinfy/trainers/assign/", views.swinfy_assign_trainer),
+    path("swinfy/trainers/assignments/<uuid:pk>/", views.swinfy_unassign_trainer),
 
     # Swinfy — Verification Queue
     path("swinfy/submissions/", views.swinfy_submissions),

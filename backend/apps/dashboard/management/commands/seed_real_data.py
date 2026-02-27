@@ -22,6 +22,7 @@ from apps.dashboard.models import (
     Curriculum,
     District,
     School,
+    TrainerAssignment,
     UWHControl,
 )
 
@@ -188,6 +189,8 @@ TRAINER_SCHOOL_MAP = [
     # Khairtabad G-1 (2 trainers)
     {"trainer_email": "rockyg.swinfy@gmail.com", "school_name": "TMREIS Khairtabad G-1", "poc_name": "Hannah Marlin", "poc_designation": "PGT English", "principal_phone": "7995057984", "poc_phone": "8886987575", "map_url": "https://maps.app.goo.gl/Wd8ZHs1K33Rs5X3w6", "total_students": 68},
     {"trainer_email": "sasvaldas@gmail.com", "school_name": "TMREIS Khairtabad G-1", "poc_name": "Hannah Marlin", "poc_designation": "PGT English", "principal_phone": "7995057984", "poc_phone": "8886987575", "map_url": "https://maps.app.goo.gl/Wd8ZHs1K33Rs5X3w6", "total_students": 68},
+    # Yakutpura G-1 (Rocky's second school — Phase 2)
+    {"trainer_email": "rockyg.swinfy@gmail.com", "school_name": "TMREIS Yakutpura G-1", "poc_name": "", "poc_designation": "", "principal_phone": "", "poc_phone": "9059420912", "map_url": "", "total_students": 0},
     # Golconda G-1 (2 trainers)
     {"trainer_email": "sowkyab.swinfy@gmail.com", "school_name": "TMREIS Golconda G-1", "poc_name": "Radhika", "poc_designation": "PGT English", "principal_phone": "7331170798", "poc_phone": "7989083584", "map_url": "https://maps.app.goo.gl/wT6gwrhAYaeYtD1D8", "total_students": 39},
     {"trainer_email": "vangoorishirisha2@gmail.com", "school_name": "TMREIS Golconda G-1", "poc_name": "Radhika", "poc_designation": "PGT English", "principal_phone": "7331170798", "poc_phone": "7989083584", "map_url": "https://maps.app.goo.gl/wT6gwrhAYaeYtD1D8", "total_students": 39},
@@ -402,7 +405,7 @@ class Command(BaseCommand):
             if entry["trainer_email"]:
                 school_trainers[sname].append(entry["trainer_email"])
 
-        for sname, trainers in school_trainers.items():
+        for sname, trainer_emails in school_trainers.items():
             try:
                 school = School.objects.get(name=sname)
             except School.DoesNotExist:
@@ -416,14 +419,21 @@ class Command(BaseCommand):
             school.principal_phone = details["principal_phone"]
             school.map_url = details["map_url"]
             school.total_students = details["total_students"]
-
-            # First trainer → assigned_trainer, second → second_trainer
-            school.assigned_trainer = trainer_map.get(trainers[0]) if len(trainers) > 0 else None
-            school.second_trainer = trainer_map.get(trainers[1]) if len(trainers) > 1 else None
-
             school.save()
-            t1 = trainer_map[trainers[0]].first_name if len(trainers) > 0 and trainers[0] in trainer_map else "—"
-            t2 = trainer_map[trainers[1]].first_name if len(trainers) > 1 and trainers[1] in trainer_map else "—"
+
+            # Create TrainerAssignment entries
+            for i, email in enumerate(trainer_emails):
+                trainer_user = trainer_map.get(email)
+                if trainer_user:
+                    role = "primary" if i == 0 else "secondary"
+                    TrainerAssignment.objects.get_or_create(
+                        trainer=trainer_user,
+                        school=school,
+                        defaults={"role": role},
+                    )
+
+            t1 = trainer_map[trainer_emails[0]].first_name if len(trainer_emails) > 0 and trainer_emails[0] in trainer_map else "—"
+            t2 = trainer_map[trainer_emails[1]].first_name if len(trainer_emails) > 1 and trainer_emails[1] in trainer_map else "—"
             self.stdout.write(f"  {sname}: T1={t1}, T2={t2}, POC={details['poc_name']}")
 
         # 7. UWH Control singleton

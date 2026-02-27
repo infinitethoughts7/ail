@@ -16,6 +16,8 @@ from .models import (
     ActivityLog,
     UWHControl,
     Student,
+    StudentGroup,
+    TrainerAssignment,
 )
 from .permissions import IsAdmin, IsTrainer, IsSponsor
 from .serializers import (
@@ -32,7 +34,10 @@ from .serializers import (
     UWHControlSerializer,
     StudentSerializer,
     StudentCreateSerializer,
+    StudentGroupSerializer,
+    StudentGroupCreateSerializer,
     TrainerProfileSerializer,
+    TrainerAssignmentSerializer,
 )
 
 
@@ -79,9 +84,7 @@ def summary(request):
 
     elif role == "trainer":
         subs = Submission.objects.filter(trainer=request.user)
-        trainer_schools = School.objects.filter(
-            Q(assigned_trainer=request.user) | Q(second_trainer=request.user)
-        )
+        trainer_schools = _get_trainer_schools(request.user)
         return Response({
             "assigned_schools": trainer_schools.count(),
             "submissions_count": subs.count(),
@@ -90,7 +93,8 @@ def summary(request):
             "student_count": Student.objects.filter(
                 school__in=trainer_schools).count(),
             "project_count": ProjectHighlight.objects.filter(
-                submission__trainer=request.user).count(),
+                Q(trainer=request.user) | Q(submission__trainer=request.user)
+            ).distinct().count(),
         })
 
     return Response({
@@ -118,7 +122,9 @@ def district_list(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def school_list(request):
-    qs = School.objects.select_related("district", "assigned_trainer")
+    qs = School.objects.select_related("district").prefetch_related(
+        "trainer_assignments__trainer"
+    )
     district = request.query_params.get("district")
     if district:
         qs = qs.filter(district_id=district)
@@ -127,7 +133,7 @@ def school_list(request):
         qs = qs.filter(status=status_filter)
     trainer = request.query_params.get("trainer")
     if trainer:
-        qs = qs.filter(assigned_trainer_id=trainer)
+        qs = qs.filter(trainer_assignments__trainer_id=trainer).distinct()
     return Response(SchoolListSerializer(qs, many=True).data)
 
 
@@ -135,9 +141,7 @@ def school_list(request):
 @permission_classes([IsAuthenticated])
 def school_detail(request, pk):
     try:
-        school = School.objects.select_related(
-            "district", "assigned_trainer"
-        ).get(pk=pk)
+        school = School.objects.select_related("district").get(pk=pk)
     except School.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(SchoolDetailSerializer(school).data)
@@ -267,21 +271,22 @@ def trainer_profile(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_students(request):
-    school = School.objects.filter(
-        Q(assigned_trainer=request.user) | Q(second_trainer=request.user)
-    ).first()
-    if not school:
-        return Response([])
-    students = Student.objects.filter(school=school)
+    schools = _get_trainer_schools(request.user)
+    school_id = request.query_params.get("school")
+    if school_id:
+        schools = schools.filter(pk=school_id)
+    students = Student.objects.filter(school__in=schools)
     return Response(StudentSerializer(students, many=True).data)
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_add_student(request):
-    school = School.objects.filter(
-        Q(assigned_trainer=request.user) | Q(second_trainer=request.user)
-    ).first()
+    school_id = request.data.get("school")
+    if school_id:
+        school = _get_trainer_schools(request.user).filter(pk=school_id).first()
+    else:
+        school = _get_trainer_school(request.user)
     if not school:
         return Response(
             {"detail": "No school assigned to this trainer"},
@@ -296,11 +301,9 @@ def trainer_add_student(request):
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_update_student(request, pk):
+    trainer_schools = _get_trainer_schools(request.user)
     try:
-        student = Student.objects.get(
-            Q(school__assigned_trainer=request.user) | Q(school__second_trainer=request.user),
-            pk=pk,
-        )
+        student = Student.objects.get(school__in=trainer_schools, pk=pk)
     except Student.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -315,11 +318,9 @@ def trainer_update_student(request, pk):
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_delete_student(request, pk):
+    trainer_schools = _get_trainer_schools(request.user)
     try:
-        student = Student.objects.get(
-            Q(school__assigned_trainer=request.user) | Q(school__second_trainer=request.user),
-            pk=pk,
-        )
+        student = Student.objects.get(school__in=trainer_schools, pk=pk)
     except Student.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -328,16 +329,147 @@ def trainer_delete_student(request, pk):
 
 
 # ─────────────────────────────────────────
+#  TRAINER: Student Groups
+# ─────────────────────────────────────────
+
+
+def _get_trainer_schools(user):
+    return School.objects.filter(trainer_assignments__trainer=user).distinct()
+
+
+def _get_trainer_school(user):
+    return _get_trainer_schools(user).first()
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_groups(request):
+    schools = _get_trainer_schools(request.user)
+    school_id = request.query_params.get("school")
+    if school_id:
+        schools = schools.filter(pk=school_id)
+    if not schools.exists():
+        return Response([])
+    groups = StudentGroup.objects.filter(school__in=schools).prefetch_related("members")
+    return Response(StudentGroupSerializer(groups, many=True).data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_create_group(request):
+    school_id = request.data.get("school")
+    if school_id:
+        school = _get_trainer_schools(request.user).filter(pk=school_id).first()
+    else:
+        school = _get_trainer_school(request.user)
+    if not school:
+        return Response(
+            {"detail": "No school assigned to this trainer"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    serializer = StudentGroupCreateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    group = serializer.save(school=school, created_by=request.user)
+    return Response(
+        StudentGroupSerializer(group).data,
+        status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_update_group(request, pk):
+    school = _get_trainer_school(request.user)
+    try:
+        group = StudentGroup.objects.get(pk=pk, school=school)
+    except StudentGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = StudentGroupCreateSerializer(group, data=request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(StudentGroupSerializer(group).data)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_delete_group(request, pk):
+    school = _get_trainer_school(request.user)
+    try:
+        group = StudentGroup.objects.get(pk=pk, school=school)
+    except StudentGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    # Unassign students before deleting
+    group.members.update(group=None)
+    group.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_assign_students_to_group(request, pk):
+    school = _get_trainer_school(request.user)
+    try:
+        group = StudentGroup.objects.get(pk=pk, school=school)
+    except StudentGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    student_ids = request.data.get("student_ids", [])
+    updated = Student.objects.filter(
+        id__in=student_ids, school=school
+    ).update(group=group)
+    return Response({"assigned": updated})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_remove_students_from_group(request, pk):
+    school = _get_trainer_school(request.user)
+    try:
+        group = StudentGroup.objects.get(pk=pk, school=school)
+    except StudentGroup.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    student_ids = request.data.get("student_ids", [])
+    updated = Student.objects.filter(
+        id__in=student_ids, group=group
+    ).update(group=None)
+    return Response({"removed": updated})
+
+
+# ─────────────────────────────────────────
 #  TRAINER: Projects
 # ─────────────────────────────────────────
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsTrainer])
+@parser_classes([MultiPartParser, FormParser])
+def trainer_create_project(request):
+    """Create a project independent of any submission."""
+    school_id = request.data.get("school")
+    if school_id:
+        school = _get_trainer_schools(request.user).filter(pk=school_id).first()
+    else:
+        school = _get_trainer_school(request.user)
+    if not school:
+        return Response(
+            {"detail": "No school assigned to this trainer"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    data = request.data.copy()
+    serializer = ProjectHighlightSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save(school=school, trainer=request.user)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_projects(request):
     projects = ProjectHighlight.objects.filter(
-        submission__trainer=request.user
-    ).select_related("submission__school")
+        Q(trainer=request.user) | Q(submission__trainer=request.user)
+    ).distinct().select_related("submission__school", "school", "group")
     return Response(
         ProjectHighlightSerializer(
             projects, many=True, context={"request": request}
@@ -348,7 +480,7 @@ def trainer_projects(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsTrainer])
 def trainer_gallery(request):
-    """All photos uploaded by this trainer. Filter by ?status= (approval_status), ?day="""
+    """All photos uploaded by this trainer. Filter by ?status= (approval_status), ?day=, ?school="""
     photos = SessionPhoto.objects.filter(
         submission__trainer=request.user
     ).select_related("submission__school").order_by("-uploaded_at")
@@ -358,6 +490,9 @@ def trainer_gallery(request):
     day = request.query_params.get("day")
     if day:
         photos = photos.filter(submission__day_number=day)
+    school = request.query_params.get("school")
+    if school:
+        photos = photos.filter(submission__school_id=school)
 
     data = []
     for p in photos:
@@ -377,6 +512,21 @@ def trainer_gallery(request):
 
 
 # ─────────────────────────────────────────
+#  TRAINER: Assigned Schools
+# ─────────────────────────────────────────
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTrainer])
+def trainer_assigned_schools(request):
+    """Returns only schools assigned to the current trainer."""
+    schools = _get_trainer_schools(request.user).select_related("district").prefetch_related(
+        "trainer_assignments__trainer"
+    )
+    return Response(SchoolListSerializer(schools, many=True).data)
+
+
+# ─────────────────────────────────────────
 #  SWINFY (Admin): Trainers List
 # ─────────────────────────────────────────
 
@@ -388,12 +538,12 @@ def swinfy_trainers(request):
     from apps.accounts.models import User
 
     trainers = User.objects.filter(role="trainer").prefetch_related(
-        "assigned_schools__district"
+        "school_assignments__school__district"
     )
     district = request.query_params.get("district")
     if district:
         trainers = trainers.filter(
-            assigned_schools__district_id=district
+            school_assignments__school__district_id=district
         ).distinct()
     trainers = trainers.annotate(
         subs_total=Count(
@@ -412,7 +562,7 @@ def swinfy_trainers(request):
 
     data = []
     for t in trainers:
-        schools = t.assigned_schools.all()
+        assignments = t.school_assignments.all()
         data.append({
             "id": str(t.id),
             "email": t.email,
@@ -422,12 +572,14 @@ def swinfy_trainers(request):
             "profile_photo_url": request.build_absolute_uri(t.profile_photo.url) if t.profile_photo else None,
             "schools": [
                 {
-                    "id": str(s.id),
-                    "name": s.name,
-                    "district_name": s.district.name,
-                    "status": s.status,
+                    "id": str(a.school.id),
+                    "name": a.school.name,
+                    "district_name": a.school.district.name,
+                    "status": a.school.status,
+                    "assignment_id": str(a.id),
+                    "role": a.role,
                 }
-                for s in schools
+                for a in assignments
             ],
             "total_submissions": t.subs_total,
             "verified_submissions": t.subs_verified,
@@ -436,6 +588,93 @@ def swinfy_trainers(request):
         })
 
     return Response(data)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsAdmin])
+def swinfy_update_school(request, pk):
+    """Admin: update school details (POC, principal, status, etc.)."""
+    try:
+        school = School.objects.select_related("district").get(pk=pk)
+    except School.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    allowed_fields = [
+        "poc_name", "poc_designation", "poc_phone",
+        "principal_name", "principal_phone", "principal_email",
+        "map_url", "address", "total_students", "total_days", "status",
+    ]
+    updated = []
+    for field in allowed_fields:
+        if field in request.data:
+            setattr(school, field, request.data[field])
+            updated.append(field)
+
+    if updated:
+        school.save(update_fields=updated + ["updated_at"])
+
+    return Response(SchoolDetailSerializer(school).data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsAdmin])
+def swinfy_assign_trainer(request):
+    """Assign a trainer to a school."""
+    trainer_id = request.data.get("trainer")
+    school_id = request.data.get("school")
+    role = request.data.get("role", "primary")
+
+    if not trainer_id or not school_id:
+        return Response(
+            {"detail": "trainer and school are required"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    from apps.accounts.models import User
+    try:
+        trainer = User.objects.get(pk=trainer_id, role="trainer")
+    except User.DoesNotExist:
+        return Response(
+            {"detail": "Trainer not found"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    try:
+        school = School.objects.get(pk=school_id)
+    except School.DoesNotExist:
+        return Response(
+            {"detail": "School not found"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    assignment, created = TrainerAssignment.objects.get_or_create(
+        trainer=trainer,
+        school=school,
+        defaults={"role": role, "assigned_by": request.user},
+    )
+    if not created:
+        return Response(
+            {"detail": "Trainer is already assigned to this school"},
+            status=status.HTTP_409_CONFLICT,
+        )
+
+    return Response(
+        TrainerAssignmentSerializer(assignment).data,
+        status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated, IsAdmin])
+def swinfy_unassign_trainer(request, pk):
+    """Remove a trainer assignment."""
+    try:
+        assignment = TrainerAssignment.objects.get(pk=pk)
+    except TrainerAssignment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    assignment.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ─────────────────────────────────────────
@@ -684,19 +923,21 @@ def swinfy_pending_projects(request):
     """Projects for review. Filter by ?status= (default pending, 'all'), ?school=, ?trainer=, ?district="""
     status_filter = request.query_params.get("status", "pending")
     qs = ProjectHighlight.objects.select_related(
-        "submission__school", "submission__trainer"
+        "submission__school", "submission__trainer", "school", "trainer", "group"
     )
     if status_filter != "all":
         qs = qs.filter(approval_status=status_filter)
     school = request.query_params.get("school")
     if school:
-        qs = qs.filter(submission__school_id=school)
+        qs = qs.filter(Q(school_id=school) | Q(submission__school_id=school))
     trainer = request.query_params.get("trainer")
     if trainer:
-        qs = qs.filter(submission__trainer_id=trainer)
+        qs = qs.filter(Q(trainer_id=trainer) | Q(submission__trainer_id=trainer))
     district = request.query_params.get("district")
     if district:
-        qs = qs.filter(submission__school__district_id=district)
+        qs = qs.filter(
+            Q(school__district_id=district) | Q(submission__school__district_id=district)
+        )
     return Response(ProjectHighlightSerializer(qs, many=True, context={"request": request}).data)
 
 
@@ -879,18 +1120,24 @@ def uwh_gallery(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsSponsor])
 def uwh_projects(request):
-    """Only approved/featured projects from verified submissions. Filter by ?district=, ?school="""
+    """Approved/featured projects. Includes both submission-linked and standalone projects."""
     projects = ProjectHighlight.objects.filter(
-        submission__status="verified",
         approval_status__in=["approved", "featured"],
-    ).select_related("submission__school")
+    ).filter(
+        # Either from verified submissions, or standalone (no submission)
+        Q(submission__status="verified") | Q(submission__isnull=True)
+    ).select_related("submission__school", "school", "group")
 
     district = request.query_params.get("district")
     if district:
-        projects = projects.filter(submission__school__district_id=district)
+        projects = projects.filter(
+            Q(school__district_id=district) | Q(submission__school__district_id=district)
+        )
     school = request.query_params.get("school")
     if school:
-        projects = projects.filter(submission__school_id=school)
+        projects = projects.filter(
+            Q(school_id=school) | Q(submission__school_id=school)
+        )
 
     return Response(
         ProjectHighlightSerializer(

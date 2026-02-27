@@ -13,7 +13,7 @@ from datetime import date, timedelta
 
 from django.core.management.base import BaseCommand
 
-from apps.dashboard.models import School
+from apps.dashboard.models import School, TrainerAssignment
 from apps.dashboard.program_config import DAY_SCHEDULE
 from apps.dashboard.services.notifications import (
     notify_principal_session_today,
@@ -46,18 +46,21 @@ class Command(BaseCommand):
         day_number, info = day_entry
         sent = 0
 
-        schools = School.objects.filter(
-            assigned_trainer__isnull=False,
-            principal_email__gt="",
-        ).select_related("assigned_trainer")
+        # Get schools that have at least one trainer assigned and have principal email
+        assignments = TrainerAssignment.objects.filter(
+            role="primary",
+        ).select_related("trainer", "school")
 
-        for school in schools:
-            trainer = school.assigned_trainer
+        for assignment in assignments:
+            school = assignment.school
+            trainer = assignment.trainer
+            if not school.principal_email:
+                continue
             success = notify_principal_session_today(
                 principal_email=school.principal_email,
                 principal_name=school.principal_name or "Principal",
                 trainer_name=trainer.get_full_name() or trainer.email,
-                trainer_phone=school.principal_phone,  # trainer phone stored on school for now
+                trainer_phone=school.principal_phone,
                 school_name=school.name,
                 session_date=today,
                 session_title=info["title"],
@@ -76,12 +79,14 @@ class Command(BaseCommand):
         day_number, info = day_entry
         sent = 0
 
-        schools = School.objects.filter(
-            assigned_trainer__isnull=False,
-        ).select_related("assigned_trainer")
+        assignments = TrainerAssignment.objects.select_related(
+            "trainer", "school"
+        )
+        notified_schools = set()
 
-        for school in schools:
-            trainer = school.assigned_trainer
+        for assignment in assignments:
+            school = assignment.school
+            trainer = assignment.trainer
 
             # Trainer reminder
             success = notify_session_reminder(
@@ -96,8 +101,9 @@ class Command(BaseCommand):
             if success:
                 sent += 1
 
-            # Principal reminder
-            if school.principal_email:
+            # Principal reminder (once per school)
+            if school.principal_email and school.pk not in notified_schools:
+                notified_schools.add(school.pk)
                 success = notify_session_reminder(
                     recipient_email=school.principal_email,
                     recipient_name=school.principal_name or "Principal",
