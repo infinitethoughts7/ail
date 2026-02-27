@@ -37,6 +37,8 @@ export function AddStudentDialog({
   const [parentName, setParentName] = useState("");
   const [parentPhone, setParentPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [baselineMarks, setBaselineMarks] = useState("");
+  const [endlineMarks, setEndlineMarks] = useState("");
 
   useEffect(() => {
     if (student) {
@@ -46,6 +48,8 @@ export function AddStudentDialog({
       setParentName(student.parent_name);
       setParentPhone(student.parent_phone);
       setNotes(student.notes);
+      setBaselineMarks(student.baseline_marks?.toString() || "");
+      setEndlineMarks(student.endline_marks?.toString() || "");
     } else {
       setName("");
       setAge("");
@@ -53,6 +57,8 @@ export function AddStudentDialog({
       setParentName("");
       setParentPhone("");
       setNotes("");
+      setBaselineMarks("");
+      setEndlineMarks("");
     }
   }, [student, open]);
 
@@ -73,6 +79,8 @@ export function AddStudentDialog({
       notes: notes.trim(),
     };
     if (age) data.age = age;
+    if (baselineMarks) data.baseline_marks = baselineMarks;
+    if (endlineMarks) data.endline_marks = endlineMarks;
 
     if (isEditing && student) {
       updateStudent.mutate(
@@ -134,6 +142,32 @@ export function AddStudentDialog({
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
                 placeholder="e.g. 8th"
+                className="h-12 rounded-xl text-sm"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label className="mb-2 block text-sm font-medium">Baseline Marks</Label>
+              <Input
+                type="number"
+                value={baselineMarks}
+                onChange={(e) => setBaselineMarks(e.target.value)}
+                placeholder="e.g. 7"
+                min={0}
+                max={10}
+                className="h-12 rounded-xl text-sm"
+              />
+            </div>
+            <div>
+              <Label className="mb-2 block text-sm font-medium">Endline Marks</Label>
+              <Input
+                type="number"
+                value={endlineMarks}
+                onChange={(e) => setEndlineMarks(e.target.value)}
+                placeholder="e.g. 9"
+                min={0}
+                max={10}
                 className="h-12 rounded-xl text-sm"
               />
             </div>
