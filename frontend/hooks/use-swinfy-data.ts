@@ -4,6 +4,7 @@ import type {
   AdminSummary,
   District,
   School,
+  SchoolDetail,
   SubmissionListItem,
   SubmissionDetail,
   SessionPhoto,
@@ -74,6 +75,15 @@ export function useSchools(districtId?: string) {
           params: districtId ? { district: districtId } : {},
         })
         .then((r) => r.data),
+  });
+}
+
+export function useSchoolDetail(id: string | null) {
+  return useQuery<SchoolDetail>({
+    queryKey: ["schools", "detail", id],
+    queryFn: () =>
+      api.get(`/api/dashboard/schools/${id}/`).then((r) => r.data),
+    enabled: !!id,
   });
 }
 
@@ -324,6 +334,37 @@ export function useUpdateFinancialSummary() {
   return useMutation({
     mutationFn: (data: Record<string, unknown>) =>
       api.patch("/api/dashboard/swinfy/uwh-control/financial-summary/", { data }),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUpdateSchool() {
+  const invalidate = useInvalidateSwinfy();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }: { id: string; [key: string]: unknown }) =>
+      api.patch(`/api/dashboard/swinfy/schools/${id}/`, data).then((r) => r.data),
+    onSuccess: () => {
+      invalidate();
+      qc.invalidateQueries({ queryKey: ["schools"] });
+    },
+  });
+}
+
+export function useAssignTrainer() {
+  const invalidate = useInvalidateSwinfy();
+  return useMutation({
+    mutationFn: (data: { trainer: string; school: string; role?: string }) =>
+      api.post("/api/dashboard/swinfy/trainers/assign/", data).then((r) => r.data),
+    onSuccess: invalidate,
+  });
+}
+
+export function useUnassignTrainer() {
+  const invalidate = useInvalidateSwinfy();
+  return useMutation({
+    mutationFn: (assignmentId: string) =>
+      api.delete(`/api/dashboard/swinfy/trainers/assignments/${assignmentId}/`),
     onSuccess: invalidate,
   });
 }

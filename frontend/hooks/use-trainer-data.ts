@@ -9,6 +9,7 @@ import type {
   ProjectHighlight,
   TrainerProfile,
   Student,
+  StudentGroup,
   TrainerGalleryPhoto,
 } from "@/lib/types";
 
@@ -36,10 +37,15 @@ export function useTrainerSubmissionDetail(id: string | null) {
   });
 }
 
+/** @deprecated Use useTrainerSchools instead */
 export function useSchools() {
+  return useTrainerSchools();
+}
+
+export function useTrainerSchools() {
   return useQuery<School[]>({
     queryKey: ["trainer", "schools"],
-    queryFn: () => api.get("/api/dashboard/schools/").then((r) => r.data),
+    queryFn: () => api.get("/api/dashboard/trainer/schools/").then((r) => r.data),
   });
 }
 
@@ -63,13 +69,10 @@ export function useSubmitSession() {
 
 export function useAddProject() {
   const qc = useQueryClient();
-  return useMutation<ProjectHighlight, Error, { submissionId: string; formData: FormData }>({
-    mutationFn: ({ submissionId, formData }) =>
+  return useMutation<ProjectHighlight, Error, FormData>({
+    mutationFn: (formData) =>
       api
-        .post(
-          `/api/dashboard/trainer/submissions/${submissionId}/projects/`,
-          formData
-        )
+        .post("/api/dashboard/trainer/projects/create/", formData)
         .then((r) => r.data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["trainer"] });
@@ -102,11 +105,13 @@ export function useUpdateTrainerProfile() {
 
 // --- Students ---
 
-export function useTrainerStudents() {
+export function useTrainerStudents(schoolId?: string) {
   return useQuery<Student[]>({
-    queryKey: ["trainer", "students"],
+    queryKey: ["trainer", "students", schoolId],
     queryFn: () =>
-      api.get("/api/dashboard/trainer/students/").then((r) => r.data),
+      api.get("/api/dashboard/trainer/students/", {
+        params: schoolId ? { school: schoolId } : {},
+      }).then((r) => r.data),
   });
 }
 
@@ -154,16 +159,100 @@ export function useDeleteStudent() {
 export interface GalleryFilters {
   status?: string;
   day?: string;
+  school?: string;
 }
 
 export function useTrainerGallery(filters: GalleryFilters = {}) {
   const params: Record<string, string> = {};
   if (filters.status) params.status = filters.status;
   if (filters.day) params.day = filters.day;
+  if (filters.school) params.school = filters.school;
   return useQuery<TrainerGalleryPhoto[]>({
     queryKey: ["trainer", "gallery", params],
     queryFn: () =>
       api.get("/api/dashboard/trainer/gallery/", { params }).then((r) => r.data),
+  });
+}
+
+// --- Groups ---
+
+export function useTrainerGroups(schoolId?: string) {
+  return useQuery<StudentGroup[]>({
+    queryKey: ["trainer", "groups", schoolId],
+    queryFn: () =>
+      api.get("/api/dashboard/trainer/groups/", {
+        params: schoolId ? { school: schoolId } : {},
+      }).then((r) => r.data),
+  });
+}
+
+export function useCreateGroup() {
+  const qc = useQueryClient();
+  return useMutation<StudentGroup, Error, { name: string }>({
+    mutationFn: (data) =>
+      api
+        .post("/api/dashboard/trainer/groups/create/", data)
+        .then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "groups"] });
+    },
+  });
+}
+
+export function useUpdateGroup() {
+  const qc = useQueryClient();
+  return useMutation<StudentGroup, Error, { id: string; name: string }>({
+    mutationFn: ({ id, name }) =>
+      api
+        .patch(`/api/dashboard/trainer/groups/${id}/`, { name })
+        .then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "groups"] });
+    },
+  });
+}
+
+export function useDeleteGroup() {
+  const qc = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) =>
+      api.delete(`/api/dashboard/trainer/groups/${id}/delete/`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "groups"] });
+      qc.invalidateQueries({ queryKey: ["trainer", "students"] });
+    },
+  });
+}
+
+export function useAssignStudentsToGroup() {
+  const qc = useQueryClient();
+  return useMutation<{ assigned: number }, Error, { groupId: string; studentIds: string[] }>({
+    mutationFn: ({ groupId, studentIds }) =>
+      api
+        .post(`/api/dashboard/trainer/groups/${groupId}/assign-students/`, {
+          student_ids: studentIds,
+        })
+        .then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "groups"] });
+      qc.invalidateQueries({ queryKey: ["trainer", "students"] });
+    },
+  });
+}
+
+export function useRemoveStudentsFromGroup() {
+  const qc = useQueryClient();
+  return useMutation<{ removed: number }, Error, { groupId: string; studentIds: string[] }>({
+    mutationFn: ({ groupId, studentIds }) =>
+      api
+        .post(`/api/dashboard/trainer/groups/${groupId}/remove-students/`, {
+          student_ids: studentIds,
+        })
+        .then((r) => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["trainer", "groups"] });
+      qc.invalidateQueries({ queryKey: ["trainer", "students"] });
+    },
   });
 }
 

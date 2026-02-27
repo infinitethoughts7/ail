@@ -19,16 +19,24 @@ export interface School {
   district_name: string;
   status: "not_started" | "in_progress" | "completed";
   total_students: number;
-  assigned_trainer: string | null;
-  trainer_name: string | null;
+  trainers_list: {
+    id: string;
+    name: string;
+    role: string;
+  }[];
   total_days: number;
   created_at: string;
 }
 
 export interface SchoolDetail extends School {
   address: string;
+  poc_name: string;
+  poc_designation: string;
+  poc_phone: string;
   principal_name: string;
   principal_phone: string;
+  principal_email: string;
+  map_url: string;
   updated_at: string;
   submissions: SubmissionListItem[];
 }
@@ -57,6 +65,8 @@ export interface SessionPhoto {
 }
 
 // --- Project Highlight ---
+export type ProjectType = "image" | "website_link" | "music" | "video";
+
 export interface ProjectHighlight {
   id: string;
   student_name: string;
@@ -64,8 +74,16 @@ export interface ProjectHighlight {
   student_grade: string;
   title: string;
   description: string;
+  project_type: ProjectType;
   image: string | null;
   image_url: string | null;
+  media_file: string | null;
+  media_file_url: string | null;
+  website_url: string;
+  group: string | null;
+  group_name: string | null;
+  group_members: string[];
+  school_name: string | null;
   approval_status: "pending" | "approved" | "featured" | "rejected";
   rejection_reason: string;
   uwh_description: string;
@@ -140,6 +158,17 @@ export interface UWHControl {
   updated_at: string;
 }
 
+// --- Student Group ---
+export interface StudentGroup {
+  id: string;
+  name: string;
+  school: string;
+  members: Student[];
+  member_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
 // --- Student ---
 export interface Student {
   id: string;
@@ -148,11 +177,32 @@ export interface Student {
   grade: string;
   school: string;
   school_name: string;
+  group: string | null;
+  group_name: string | null;
   parent_name: string;
   parent_phone: string;
   notes: string;
+  baseline_marks: number | null;
+  endline_marks: number | null;
   created_at: string;
   updated_at: string;
+}
+
+// --- Trainer School (from profile) ---
+export interface TrainerSchool {
+  id: string;
+  name: string;
+  district_name: string;
+  status: string;
+  total_students: number;
+  total_days: number;
+  map_url: string;
+  poc_name: string;
+  poc_designation: string;
+  poc_phone: string;
+  principal_phone: string;
+  co_trainers: string[];
+  role: string;
 }
 
 // --- Trainer Profile ---
@@ -162,20 +212,22 @@ export interface TrainerProfile {
   username: string;
   profile_photo: string | null;
   profile_photo_url: string | null;
-  assigned_school: {
-    id: string;
-    name: string;
-    district_name: string;
-    status: string;
-    total_students: number;
-    total_days: number;
-    map_url: string;
-    poc_name: string;
-    poc_designation: string;
-    poc_phone: string;
-    principal_phone: string;
-    co_trainer: string | null;
-  } | null;
+  assigned_school: (TrainerSchool & { co_trainer: string | null }) | null;
+  assigned_schools: TrainerSchool[];
+}
+
+// --- Trainer Assignment ---
+export interface TrainerAssignment {
+  id: string;
+  trainer: string;
+  trainer_name: string;
+  trainer_email: string;
+  school: string;
+  school_name: string;
+  district_name: string;
+  role: string;
+  phase: string;
+  assigned_at: string;
 }
 
 // --- Trainer Gallery Photo ---
@@ -204,6 +256,8 @@ export interface SwinfyTrainer {
     name: string;
     district_name: string;
     status: "not_started" | "in_progress" | "completed";
+    assignment_id: string;
+    role: string;
   }[];
   total_submissions: number;
   verified_submissions: number;
