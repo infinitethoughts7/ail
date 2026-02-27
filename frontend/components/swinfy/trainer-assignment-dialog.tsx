@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,11 +23,15 @@ import { Loader2 } from "lucide-react";
 interface TrainerAssignmentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  preSelectedSchoolId?: string;
+  preSelectedSchoolName?: string;
 }
 
 export function TrainerAssignmentDialog({
   open,
   onOpenChange,
+  preSelectedSchoolId,
+  preSelectedSchoolName,
 }: TrainerAssignmentDialogProps) {
   const { data: trainers } = useSwinfyTrainers();
   const { data: schools } = useSchools();
@@ -36,6 +40,17 @@ export function TrainerAssignmentDialog({
   const [trainerId, setTrainerId] = useState("");
   const [schoolId, setSchoolId] = useState("");
   const [role, setRole] = useState("primary");
+
+  useEffect(() => {
+    if (open && preSelectedSchoolId) {
+      setSchoolId(preSelectedSchoolId);
+    }
+    if (!open) {
+      setTrainerId("");
+      setSchoolId("");
+      setRole("primary");
+    }
+  }, [open, preSelectedSchoolId]);
 
   const handleSubmit = () => {
     if (!trainerId || !schoolId) {
@@ -48,9 +63,6 @@ export function TrainerAssignmentDialog({
         onSuccess: () => {
           toast.success("Trainer assigned to school");
           onOpenChange(false);
-          setTrainerId("");
-          setSchoolId("");
-          setRole("primary");
         },
         onError: (err) => {
           const message =
@@ -66,7 +78,11 @@ export function TrainerAssignmentDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Assign Trainer to School</DialogTitle>
+          <DialogTitle>
+            {preSelectedSchoolName
+              ? `Assign Trainer to ${preSelectedSchoolName}`
+              : "Assign Trainer to School"}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div>
@@ -85,21 +101,23 @@ export function TrainerAssignmentDialog({
             </Select>
           </div>
 
-          <div>
-            <Label className="mb-2 block text-sm font-medium">School</Label>
-            <Select value={schoolId} onValueChange={setSchoolId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a school" />
-              </SelectTrigger>
-              <SelectContent>
-                {schools?.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.name} ({s.district_name})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {!preSelectedSchoolId && (
+            <div>
+              <Label className="mb-2 block text-sm font-medium">School</Label>
+              <Select value={schoolId} onValueChange={setSchoolId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a school" />
+                </SelectTrigger>
+                <SelectContent>
+                  {schools?.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.name} ({s.district_name})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div>
             <Label className="mb-2 block text-sm font-medium">Role</Label>
@@ -108,8 +126,8 @@ export function TrainerAssignmentDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="primary">Primary</SelectItem>
-                <SelectItem value="secondary">Secondary</SelectItem>
+                <SelectItem value="primary">Primary Trainer</SelectItem>
+                <SelectItem value="secondary">Secondary Trainer</SelectItem>
               </SelectContent>
             </Select>
           </div>
