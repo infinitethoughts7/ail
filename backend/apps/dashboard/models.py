@@ -39,21 +39,12 @@ class School(models.Model):
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.NOT_STARTED
     )
-    assigned_trainer = models.ForeignKey(
+    trainers = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
+        through="TrainerAssignment",
+        through_fields=("school", "trainer"),
+        related_name="schools_assigned",
         blank=True,
-        related_name="assigned_schools",
-        limit_choices_to={"role": "trainer"},
-    )
-    second_trainer = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="second_assigned_schools",
-        limit_choices_to={"role": "trainer"},
     )
     total_days = models.IntegerField(default=4)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -66,6 +57,62 @@ class School(models.Model):
         return f"{self.name} ({self.district.name})"
 
 
+class TrainerAssignment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="school_assignments",
+        limit_choices_to={"role": "trainer"},
+    )
+    school = models.ForeignKey(
+        "School", on_delete=models.CASCADE, related_name="trainer_assignments"
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=[("primary", "Primary"), ("secondary", "Secondary")],
+        default="primary",
+    )
+    phase = models.CharField(max_length=50, blank=True, default="")
+    assigned_at = models.DateTimeField(auto_now_add=True)
+    assigned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    class Meta:
+        unique_together = ["trainer", "school"]
+        ordering = ["-assigned_at"]
+
+    def __str__(self):
+        return f"{self.trainer} → {self.school} ({self.role})"
+
+
+class StudentGroup(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    school = models.ForeignKey(
+        "School", on_delete=models.CASCADE, related_name="student_groups"
+    )
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="created_groups",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+        unique_together = ["school", "name"]
+
+    def __str__(self):
+        return f"{self.name} ({self.school.name})"
+
+
 class Student(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -73,6 +120,13 @@ class Student(models.Model):
     grade = models.CharField(max_length=20, blank=True)
     school = models.ForeignKey(
         "School", on_delete=models.CASCADE, related_name="students"
+    )
+    group = models.ForeignKey(
+        StudentGroup,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="members",
     )
     added_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -82,6 +136,8 @@ class Student(models.Model):
     parent_name = models.CharField(max_length=255, blank=True)
     parent_phone = models.CharField(max_length=20, blank=True)
     notes = models.TextField(blank=True)
+    baseline_marks = models.IntegerField(blank=True, null=True)
+    endline_marks = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -222,9 +278,40 @@ class ProjectHighlight(models.Model):
         FEATURED = "featured", "Featured on UWH Showcase"
         REJECTED = "rejected", "Rejected"
 
+    class ProjectType(models.TextChoices):
+        IMAGE = "image", "Image"
+        WEBSITE_LINK = "website_link", "Website Link"
+        MUSIC = "music", "Music"
+        VIDEO = "video", "Video"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     submission = models.ForeignKey(
-        Submission, on_delete=models.CASCADE, related_name="project_highlights"
+        Submission, on_delete=models.CASCADE, related_name="project_highlights",
+        null=True, blank=True,
+    )
+    # Direct FKs (since submission is now optional for final projects)
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name="projects",
+        null=True, blank=True,
+    )
+    trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="trainer_projects",
+        null=True, blank=True,
+        limit_choices_to={"role": "trainer"},
+    )
+    group = models.ForeignKey(
+        StudentGroup,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="projects",
+    )
+    project_type = models.CharField(
+        max_length=20,
+        choices=ProjectType.choices,
+        default=ProjectType.IMAGE,
     )
     student_name = models.CharField(max_length=255)
     student_age = models.IntegerField(blank=True, null=True)
@@ -232,6 +319,8 @@ class ProjectHighlight(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to="project_images/", blank=True, null=True)
+    media_file = models.FileField(upload_to="project_media/", blank=True, null=True)
+    website_url = models.URLField(max_length=500, blank=True)
 
     # --- Swinfy Control ---
     approval_status = models.CharField(

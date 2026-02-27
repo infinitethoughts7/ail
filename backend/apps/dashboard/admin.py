@@ -8,6 +8,7 @@ from .models import (
     ProjectHighlight,
     ActivityLog,
     UWHControl,
+    TrainerAssignment,
 )
 
 
@@ -17,11 +18,26 @@ class DistrictAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
 
+class TrainerAssignmentInline(admin.TabularInline):
+    model = TrainerAssignment
+    extra = 1
+    raw_id_fields = ["trainer", "assigned_by"]
+
+
+@admin.register(TrainerAssignment)
+class TrainerAssignmentAdmin(admin.ModelAdmin):
+    list_display = ["trainer", "school", "role", "phase", "assigned_at"]
+    list_filter = ["role", "phase"]
+    search_fields = ["trainer__email", "school__name"]
+    raw_id_fields = ["trainer", "school", "assigned_by"]
+
+
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
-    list_display = ["name", "district", "status", "assigned_trainer", "total_students"]
+    list_display = ["name", "district", "status", "total_students"]
     list_filter = ["status", "district"]
     search_fields = ["name"]
+    inlines = [TrainerAssignmentInline]
 
 
 @admin.register(Curriculum)
