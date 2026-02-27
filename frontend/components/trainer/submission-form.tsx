@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useSchools, useCurriculum, useSubmitSession } from "@/hooks/use-trainer-data";
+import { useTrainerSchools, useCurriculum, useSubmitSession } from "@/hooks/use-trainer-data";
 import { CURRICULUM_DAYS } from "@/lib/constants";
 import { toast } from "sonner";
 import {
@@ -45,7 +45,7 @@ export function SubmissionForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: schools } = useSchools();
+  const { data: schools } = useTrainerSchools();
   const { data: curriculum } = useCurriculum();
   const submit = useSubmitSession();
 
