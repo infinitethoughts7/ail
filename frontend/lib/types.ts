@@ -22,7 +22,9 @@ export interface School {
   trainers_list: {
     id: string;
     name: string;
+    email: string;
     role: string;
+    assignment_id: string;
   }[];
   total_days: number;
   created_at: string;

@@ -353,18 +353,26 @@ export function useUpdateSchool() {
 
 export function useAssignTrainer() {
   const invalidate = useInvalidateSwinfy();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: { trainer: string; school: string; role?: string }) =>
       api.post("/api/dashboard/swinfy/trainers/assign/", data).then((r) => r.data),
-    onSuccess: invalidate,
+    onSuccess: () => {
+      invalidate();
+      qc.invalidateQueries({ queryKey: ["schools"] });
+    },
   });
 }
 
 export function useUnassignTrainer() {
   const invalidate = useInvalidateSwinfy();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (assignmentId: string) =>
       api.delete(`/api/dashboard/swinfy/trainers/assignments/${assignmentId}/`),
-    onSuccess: invalidate,
+    onSuccess: () => {
+      invalidate();
+      qc.invalidateQueries({ queryKey: ["schools"] });
+    },
   });
 }

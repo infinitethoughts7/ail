@@ -45,7 +45,9 @@ class SchoolListSerializer(serializers.ModelSerializer):
             {
                 "id": str(a.trainer_id),
                 "name": a.trainer.get_full_name() or a.trainer.username,
+                "email": a.trainer.email,
                 "role": a.role,
+                "assignment_id": str(a.id),
             }
             for a in assignments
         ]
