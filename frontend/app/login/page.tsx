@@ -118,7 +118,7 @@ export default function LoginPage() {
       </div>
 
       {/* Login Card */}
-      <div className="glass relative z-10 w-full max-w-sm rounded-2xl p-6 shadow-2xl sm:max-w-[400px] sm:rounded-3xl sm:p-10">
+      <div className="relative z-10 w-full max-w-sm rounded-2xl border border-white/20 bg-white/[0.08] p-6 shadow-2xl backdrop-blur-xl sm:max-w-[400px] sm:rounded-3xl sm:p-10" style={{ boxShadow: "0 16px 48px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)" }}>
         {/* Logo / Brand */}
         <div className="mb-6 text-center sm:mb-8">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/15 shadow-lg sm:mb-4 sm:h-14 sm:w-14 sm:rounded-2xl">
