@@ -239,7 +239,7 @@ export default function RegisterPage() {
       {/* Background Image */}
       <div className="fixed inset-0 z-0">
         <Image
-          src="/ail_banner_3.png"
+          src="/ail_banner_3.jpg"
           alt="AI Literacy Program"
           fill
           className="object-cover"
