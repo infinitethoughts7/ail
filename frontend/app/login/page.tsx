@@ -64,28 +64,6 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    // Pre-check for unverified email (since next-auth can't distinguish error types)
-    try {
-      const checkRes = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
-      if (checkRes.status === 403) {
-        const data = await checkRes.json();
-        if (data.code === "email_not_verified") {
-          setLoading(false);
-          setError("Please verify your email first. Check your inbox for the verification code.");
-          return;
-        }
-      }
-    } catch {
-      // Network error — fall through to signIn which will also fail
-    }
-
     const res = await signIn("credentials", {
       email,
       password,
@@ -94,7 +72,11 @@ export default function LoginPage() {
 
     if (res?.error) {
       setLoading(false);
-      setError("Invalid email or password. Please try again.");
+      if (res.error.includes("email_not_verified")) {
+        setError("Please verify your email first. Check your inbox for the verification code.");
+      } else {
+        setError("Invalid email or password. Please try again.");
+      }
       return;
     }
 

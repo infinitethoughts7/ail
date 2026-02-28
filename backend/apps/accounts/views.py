@@ -46,22 +46,25 @@ def login(request):
     email = request.data.get("email")
     password = request.data.get("password")
 
-    # Check for unverified user before authenticate() (which returns None for both)
+    # Single DB lookup + single bcrypt check
     try:
-        user_obj = User.objects.get(email=email)
-        if user_obj.check_password(password) and not user_obj.is_email_verified:
-            return Response(
-                {"detail": "Please verify your email first.", "code": "email_not_verified"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        user = User.objects.get(email=email)
     except User.DoesNotExist:
-        pass
-
-    user = authenticate(request, username=email, password=password)
-    if not user:
         return Response(
             {"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
+
+    if not user.check_password(password):
+        return Response(
+            {"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    if not user.is_email_verified:
+        return Response(
+            {"detail": "Please verify your email first.", "code": "email_not_verified"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
     refresh = RefreshToken.for_user(user)
     return Response(
         {

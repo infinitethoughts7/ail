@@ -24,6 +24,10 @@ export const authOptions: NextAuthOptions = {
 
         const data = await res.json();
 
+        if (res.status === 403 && data.code === "email_not_verified") {
+          throw new Error("email_not_verified");
+        }
+
         if (!res.ok) return null;
 
         return {
