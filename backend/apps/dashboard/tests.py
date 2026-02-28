@@ -41,7 +41,7 @@ def make_test_image(name="test.jpg"):
 
 
 @override_settings(
-    DEFAULT_FILE_STORAGE="django.core.files.storage.InMemoryStorage",
+    STORAGES={"default": {"BACKEND": "django.core.files.storage.InMemoryStorage"}},
 )
 class BaseTestCase(TestCase):
     """Shared setup: creates a trainer, admin, school, district, curriculum."""
@@ -141,7 +141,7 @@ class BaseTestCase(TestCase):
 
 
 @override_settings(
-    DEFAULT_FILE_STORAGE="django.core.files.storage.InMemoryStorage",
+    STORAGES={"default": {"BACKEND": "django.core.files.storage.InMemoryStorage"}},
 )
 class TrainerSubmitTests(TestCase):
     """Test POST /api/dashboard/trainer/submit/"""
@@ -306,7 +306,7 @@ class TrainerSubmitTests(TestCase):
 
 
 @override_settings(
-    DEFAULT_FILE_STORAGE="django.core.files.storage.InMemoryStorage",
+    STORAGES={"default": {"BACKEND": "django.core.files.storage.InMemoryStorage"}},
 )
 class SwinfyVerificationTests(TestCase):
     """Test Swinfy admin can list, view, verify, flag, reject submissions."""
@@ -436,7 +436,7 @@ class SwinfyVerificationTests(TestCase):
 
 
 @override_settings(
-    DEFAULT_FILE_STORAGE="django.core.files.storage.InMemoryStorage",
+    STORAGES={"default": {"BACKEND": "django.core.files.storage.InMemoryStorage"}},
 )
 class PhotoApprovalTests(TestCase):
     """Test Swinfy admin photo approval/rejection/feature pipeline."""
@@ -519,7 +519,7 @@ class PhotoApprovalTests(TestCase):
 
 
 @override_settings(
-    DEFAULT_FILE_STORAGE="django.core.files.storage.InMemoryStorage",
+    STORAGES={"default": {"BACKEND": "django.core.files.storage.InMemoryStorage"}},
 )
 class ActivityLogSignalTests(TestCase):
     """Test that status changes on Submission create correct ActivityLog entries."""
@@ -593,7 +593,7 @@ class ActivityLogSignalTests(TestCase):
 
 
 @override_settings(
-    DEFAULT_FILE_STORAGE="django.core.files.storage.InMemoryStorage",
+    STORAGES={"default": {"BACKEND": "django.core.files.storage.InMemoryStorage"}},
 )
 class EndToEndFlowTests(TestCase):
     """Full flow: trainer submit → swinfy list → swinfy verify → logs created."""
