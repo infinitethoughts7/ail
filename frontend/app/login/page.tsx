@@ -64,6 +64,28 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    // Pre-check for unverified email (since next-auth can't distinguish error types)
+    try {
+      const checkRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+      if (checkRes.status === 403) {
+        const data = await checkRes.json();
+        if (data.code === "email_not_verified") {
+          setLoading(false);
+          setError("Please verify your email first. Check your inbox for the verification code.");
+          return;
+        }
+      }
+    } catch {
+      // Network error — fall through to signIn which will also fail
+    }
+
     const res = await signIn("credentials", {
       email,
       password,
@@ -223,8 +245,21 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {/* Back to home */}
+        {/* Register link */}
         <div className="mt-5 text-center sm:mt-6">
+          <span className="text-sm text-white/50">
+            New trainer?{" "}
+            <Link
+              href="/register"
+              className="font-medium text-white/80 transition-colors active:text-white hover:text-white"
+            >
+              Register here
+            </Link>
+          </span>
+        </div>
+
+        {/* Back to home */}
+        <div className="mt-3 text-center">
           <Link
             href="/"
             className="text-sm text-white/50 transition-colors active:text-white/70 hover:text-white/80"

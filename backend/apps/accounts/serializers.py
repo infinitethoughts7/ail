@@ -65,3 +65,52 @@ class ResetPasswordSerializer(serializers.Serializer):
         if not value.isdigit():
             raise serializers.ValidationError("OTP must be 6 digits.")
         return value
+
+
+# ── Trainer Registration Serializers ─────────────────────────────
+
+
+class TrainerRegisterSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    first_name = serializers.CharField(max_length=150)
+    last_name = serializers.CharField(max_length=150, required=False, default="")
+    password = serializers.CharField(min_length=6, write_only=True)
+    school = serializers.UUIDField()
+
+    def validate_email(self, value):
+        # Allow re-registration if previous attempt was unverified
+        existing = User.objects.filter(email=value).first()
+        if existing and existing.is_email_verified:
+            raise serializers.ValidationError("An account with this email already exists.")
+        return value
+
+    def validate_school(self, value):
+        from apps.dashboard.models import School
+        try:
+            School.objects.get(pk=value)
+        except School.DoesNotExist:
+            raise serializers.ValidationError("School not found.")
+        return value
+
+
+class VerifyRegistrationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(min_length=6, max_length=6)
+
+    def validate_code(self, value):
+        if not value.isdigit():
+            raise serializers.ValidationError("OTP must be 6 digits.")
+        return value
+
+
+class ResendRegistrationOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No pending registration found for this email.")
+        if user.is_email_verified:
+            raise serializers.ValidationError("This email is already verified.")
+        return value

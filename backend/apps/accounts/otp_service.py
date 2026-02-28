@@ -90,8 +90,8 @@ def consume_otp(user, code):
     return updated > 0
 
 
-def send_otp_email(user, code):
-    """Send the OTP code to the user's email."""
+def send_otp_email(user, code, purpose="reset"):
+    """Send the OTP code to the user's email. purpose: 'reset' or 'registration'."""
     subject = f"Your AI Literacy verification code: {code}"
     html_message = render_to_string(
         "accounts/otp_email.html",
@@ -99,6 +99,7 @@ def send_otp_email(user, code):
             "user": user,
             "code": code,
             "expiry_minutes": OTP_EXPIRY_MINUTES,
+            "purpose": purpose,
         },
     )
     plain_message = strip_tags(html_message)

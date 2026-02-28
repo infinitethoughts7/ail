@@ -46,12 +46,20 @@ export default function Home() {
         >
           Empowering Minority Schools
         </p>
-        <Link
-          href="/login"
-          className="mt-6 rounded-full bg-white px-8 py-3 text-sm font-semibold text-black shadow-lg transition-all active:scale-95 hover:bg-white/90 hover:shadow-xl sm:mt-10 sm:px-10 sm:py-3.5 sm:text-base"
-        >
-          Get Started
-        </Link>
+        <div className="mt-6 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
+          <Link
+            href="/login"
+            className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-black shadow-lg transition-all active:scale-95 hover:bg-white/90 hover:shadow-xl sm:px-10 sm:py-3.5 sm:text-base"
+          >
+            Get Started
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-full border border-white/30 bg-white/10 px-8 py-3 text-sm font-semibold text-white shadow-lg backdrop-blur-sm transition-all active:scale-95 hover:bg-white/20 hover:shadow-xl sm:px-10 sm:py-3.5 sm:text-base"
+          >
+            Register as Trainer
+          </Link>
+        </div>
       </div>
     </div>
   );

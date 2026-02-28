@@ -16,6 +16,7 @@ class User(AbstractUser):
     profile_photo = models.ImageField(
         upload_to="profile_photos/", blank=True, null=True
     )
+    is_email_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
