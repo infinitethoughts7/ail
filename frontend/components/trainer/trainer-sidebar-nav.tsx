@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -12,6 +13,8 @@ import {
   ImageIcon,
   LogOut,
   Building2,
+  Camera,
+  Loader2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -23,7 +26,8 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { useTrainerProfile } from "@/hooks/use-trainer-data";
+import { useTrainerProfile, useUpdateTrainerProfile } from "@/hooks/use-trainer-data";
+import { toast } from "sonner";
 
 const NAV_ITEMS = [
   {
@@ -73,7 +77,21 @@ const NAV_ITEMS = [
 export function TrainerSidebarNav() {
   const pathname = usePathname();
   const { data: profile } = useTrainerProfile();
+  const updateProfile = useUpdateTrainerProfile();
+  const photoInputRef = useRef<HTMLInputElement>(null);
   const initials = (profile?.username || "T").charAt(0).toUpperCase();
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("profile_photo", file);
+    updateProfile.mutate(formData, {
+      onSuccess: () => toast.success("Profile photo updated!"),
+      onError: () => toast.error("Failed to update photo"),
+    });
+    if (photoInputRef.current) photoInputRef.current.value = "";
+  };
 
   return (
     <Sidebar
@@ -110,19 +128,40 @@ export function TrainerSidebarNav() {
 
         {/* Profile photo — overlapping the banner */}
         <div className="flex flex-col items-center -mt-10 relative z-10 pb-4">
-          <Link href="/trainer/dashboard">
-            {profile?.profile_photo_url ? (
-              <img
-                src={profile.profile_photo_url}
-                alt={profile.username}
-                className="h-[72px] w-[72px] rounded-full border-[3px] border-white object-cover shadow-lg"
-              />
-            ) : (
-              <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border-[3px] border-white bg-gradient-to-br from-violet-500 to-indigo-500 text-2xl font-bold text-white shadow-lg">
-                {initials}
-              </div>
-            )}
-          </Link>
+          <div className="relative">
+            <Link href="/trainer/dashboard">
+              {profile?.profile_photo_url ? (
+                <img
+                  src={profile.profile_photo_url}
+                  alt={profile.username}
+                  className="h-[72px] w-[72px] rounded-full border-[3px] border-white object-cover shadow-lg"
+                />
+              ) : (
+                <div className="flex h-[72px] w-[72px] items-center justify-center rounded-full border-[3px] border-white bg-gradient-to-br from-violet-500 to-indigo-500 text-2xl font-bold text-white shadow-lg">
+                  {initials}
+                </div>
+              )}
+            </Link>
+            <button
+              type="button"
+              onClick={() => photoInputRef.current?.click()}
+              disabled={updateProfile.isPending}
+              className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-md transition-transform active:scale-90 border border-gray-100"
+            >
+              {updateProfile.isPending ? (
+                <Loader2 className="h-3 w-3 animate-spin text-violet-600" />
+              ) : (
+                <Camera className="h-3 w-3 text-violet-600" />
+              )}
+            </button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              className="hidden"
+            />
+          </div>
           <p className="mt-2 text-sm font-semibold text-[#1F2937]" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
             {profile?.username || "Trainer"}
           </p>

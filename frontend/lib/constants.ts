@@ -1,9 +1,9 @@
-// Curriculum Day theme colors — refined luxury palette
+// Curriculum Session theme colors — refined luxury palette
 export const CURRICULUM_DAYS = [
   {
     day: 1,
-    label: "Day 1: Foundations of Computers & Introduction to AI",
-    shortLabel: "Day 1",
+    label: "Session 1: Foundations of Computers & Introduction to AI",
+    shortLabel: "Session 1",
     color: "bg-[#4338CA]",
     textColor: "text-[#4338CA]",
     bgLight: "bg-[#EEF2FF]",
@@ -14,8 +14,8 @@ export const CURRICULUM_DAYS = [
   },
   {
     day: 2,
-    label: "Day 2: Creative AI – Prompting & Content Creation, Image generation, Story and Lyric writing",
-    shortLabel: "Day 2",
+    label: "Session 2: Creative AI – Prompting & Content Creation, Image Generation, Story & Lyric Writing",
+    shortLabel: "Session 2",
     color: "bg-[#047857]",
     textColor: "text-[#047857]",
     bgLight: "bg-[#ECFDF5]",
@@ -26,8 +26,8 @@ export const CURRICULUM_DAYS = [
   },
   {
     day: 3,
-    label: "Day 3: Building with AI – Design & website Development and Game designing",
-    shortLabel: "Day 3",
+    label: "Session 3: Building with AI – Design, Website Development & Game Designing",
+    shortLabel: "Session 3",
     color: "bg-[#B45309]",
     textColor: "text-[#B45309]",
     bgLight: "bg-[#FFFBEB]",
@@ -38,8 +38,8 @@ export const CURRICULUM_DAYS = [
   },
   {
     day: 4,
-    label: "Day 4: Responsible AI & Career Pathways",
-    shortLabel: "Day 4",
+    label: "Session 4: Responsible AI & Career Pathways",
+    shortLabel: "Session 4",
     color: "bg-[#B91C1C]",
     textColor: "text-[#B91C1C]",
     bgLight: "bg-[#FEF2F2]",

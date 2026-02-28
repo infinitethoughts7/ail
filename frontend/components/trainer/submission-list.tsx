@@ -62,12 +62,12 @@ export function SubmissionList() {
                 style={{ backgroundColor: dayTheme.hex }}
               />
               <div className="flex flex-1 items-center gap-3 py-3 pr-4">
-                {/* Day badge */}
+                {/* Session badge */}
                 <div
                   className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl text-white"
                   style={{ backgroundColor: dayTheme.hex }}
                 >
-                  <span className="text-[10px] font-medium leading-none opacity-80">Day</span>
+                  <span className="text-[9px] font-medium leading-none opacity-80">S</span>
                   <span className="text-lg font-bold leading-tight">{sub.day_number}</span>
                 </div>
                 {/* Content */}

@@ -19,25 +19,25 @@ export const PROGRAM_SCHEDULE = [
   {
     day: 1,
     date: "2026-02-21",
-    title: "Introduction to AI & Machine Learning Basics",
+    title: "Foundations of Computers & Introduction to AI",
     color: "var(--day-1)",
   },
   {
     day: 2,
     date: "2026-02-22",
-    title: "Data Literacy & AI Tools",
+    title: "Creative AI – Prompting & Content Creation, Image Generation, Story & Lyric Writing",
     color: "var(--day-2)",
   },
   {
     day: 3,
     date: "2026-02-23",
-    title: "AI for Problem Solving",
+    title: "Building with AI – Design, Website Development & Game Designing",
     color: "var(--day-3)",
   },
   {
     day: 4,
     date: "2026-02-24",
-    title: "AI Projects & Showcase",
+    title: "Responsible AI & Career Pathways",
     color: "var(--day-4)",
   },
 ] as const;

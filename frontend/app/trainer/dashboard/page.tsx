@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,7 +13,6 @@ import {
 import {
   useTrainerSummary,
   useTrainerProfile,
-  useUpdateTrainerProfile,
   useTrainerSubmissions,
 } from "@/hooks/use-trainer-data";
 import {
@@ -22,7 +21,6 @@ import {
   CURRICULUM_DAYS,
 } from "@/lib/constants";
 import { timeAgo } from "@/lib/utils";
-import { toast } from "sonner";
 import {
   ClipboardEdit,
   CheckCircle,
@@ -35,10 +33,7 @@ import {
   ImageIcon,
   TrendingUp,
   Sparkles,
-  Calendar,
   Clock,
-  Camera,
-  Loader2,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -149,21 +144,7 @@ export default function TrainerDashboardPage() {
   const { data: summary, isLoading } = useTrainerSummary();
   const { data: profile } = useTrainerProfile();
   const { data: submissions } = useTrainerSubmissions();
-  const updateProfile = useUpdateTrainerProfile();
-  const photoInputRef = useRef<HTMLInputElement>(null);
   const [viewingPhoto, setViewingPhoto] = useState(false);
-
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append("profile_photo", file);
-    updateProfile.mutate(formData, {
-      onSuccess: () => toast.success("Profile photo updated!"),
-      onError: () => toast.error("Failed to update photo"),
-    });
-    if (photoInputRef.current) photoInputRef.current.value = "";
-  };
 
   if (isLoading) return <DashboardSkeleton />;
 
@@ -275,7 +256,6 @@ export default function TrainerDashboardPage() {
                   type="button"
                   onClick={() => {
                     if (profile?.profile_photo_url) setViewingPhoto(true);
-                    else photoInputRef.current?.click();
                   }}
                   className="block"
                 >
@@ -291,26 +271,7 @@ export default function TrainerDashboardPage() {
                     </div>
                   )}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => photoInputRef.current?.click()}
-                  disabled={updateProfile.isPending}
-                  className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 shadow-md transition-transform active:scale-90"
-                >
-                  {updateProfile.isPending ? (
-                    <Loader2 className="h-3 w-3 animate-spin text-violet-600" />
-                  ) : (
-                    <Camera className="h-3 w-3 text-violet-600" />
-                  )}
-                </button>
               </div>
-              <input
-                ref={photoInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoUpload}
-                className="hidden"
-              />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <Sparkles className="h-3.5 w-3.5 text-violet-200" />
@@ -423,7 +384,7 @@ export default function TrainerDashboardPage() {
                           done ? "text-violet-600" : "text-[#C0C5CE]"
                         }`}
                       >
-                        Day {day.day}
+                        S{day.day}
                       </span>
                     </div>
 
@@ -756,13 +717,13 @@ export default function TrainerDashboardPage() {
                   >
                     <Card className="border-0 bg-white shadow-sm ring-1 ring-black/[0.04] transition-all active:scale-[0.99]">
                       <CardContent className="flex items-center gap-3 p-3.5">
-                        {/* Day pill */}
+                        {/* Session pill */}
                         <div
                           className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-2xl text-white"
                           style={{ backgroundColor: dayTheme.hex }}
                         >
-                          <span className="text-[10px] font-medium leading-none opacity-70">
-                            Day
+                          <span className="text-[9px] font-medium leading-none opacity-70">
+                            S
                           </span>
                           <span className="text-base font-bold leading-tight">
                             {sub.day_number}
@@ -831,16 +792,6 @@ export default function TrainerDashboardPage() {
               className="max-h-[70dvh] w-full object-contain sm:rounded-2xl"
             />
           )}
-          <button
-            onClick={() => {
-              setViewingPhoto(false);
-              setTimeout(() => photoInputRef.current?.click(), 200);
-            }}
-            className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm transition-colors active:bg-white/25"
-          >
-            <Camera className="h-4 w-4" />
-            Change Photo
-          </button>
         </DialogContent>
       </Dialog>
     </div>
